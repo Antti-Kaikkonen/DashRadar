@@ -1,0 +1,30 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	max-height: 100%;
+}
+
+.mat-table {
+  overflow-y: auto;
+  font-family: monospace;
+  background: inherit;
+}
+
+.mat-header-cell{
+	color: inherit;
+}
+
+.mat-cell {
+	font-size: 12px;
+	overflow: auto;
+	color: inherit;
+}
+
+.mat-column-hash {
+	min-width: 65ch;
+}
+
+.mat-column-select {
+	overflow: visible;
+  min-width: 35px;
+}

@@ -1,0 +1,51 @@
+table {
+  width: 100%;
+  td {
+    vertical-align: top;
+  }
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.noaddress {
+  border: 2px solid red;
+  margin: 3px 0px;
+}
+
+.selectedOutput {
+  background-color: lightgreen;
+  border-radius: 10px;
+  margin-left: -15px;
+  padding-left: 15px;
+}
+
+.selectedInput {
+  background-color: lightgreen;
+  border-radius: 10px;
+}
+
+.collapsible-scroll {
+  overflow-x: auto;
+  max-width: 100% !important;
+}
+
+.collapsible-hidden {
+  overflow-x: hidden;
+  max-width: 100% !important;
+  text-overflow: ellipsis;
+}
+
+.minzero {
+  min-width:0;
+}
+
+.sent-amount {
+  color:red;
+}
+
+.received-amount {
+  color: green;
+}

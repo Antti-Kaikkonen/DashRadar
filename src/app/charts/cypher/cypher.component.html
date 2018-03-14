@@ -1,0 +1,115 @@
+<textarea id="codemirror-area" rows="4" cols="10"></textarea>
+<button mat-raised-button (click)="executeQuery()" color="primary" [disabled]="query.length === 0 || cypherLoading">
+	Execute
+	<mat-spinner color="accent" [diameter]="30" strokeWidth="5" style="display:inline-block;" [style.visibility]="cypherLoading ? 'visible' : 'hidden'"></mat-spinner>
+</button><a href="/charts/editor?query={{cypherQueryURL}}">link to this query</a>
+<mat-tab-group [(selectedIndex)]="selectedTabIndex">
+  <mat-tab label="Error" *ngIf="cypherError !== undefined">
+  	{{cypherError.message}}
+  </mat-tab>
+  <mat-tab label="Table" *ngIf="result !== undefined">
+  	<mat-table #table [dataSource]="dataSource">
+  		<ng-container *ngFor="let column of result.columns; let i = index" [matColumnDef]="column">
+		  <mat-header-cell *matHeaderCellDef>{{ column }}</mat-header-cell>
+		  <mat-cell *matCellDef="let row">{{ row[i] }}</mat-cell>
+		</ng-container>
+	    <mat-header-row *matHeaderRowDef="result.columns"></mat-header-row>
+    	<mat-row *matRowDef="let row; columns: result.columns;"></mat-row>
+  	</mat-table>	
+  </mat-tab>
+  <mat-tab label="Line Chart" *ngIf="chartData !== undefined && lineChartEnabled">
+  	<div class="chart-container" *ngIf="selectedTabIndex===1">
+  		<canvas baseChart width="400" height="400"
+            [datasets]="chartData"
+            [options]="lineChartOptions"
+            [legend]="legend_enabled"
+            [chartType]="'line'"
+            [colors]="chartColors">
+    	</canvas>
+	</div>
+	View chart as an image:
+	<a href="{{imageUrlPrefix}}/line.png?{{chartURLQuery}}" target="_blank">600X600</a>,
+	<a href="{{imageUrlPrefix}}/line.png?{{chartURLQuery}}&width=1200" target="_blank">1200X600</a>,
+	<a href="{{imageUrlPrefix}}/line.png?{{chartURLQuery}}&width=1800" target="_blank">1800X600</a>,
+	<mat-form-field style="width: 50px">
+		<input matInput type="number" [(ngModel)]="customW" min="10" max="4000" step="1">
+	</mat-form-field>
+	<b>X</b>
+	<mat-form-field style="width: 50px">
+		<input matInput type="number" [(ngModel)]="customH" min="10" max="4000" step="1">
+	</mat-form-field>
+	<a href="{{imageUrlPrefix}}/line.png?{{chartURLQuery}}&width={{customW}}&height={{customH}}" target="_blank">{{customW}}x{{customH}}</a>
+  </mat-tab>
+  <mat-tab label="Bar Chart" *ngIf="chartData !== undefined">
+  	<div class="chart-container" *ngIf="selectedTabIndex===lineChartEnabled?2:1">
+			<canvas baseChart width="400" height="400"
+						[labels]="barChartOptions.scales.xAxes[0].type === 'time' ? null : categories"
+            [datasets]="barChartOptions.scales.xAxes[0].type === 'time' ? chartData : categoricalBarChartData"
+            [options]="barChartOptions"
+            [legend]="legend_enabled"
+            [chartType]="'bar'"
+            [colors]="chartColors">
+    	</canvas>
+	</div>
+	View chart as an image:
+	<a href="{{imageUrlPrefix}}/bar.png?{{chartURLQuery}}" target="_blank">600X600</a>,
+	<a href="{{imageUrlPrefix}}/bar.png?{{chartURLQuery}}&width=1200" target="_blank">1200X600</a>,
+	<a href="{{imageUrlPrefix}}/bar.png?{{chartURLQuery}}&width=1800" target="_blank">1800X600</a>,
+	<mat-form-field style="width: 50px">
+		<input matInput type="number" [(ngModel)]="customW" min="10" max="4000" step="1">
+	</mat-form-field>
+	<b>X</b>
+	<mat-form-field style="width: 50px">
+		<input matInput type="number" [(ngModel)]="customH" min="10" max="4000" step="1">
+	</mat-form-field>
+	<a href="{{imageUrlPrefix}}/bar.png?{{chartURLQuery}}&width={{customW}}&height={{customH}}" target="_blank">{{customW}}x{{customH}}</a>
+  </mat-tab>
+  <mat-tab label="Pie Chart" *ngIf="chartData !== undefined && chartData.length === 1">
+  	<div class="chart-container" *ngIf="selectedTabIndex===lineChartEnabled?3:2">
+  		<canvas baseChart width="400" height="400"
+            [datasets]="categoricalData"
+            [labels]="categories"
+            [options]="pieChartOptions"
+            [legend]="legend_enabled"
+            [chartType]="'pie'">
+    	</canvas>
+	</div>
+	View chart as an image:
+	<a href="{{imageUrlPrefix}}/pie.png?{{pieChartURLQuery}}&width=300&height=300" target="_blank">300x300</a>,
+	<a href="{{imageUrlPrefix}}/pie.png?{{pieChartURLQuery}}" target="_blank">600x600</a>,
+	<a href="{{imageUrlPrefix}}/pie.png?{{pieChartURLQuery}}&width=900&height=900" target="_blank">900x900</a>,
+	<mat-form-field style="width: 50px">
+		<input matInput type="number" [(ngModel)]="customW" min="10" max="4000" step="1">
+	</mat-form-field>
+	<b>X</b>
+	<mat-form-field style="width: 50px">
+		<input matInput type="number" [(ngModel)]="customH" min="10" max="4000" step="1">
+	</mat-form-field>
+	<a href="{{imageUrlPrefix}}/pie.png?{{pieChartURLQuery}}&width={{customW}}&height={{customH}}" target="_blank">{{customW}}x{{customH}}</a>
+  </mat-tab>
+</mat-tab-group>
+<div *ngIf="result !== undefined && selectedTabIndex > 0">
+	<div [formGroup]="settingsForm">
+		<div>
+			<mat-checkbox formControlName="legend_enabled">Show legend</mat-checkbox>
+		</div>
+		<div>
+			<mat-form-field floatPlaceholder="auto">
+				<mat-checkbox matPrefix formControlName="title_enabled"></mat-checkbox>
+			    <input matInput placeholder="Title" formControlName="title">
+		  	</mat-form-field>
+		</div>
+		<div *ngIf="selectedTabIndex!==3">
+			<mat-form-field floatPlaceholder="auto">
+				<mat-checkbox matPrefix formControlName="x_title_enabled"></mat-checkbox>
+			    <input matInput placeholder="X Title" formControlName="x_title">
+		  	</mat-form-field>
+		</div>
+		<div *ngIf="selectedTabIndex!==3">	
+			<mat-form-field floatPlaceholder="auto">
+				<mat-checkbox matPrefix formControlName="y_title_enabled"></mat-checkbox>
+			    <input matInput placeholder="Y Title" formControlName="y_title">
+		  	</mat-form-field>
+		</div>
+	</div>	
+</div>

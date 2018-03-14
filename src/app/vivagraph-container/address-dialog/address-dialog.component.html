@@ -1,0 +1,7 @@
+<div>
+		<a [routerLink]="['/explorer/address', address.addrStr]"
+			target="_blank">{{address.addrStr}}
+		</a>
+</div>
+<div oncontextmenu="return false;"><button style="width: 100%; text-align: left;" mat-button (click)="onAddressExpanded.emit(address)">Expand</button></div>
+<div oncontextmenu="return false;"><button style="width: 100%; text-align: left;" mat-button (click)="onAddressDeleted.emit(address)">Delete</button></div>

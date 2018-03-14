@@ -1,0 +1,25 @@
+mat-grid-tile {
+	border: 1px solid;
+}
+
+table {
+	width: 100%;
+
+	border: 1px solid black;
+	border-collapse: collapse;
+
+	th, td {
+		border: 1px solid black;
+    	border-collapse: collapse;
+	}
+}
+
+.header-image {
+  background-size: cover;
+}
+
+.collapsible-hidden {
+  overflow-x: hidden;
+  max-width: 100% !important;
+  text-overflow: ellipsis;
+}

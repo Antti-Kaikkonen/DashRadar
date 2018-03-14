@@ -1,0 +1,41 @@
+
+<div fxLayout="row wrap" fxLayoutAlign="start center" fxFlex="0 1 100%">
+  <img src="/assets/png2/64x64/{{imageName}}" *ngIf="imageName !== undefined" width="32"/>
+  <div fxLayout="row" fxLayoutAlign="start center" fxFlex="0 0 568px" fxFlex.sm="1 1 100%" fxFlex.xs="1 1 100%">
+    
+      <a class="collapsible-hidden" [routerLink]="['/explorer/tx', transaction.txid]">{{transaction.txid}}</a>
+    
+  </div>
+  <!--<div>
+    {{transaction.calculateTotalOutputs()}} Dash
+  </div>-->
+  <div fxLayout="row" fxLayoutAlign="start center" fxFlex="0 0 230px">
+    <mat-icon class="noselect">date_range</mat-icon> {{transaction.time*1000 | date:'medium'}}
+  </div>	
+  
+  <div fxLayout="row wrap" fxLayoutAlign="start center" fxFlex="0 0 440px" fxFlex.sm="1 1 100%" fxFlex.xs="1 1 100%" class="collapsible-hidden">
+
+    <a *ngIf="transaction.vin.length === 1 && transaction.vin[0].addr !== undefined && transaction.vin[0].addr !== currentAddress" [routerLink]="['/explorer/address', transaction.vin[0].addr]" class="collapsible-hidden">
+      {{transaction.vin[0].addr}}
+    </a>
+    <span *ngIf="transaction.vin.length === 1 && transaction.vin[0].addr !== undefined && transaction.vin[0].addr === currentAddress" class="collapsible-hidden">
+      This Address
+    </span>
+
+    <span *ngIf="transaction.vin.length === 1 && transaction.vin[0].addr === undefined">Newly generated coins</span>
+
+    <span *ngIf="transaction.vin.length > 1 && !currentAddressIsInput">{{transaction.vin.length}} Addresses</span>
+    <span *ngIf="transaction.vin.length > 1 && currentAddressIsInput">This + {{transaction.vin.length-1}} {{transaction.vin.length === 2 ? 'Address' : 'Addresses'}}</span>
+
+    <mat-icon aria-hidden="true"><span class="noselect">chevron_right</span><span class="cdk-visually-hidden"> -> </span></mat-icon>
+    
+    <a *ngIf="transaction.vout.length === 1 && transaction.vout[0].scriptPubKey.addresses[0] !== currentAddress" [routerLink]="['/explorer/address', transaction.vout[0].scriptPubKey.addresses[0]]" class="collapsible-hidden">
+      {{transaction.vout[0].scriptPubKey.addresses[0]}}
+    </a>
+    <span *ngIf="transaction.vout.length === 1 && transaction.vout[0].scriptPubKey.addresses[0] === currentAddress" class="collapsible-hidden">
+      This Address
+    </span>
+    <span *ngIf="transaction.vout.length > 1 && !currentAddressIsOutput">{{transaction.vout.length}} Addresses</span>
+    <span *ngIf="transaction.vout.length > 1 && currentAddressIsOutput">This + {{transaction.vout.length-1}} {{transaction.vout.length === 2 ? 'Address' : 'Addresses'}}</span>
+  </div>
+</div>

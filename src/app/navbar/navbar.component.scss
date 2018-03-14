@@ -1,0 +1,14 @@
+:host {
+  flex: 0 1 auto;
+
+  a {
+    height: 64px;
+  }
+}  
+
+mat-toolbar {
+  flex-wrap: wrap;
+  //height: initial;
+  height: auto;
+  padding: 0;
+}

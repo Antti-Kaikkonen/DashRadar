@@ -1,0 +1,15 @@
+<div class="chart-container" *ngIf="_data" [style.height]="dynamicHeight" style="position: relative;">
+  <div style="position: absolute; right: 0;">
+    <ng-content></ng-content>
+    <button mat-icon-button (click)="toggleFullScreen()" color="primary"><mat-icon>{{isfullscreen ? "fullscreen_exit" : "fullscreen"}}</mat-icon></button>
+  </div>
+  <canvas baseChart #wololoChart
+        class="touch-scrollable"
+        [datasets]="_data"
+        [options]="lineChartOptions"
+        [legend]="legend"
+        [chartType]="'line'"
+        (chartClick)="cc($event)"
+        [colors]="chartColors">
+  </canvas>
+</div>  

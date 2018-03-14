@@ -1,0 +1,52 @@
+<div *ngIf="error; else noErrorBlock">
+	<strong>Error: Failed to load blocks</strong>
+	<br />
+	{{errorMessage}}
+</div>
+<ng-template #noErrorBlock>
+	<div *ngIf="blocks === undefined; else readyBlock">
+		<h1>Loading blocks</h1>
+		<mat-spinner></mat-spinner>
+	</div>
+	<ng-template #readyBlock>
+		<div class="container">
+			<div fxLayout="row" fxLayoutAlign="start center">
+				<div fxFlex></div>
+				<button mat-icon-button (click)="openDialog()"><mat-icon>more_vert</mat-icon></button>
+				<a target="_blank" href="https://www.google.com" mat-icon-button><mat-icon>open_in_new</mat-icon></a>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<ng-container *ngFor="let column of columns">
+							<th *ngIf="column.active">
+								{{column.name}}
+							</th>	
+						</ng-container>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let block of blocks">
+						<ng-container *ngFor="let column of columns">
+							<td *ngIf="column.active">
+								<ng-container *ngIf="column.name === COLUMN_NAME_HASH">
+									<a [routerLink]="['/explorer//blocks', block.hash]">{{block.hash}}</a>
+								</ng-container>
+								<ng-container *ngIf="column.name === COLUMN_NAME_HEIGHT">
+									<a [routerLink]="['/explorer/blocks', block.hash]">{{block.height}}</a>
+								</ng-container>
+								<ng-container *ngIf="column.name === COLUMN_NAME_AGE">
+									{{currentTime-block.time | duration : 'MM minutes ss seconds'}}
+								</ng-container>
+								<ng-container *ngIf="column.name === COLUMN_NAME_TRANSACTIONS">
+									{{block.tx.length}}
+								</ng-container>
+							</td>
+						</ng-container>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</ng-template>
+
+</ng-template>

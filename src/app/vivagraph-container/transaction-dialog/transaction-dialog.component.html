@@ -1,0 +1,10 @@
+<div>
+	<a [routerLink]="['/explorer/tx', transaction.txid]"
+		target="_blank">{{transaction.txid}}
+	</a>
+</div>
+<div><button style="width: 100%; text-align: left;" mat-button (click)="onTransactionExpanded.emit(transaction)" oncontextmenu="return false;">Expand</button></div>
+<div><button style="width: 100%; text-align: left;" mat-button (click)="onTransactionInputsExpanded.emit(transaction)" oncontextmenu="return false;">Expand inputs</button></div>
+<div><button style="width: 100%; text-align: left;" mat-button (click)="onTransactionOutputsExpanded.emit(transaction)" oncontextmenu="return false;">Expand outputs</button></div>
+<div><button style="width: 100%; text-align: left;" mat-button (click)="onTransactionDeleted.emit(transaction)" oncontextmenu="return false;">Delete</button></div>
+<!--<div><button style="width: 100%; text-align: left;" mat-button (click)="onTransactionInspected.emit(transaction)">Inspect (TODO)</button></div>-->

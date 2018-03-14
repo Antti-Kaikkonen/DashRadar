@@ -1,0 +1,44 @@
+<div>
+	<table>
+		<tr>
+			<td>
+				<mat-input-container>
+			      <input matInput placeholder="Address" 
+			      [(ngModel)]="inputAddress"
+			      #address="ngModel" />
+		    	</mat-input-container>
+			</td>
+			<td>
+				<button mat-button style="width: 100%;" (click)="addAddress()">Add address</button>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<mat-input-container>
+					<input matInput placeholder="Transaction Id"
+					[(ngModel)]="inputTransaction">
+		    	</mat-input-container>
+			</td>
+			<td>
+				<button mat-button style="width: 100%;" (click)="addTransaction()">Add transaction</button>
+			</td>
+		</tr>
+		<tr>
+			<td><button mat-button style="width: 100%;" (click)="exportToJSON()">Export to JSON</button></td>
+			<td><button mat-button style="width: 100%;" (click)="toggleImportJSON()">Import from JSON</button></td>
+		</tr>
+		<tr>
+			<td colspan="2"><button mat-button style="width: 100%;" (click)="onExportSVG.emit()">Export to SVG image</button></td>
+		</tr>
+		<tr *ngIf="importingJSON">
+			<td colspan="2" style="text-align: center;">
+				<textarea style="width: 95%;" placeholder="Paste json data"
+				[(ngModel)]="jsonImportData"></textarea>
+			</td>
+		</tr>
+		<tr *ngIf="importingJSON">
+			<td><button mat-button style="width: 100%;" (click)="importFromJSON()" [disabled]="jsonImportData === undefined || jsonImportData.length === 0">Import</button></td>
+			<td><button mat-button style="width: 100%;" (click)="toggleImportJSON()">Cancel</button></td>
+		</tr>
+	</table>
+</div>

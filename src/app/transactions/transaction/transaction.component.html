@@ -1,0 +1,63 @@
+<mat-card>
+	<mat-card-header style="word-break: break-all;">
+		<div mat-card-avatar 
+			class="header-image" 
+			[style.background-image]="'url(/assets/png2/64x64/' + imageName + ')'" 
+			[style.border-radius]="'initial'"></div>
+		<mat-card-title><ng-container *ngIf="transaction_type !== undefined">{{transaction_type}} </ng-container>TRANSACTION</mat-card-title>
+		<mat-card-subtitle>{{txid}}</mat-card-subtitle>
+	</mat-card-header>
+	<mat-card-content>
+		<div *ngIf="error; else noErrorBlock">
+			<strong>Error: Failed to load transaction</strong>
+			<br />
+			{{errorMessage}}
+		</div>
+		<ng-template #noErrorBlock>
+			<div *ngIf="transaction === undefined; else readyBlock">
+				<mat-spinner></mat-spinner>
+			</div>
+			<ng-template #readyBlock>
+
+				<div fxLayout="column" fxLayoutGap="5px" style="font-size: 16px">
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Block</b>
+						</div>
+						<div fxFlex="nogrow">
+							<mat-chip-list *ngIf="transaction.blockhash === undefined">
+								<mat-chip selected="true" color="warn">Unconfirmed transaction</mat-chip>
+							</mat-chip-list>
+							<a *ngIf="transaction.blockhash !== undefined" [routerLink]="['/explorer/blocks', transaction.blockhash]">{{transaction?.blockheight}}</a>
+						</div>
+					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Time</b>
+						</div>
+						<div fxFlex="nogrow">
+								{{transaction.time*1000 | date:'medium'}}
+						</div>
+					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Fee</b>
+						</div>
+						<div fxFlex="nogrow">
+							{{fee}}
+						</div>
+					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Confirmations</b>
+						</div>
+						<div fxFlex="nogrow">
+							{{transaction.confirmations}}
+						</div>
+					</div>
+				</div>
+				<app-transaction-input-output-table  [transaction]="transaction" [txinindex]="txinindex" [txoutindex]="txoutindex"></app-transaction-input-output-table>
+			</ng-template>
+		</ng-template>
+	</mat-card-content>
+</mat-card>

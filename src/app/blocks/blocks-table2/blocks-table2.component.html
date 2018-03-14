@@ -1,0 +1,33 @@
+<div>
+
+  <mat-table #table [dataSource]="dataSource">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <ng-container matColumnDef="hash">
+      <mat-header-cell *matHeaderCellDef [style.max-width.px]="550" [style.min-width.px]="150"> Hash </mat-header-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="550" [style.min-width.px]="150"> <a [routerLink]="['/explorer/blocks', block.hash]">{{block?.hash}}</a> </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="height">
+      <mat-header-cell *matHeaderCellDef [style.max-width.px]="150" [style.min-width.px]="70"> Height </mat-header-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="150" [style.min-width.px]="70"> <a [routerLink]="['/explorer/blocks', block.hash]">{{block?.height}}</a> </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="transactions">
+      <mat-header-cell *matHeaderCellDef [style.max-width.px]="150" [style.min-width.px]="70"> Transactions </mat-header-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="150" [style.min-width.px]="70"> {{block?.tx?.length}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let block; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [length]="length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageIndex]="currentPage"
+    (page)="pageChanged($event)">
+  </mat-paginator>
+</div>
+

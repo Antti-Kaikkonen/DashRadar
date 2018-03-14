@@ -1,0 +1,60 @@
+.chart-container {
+	min-height: 300px;
+	width: 100%;
+}
+
+mat-toolbar.transparent-toolbar {
+	height: auto;
+	background-color: white;
+}
+
+mat-toolbar.small-toolbar {
+	max-height: 30px;
+}
+
+.no-padding-input {
+	.mat-input-infix.mat-form-field-infix{
+		padding:0;
+	}
+}
+
+:host {
+	flex: 1 1 auto;
+	position: relative;
+	overflow: auto;
+}
+
+mat-card {
+  max-width: 80%;
+  margin: 1em auto;
+	text-align: center;
+	padding: 0;
+	&.nomargin {
+		max-width: 100%;
+		margin: 1em 0;
+	}
+	&.smallmargin {
+		max-width: 90%;
+	}
+}
+
+mat-toolbar {
+	max-width: 80%;
+	margin: 0 auto;
+	&.nomargin {
+		max-width: 100%;
+		margin: 0 0;
+	}
+	&.smallmargin {
+		max-width: 90%;
+	}
+}
+
+app-time-series-chart {
+  &:fullscreen {
+		mat-form-field {
+			display: none !important;
+		}
+	}
+	height: 400px;
+}

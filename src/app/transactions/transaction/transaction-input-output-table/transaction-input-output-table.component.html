@@ -1,0 +1,77 @@
+<div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="50px">
+
+  <div fxFlex="1 1 490px" fxFlex.xs="1 1 100%" fxLayout="column" fxLayoutAlign="start stretch">
+    <h3>{{transaction.vin.length}} Inputs</h3>
+
+    <div *ngFor="let input of transaction.vin; let inputIndex = index" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" [class.selectedInput]="inputIndex == txinindex">
+      <ng-container *ngIf="input.txid === undefined">
+        <mat-chip-list>
+          <mat-chip>
+            Newly generated coins
+          </mat-chip>
+        </mat-chip-list>  
+      </ng-container>
+      <ng-container *ngIf="input.txid !== undefined">
+        <a mat-icon-button fxFlex="none" [routerLink]="['/explorer/tx', input.txid]" [queryParams]="{txoutindex:input.vout}">
+          <mat-icon>chevron_left</mat-icon>
+        </a>
+        <div fxFlex="grow" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="7px" class="minzero" [class.noaddress]="!input.addr">
+          
+          <a [routerLink]="['/explorer/address', input.addr]" 
+          fxFlex="0 1 auto"
+          class="collapsible-hidden"
+          *ngIf="input.addr && input.addr !== currentAddress">
+            {{input.addr}}
+          </a>
+          <span [routerLink]="['/explorer/address', input.addr]" 
+          fxFlex="0 1 auto"
+          class="collapsible-hidden"
+          *ngIf="input.addr && input.addr === currentAddress">
+            {{input.addr}}
+          </span>
+          <div *ngIf="!input.addr" style="max-width: 100%">
+            Unkown address. Signature (asm): <div style="max-width: 100%; overflow-x:scroll">{{input.scriptSig.asm}}</div>
+          </div>
+          <div fxFlex="0 1 auto" [class.sent-amount]="input.addr && input.addr === currentAddress">
+            <span class="noselect">(</span>{{input.value}}<span class="noselect">)</span>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div fxFlex="1 1 490px" fxFlex.xs="1 1 100%" fxLayout="column" fxLayoutAlign="start stretch">
+    <h3>{{transaction.vout.length}} Outputs</h3>
+    <div *ngFor="let output of transaction.vout; let outputIndex = index" fxLayout="row" fxLayoutAlign="start center" [class.selectedOutput]="outputIndex == txoutindex">
+      <div fxFlex="grow" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="7px" class="minzero">
+        <div fxFlex="0 1 auto"
+          class="collapsible-hidden" 
+          *ngIf="output.scriptPubKey.addresses === undefined">
+          {{output.scriptPubKey.asm}}
+        </div>
+        <a *ngIf="output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0 && output.scriptPubKey.addresses[0] !== currentAddress" [routerLink]="['/explorer/address', output.scriptPubKey.addresses[0]]" 
+          fxFlex="0 1 auto"
+          class="collapsible-hidden">
+          {{output.scriptPubKey.addresses[0]}}
+        </a>
+        <span *ngIf="output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0 && output.scriptPubKey.addresses[0] === currentAddress" 
+          fxFlex="0 1 auto"
+          class="collapsible-hidden">
+          {{output.scriptPubKey.addresses[0]}}
+        </span> 
+        <div fxFlex="0 1 auto" [class.received-amount]="output.scriptPubKey.addresses && output.scriptPubKey.addresses.length > 0 && output.scriptPubKey.addresses[0] === currentAddress">
+          <span class="noselect">(</span>{{output.value}}<span class="noselect">)</span>
+        </div>
+      </div>
+      <div fxFlex="1 1 auto"></div>
+      
+      <a mat-icon-button fxFlex="none" [routerLink]="['/explorer/tx', output.spentTxId]" [queryParams]="{txinindex:output.spentIndex}" 
+      *ngIf="output.spentTxId">
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+      <button [disabled]="true" mat-icon-button fxFlex="none" *ngIf="!output.spentTxId">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+    </div>
+  </div>
+</div>

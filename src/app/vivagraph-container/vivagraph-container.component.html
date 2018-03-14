@@ -1,0 +1,93 @@
+<div style="color: red; position: absolute; left: 50%; transform: translate(-50%, 0);">
+	<button mat-button (click)="toggleLive()">
+		{{isLive === false ? "START LIVE" : "STOP LIVE"}}
+		<mat-icon *ngIf="!isLive">play_arrow</mat-icon>
+		<mat-icon *ngIf="isLive">stop</mat-icon>
+	</button>
+</div>
+
+<div id="toolbar">
+
+	<div id="toolwindow">
+		<app-vivagraph-guide *ngIf="showGuide" style="max-height: 100%"></app-vivagraph-guide>
+		<app-import-export *ngIf="showAddForm" [transactions]="transactions" [addresses]="addresses" (onExportSVG)="downloadSvg()"></app-import-export>
+		<app-vivagraph-settings *ngIf="showSettings" [vivagraphSettings]="vivagraphSettings" (onSettingsChanged)="onSettingsChanged($event);"></app-vivagraph-settings>
+		<app-vivagraph-address-list *ngIf="showAddressList" 
+		[addresses]="addresses" 
+		[selectedAddresses]="selectedAddresses"
+		(onAddressSelectionToggled)="toggleSelectAddress($event)"
+		(onAllAddressesSelectionToggled)="toggleSelectAllAddresses()"
+		(onDeleteSelectedAddresses)="deleteSelectedAddresses()"
+		(onExpandSelectedAddresses)="expandSelectedAddresses()"
+		></app-vivagraph-address-list>
+		<app-vivagraph-transaction-list *ngIf="showTransactionList" 
+		[transactions]="transactions" 
+		[selectedTransactions]="selectedTransactions"
+		(onTransactionSelectionToggled)="toggleSelectTransaction($event)"
+		(onAllTransactionsSelectionToggled)="toggleSelectAllTransactions()"
+		(onDeleteSelectedTransactions)="deleteSelectedTransactions()"
+		(onExpandSelectedTransactions)="expandSelectedTransactions()"
+		(onExpandSelectedTransactionsInputs)="expandSelectedTransactionsInputs()"
+		(onExpandSelectedTransactionsOutputs)="expandSelectedTransactionsOutputs()"></app-vivagraph-transaction-list>
+	</div>
+	<div style="display: inline-block; vertical-align: top;" fxFlex="nogrow">
+		<div>
+			<button mat-icon-button (click)="toggleFullScreen()" color="accent"><mat-icon>{{isfullscreen ? "fullscreen_exit" : "fullscreen"}}</mat-icon></button>
+		</div>
+		<div style="color: green;" [class.selected]="showAddForm">
+			<button mat-icon-button (click)="toggleAddForm()">
+				<mat-icon *ngIf="!showAddForm">add_circle</mat-icon>
+				<mat-icon *ngIf="showAddForm">remove_circle</mat-icon>
+			</button>
+		</div>
+		<div style="color: grey;" [class.selected]="showSettings">
+			<button mat-icon-button (click)="toggleSettings()">
+				<mat-icon>settings</mat-icon>
+			</button>
+		</div>
+		<div [class.selected]="showGuide">
+			<button mat-icon-button (click)="toggleGuide()" style="color: rgb(26, 26, 255);"><mat-icon>info</mat-icon></button>
+		</div>
+		<div [class.selected]="showAddressList">
+			<button mat-icon-button (click)="toggleAddressList()"><img src="assets/png2/64x64/single_color/dash_icon.png" height=25/></button>
+		</div>
+		<div [class.selected]="showTransactionList">
+			<button mat-icon-button (click)="toggleTransactionList()"><img src="assets/png2/64x64/dual_color/tx.png" height=25/></button>
+		</div>
+	</div>
+</div>
+
+<div id="uptext_container">
+	<div>{{transactionHower?.txid || addressHower?.addrStr}} <span>	&nbsp;</span></div>
+</div>
+
+<app-vivagraph-svg [transactions]="transactions" 
+[addresses]="addresses"
+[selectedAddresses]="selectedAddresses"
+[selectedTransactions]="selectedTransactions"
+[vivagraphSettings]="vivagraphSettings"
+(onTransactionClicked)="onTxClicked($event)" 
+(onAddressClicked)="onAddressClicked($event)"
+(onTransactionMouseEnter)="onTransactionMouseEnter($event)"
+(onTransactionMouseLeave)="onTransactionMouseLeave($event)"
+(onAddressMouseEnter)="onAddressMouseEnter($event)"
+(onAddressMouseLeave)="onAddressMouseLeave($event)"
+oncontextmenu="return false;"></app-vivagraph-svg>
+
+<app-transaction-dialog *ngIf="dialogEvent?.transaction" 
+	[transaction]="dialogEvent.transaction" 
+	[style.left.px]="dialogEvent.mouseEvent.layerX-10" 
+	[style.top.px]="dialogEvent.mouseEvent.layerY-20" 
+	(mouseleave)="dialogEvent=undefined"
+	(onTransactionExpanded)="expandTransaction($event);dialogEvent=undefined;"
+	(onTransactionInputsExpanded)="expandTransactionInputs($event);dialogEvent=undefined;"
+	(onTransactionOutputsExpanded)="expandTransactionOutputs($event);dialogEvent=undefined;"
+	(onTransactionDeleted)="dialogEvent=undefined;deleteTransaction($event);"></app-transaction-dialog>
+
+<app-address-dialog *ngIf="dialogEvent?.address" 
+	[address]="dialogEvent.address"
+	[style.left.px]="dialogEvent.mouseEvent.layerX-10" 
+	[style.top.px]="dialogEvent.mouseEvent.layerY-20" 
+	(mouseleave)="dialogEvent=undefined"
+	(onAddressExpanded)="expandAddress($event);dialogEvent=undefined;"
+	(onAddressDeleted)="dialogEvent=undefined;deleteAddress($event);"></app-address-dialog>

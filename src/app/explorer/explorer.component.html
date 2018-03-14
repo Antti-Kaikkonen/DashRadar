@@ -1,0 +1,15 @@
+<app-navbar>
+  <div>
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+      <mat-form-field floatLabel="auto" color="accent" hintLabel="ADDRESS | TXID | HASH | HEIGHT" style="font-size: 15px;" class="form-field-align-bottom">
+        <input matInput placeholder="Search blockchain" name="asdInput" errorState="true" formControlName="searchInput"/>
+        <mat-icon matSuffix *ngIf="!loadingSearchResults">search</mat-icon>
+        <mat-spinner matSuffix color="accent" *ngIf="loadingSearchResults" diameter="24" style="margin-bottom: 3px"></mat-spinner> 
+        <mat-error *ngIf="!loadingSearchResults && submitted && !found">
+          No matching results found
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </div>  
+</app-navbar>
+<router-outlet></router-outlet>

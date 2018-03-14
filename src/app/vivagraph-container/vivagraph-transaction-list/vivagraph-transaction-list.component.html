@@ -1,0 +1,47 @@
+<mat-table #table [dataSource]="dataSource" matSort [matSortDisableClear]="true" style="flex: 1;">
+<!--- Note that these columns can be defined in any order.
+      The actual rendered columns are set as a property on the row definition" -->
+
+  <ng-container matColumnDef="select">
+    <mat-header-cell *matHeaderCellDef>
+      <mat-checkbox 
+                   (click)="$event.stopPropagation()"
+                   (change)="onAllTransactionsSelectionToggled.emit()"
+                   [indeterminate]="!selectedTransactions.isEmpty() && !allTransactionsSelected()"
+                   [checked]="allTransactionsSelected()">
+      </mat-checkbox>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let transaction">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                   (change)="onTransactionSelectionToggled.emit(transaction)"
+                   [checked]="selectedTransactions.has(transaction.txid)">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>      
+
+  <ng-container matColumnDef="hash">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Hash </mat-header-cell>
+    <mat-cell *matCellDef="let transaction">{{transaction.txid}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="size">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+    [style.min-width.ch]="10" [style.max-width.ch]="10"> Size </mat-header-cell>
+    <mat-cell *matCellDef="let transaction" [style.min-width.ch]="10">{{transaction.size}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let transaction; columns: displayedColumns;"></mat-row>
+</mat-table>
+<div style="flex: 0 0 auto;">
+	<div fxLayout="row" fxLayoutAlign="start center">
+	  <span fxFlex>{{selectedTransactions.size}}/{{transactions.size}} selected</span>
+	  <button mat-button fxFlex color="accent" (click)="onDeleteSelectedTransactions.emit();">DELETE SELECTED</button>
+	  <button mat-button fxFlex color="accent" (click)="onExpandSelectedTransactions.emit();">EXPAND SELECTED</button>
+	</div>
+	<div fxLayout="row" fxLayoutAlign="end center">
+		<span fxFlex></span>
+		<button mat-button fxFlex color="accent" (click)="onExpandSelectedTransactionsInputs.emit();">EXPAND INPUTS</button>
+	  <button mat-button fxFlex color="accent" (click)="onExpandSelectedTransactionsOutputs.emit();">EXPAND OUTPUTS</button>
+	</div>
+</div>

@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  background-color:white;
+}
+
+:host:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+
+canvas.touch-scrollable{
+  touch-action: auto !important;
+}

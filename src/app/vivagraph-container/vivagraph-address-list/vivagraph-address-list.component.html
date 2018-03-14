@@ -1,0 +1,48 @@
+<mat-table #table [dataSource]="dataSource" matSort [matSortDisableClear]="true" style="flex: 1;">
+<!--- Note that these columns can be defined in any order.
+      The actual rendered columns are set as a property on the row definition" -->
+
+  <ng-container matColumnDef="select">
+    <mat-header-cell *matHeaderCellDef>
+      <mat-checkbox 
+                   (click)="$event.stopPropagation()"
+                   (change)="onAllAddressesSelectionToggled.emit()"
+                   [indeterminate]="!selectedAddresses.isEmpty() && !allAddressesSelected()"
+                   [checked]="allAddressesSelected()">
+      </mat-checkbox>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let address">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                   (change)="onAddressSelectionToggled.emit(address)"
+                   [checked]="selectedAddresses.has(address.addrStr)">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>      
+
+  <ng-container matColumnDef="hash">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Hash </mat-header-cell>
+    <mat-cell *matCellDef="let address">{{address.addrStr}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="totalSent">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+    [style.min-width.ch]="longestTotalSent" [style.max-width.ch]="longestTotalSent"> Total sent </mat-header-cell>
+    <mat-cell *matCellDef="let address" [style.min-width.ch]="longestTotalSent">{{address.totalSent}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="totalReceived">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+    [style.min-width.ch]="longestTotalReceived" [style.max-width.ch]="longestTotalReceived"> Total received </mat-header-cell>
+    <mat-cell *matCellDef="let address" [style.min-width.ch]="longestTotalReceived">{{address.totalReceived}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let address; columns: displayedColumns;"></mat-row>
+</mat-table>
+<div style="flex: 0 0 auto;">
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <span>{{selectedAddresses.size}}/{{addresses.size}} selected</span>
+    <button mat-button fxFlex color="accent" (click)="onDeleteSelectedAddresses.emit();">DELETE SELECTED</button>
+    <button mat-button fxFlex color="accent" (click)="onExpandSelectedAddresses.emit();">EXPAND SELECTED</button>
+  </div>
+</div>

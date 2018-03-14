@@ -1,0 +1,4 @@
+<mat-card style="height: 100%" fxLayout="row" fxLayoutAlign="center center">
+  <mat-spinner *ngIf="data === undefined"></mat-spinner>
+  <app-time-series-chart *ngIf="data !== undefined" [data]="data" sma="1" title="Balance (Dash)" style="height: 100%;" fxFlex="1 1 100%"></app-time-series-chart>
+</mat-card>

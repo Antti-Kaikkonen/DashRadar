@@ -1,0 +1,48 @@
+<mat-card>
+	<mat-card-header style="word-break: break-all;">
+		<div mat-card-avatar class="header-image" [style.background-image]="'url(/assets/png2/64x64/cube.png)'" [style.border-radius]="'initial'"></div>
+		<mat-card-title>BLOCK</mat-card-title>
+		<mat-card-subtitle>{{hash}}</mat-card-subtitle>
+	</mat-card-header>
+	<mat-card-content>
+		<div *ngIf="error; else noErrorBlock">
+			<strong>Error: Failed to load block</strong>
+			<br />
+			{{errorMessage}}
+		</div>
+		<ng-template #noErrorBlock>
+			<div *ngIf="block === undefined; else readyBlock">
+				<mat-spinner></mat-spinner>
+			</div>
+			<ng-template #readyBlock>
+					<div fxLayout="column" fxLayoutGap="5px" style="font-size: 16px">
+						<div fxLayout="row wrap" fxLayoutAlign="start center">
+							<div fxFlex="15em">
+								<b>Time</b>
+							</div>
+							<div fxFlex="nogrow">
+								{{block.time | date:'medium'}}
+							</div>
+						</div>
+						<div fxLayout="row wrap" fxLayoutAlign="start center">
+							<div fxFlex="15em">
+								<b>Height</b>
+							</div>
+							<div fxFlex="nogrow">
+								{{block?.height}}
+							</div>
+						</div>
+					</div>
+				<h2>Transactions ({{block?.tx.length}})</h2>
+				<mat-spinner *ngIf="transactions === undefined"></mat-spinner>
+				<transactions-table [transactions]="transactions" *ngIf="transactions !== undefined"></transactions-table>
+				<mat-paginator [length]="block?.tx.length"
+					[pageSize]="pageSize"
+					[pageSizeOptions]="pageSizeOptions"
+					[pageIndex]="currentPage"
+					(page)="pageChanged($event)">
+				</mat-paginator>
+			</ng-template>
+		</ng-template>
+	</mat-card-content>
+</mat-card>

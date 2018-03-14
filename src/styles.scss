@@ -1,0 +1,88 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$primary-color: mat-color($mat-deep-purple, 500);
+
+
+$dash-color: #1c75bc;
+
+/* You can add global styles to this file, and also import other style files */
+body {
+	font-family: Roboto;
+	margin: 0;
+	background-color: gainsboro;
+}
+
+h1, h2, h3, caption {
+  text-transform: uppercase;
+}
+
+html, body{ width: 100%; height: 100%}
+
+app-vivagraph svg {
+	width: 100%;
+	height: 100%;
+}
+
+mat-icon[svgIcon=dash_alt] {
+	color: $dash-color;
+}
+
+.small-input {
+	.mat-input-infix.mat-form-field-infix {
+		width: 95px;
+	}
+}
+
+.medium-input {
+	.mat-input-infix.mat-form-field-infix {
+		width: 120px;
+	}
+}
+
+
+.upper {
+	text-transform: uppercase;
+}
+
+app-vivagraph-svg > svg {
+	width: 100%;
+	flex: 1 1 auto;
+}
+
+mat-expansion-panel.remove-padding {
+	.mat-expansion-panel-body {
+		padding: 0 !important;
+	}
+}
+
+.noselect {
+  -webkit-user-select: none; /* Chrome/Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+  
+  /* Rules below not implemented in browsers yet */
+  -o-user-select: none;
+  user-select: none;
+}
+
+mat-form-field.no-bottom-padding {
+	.mat-input-wrapper.mat-form-field-wrapper {
+		padding-bottom: 0;
+	}	
+
+	div.mat-input-underline.mat-form-field-underline {
+		display: none;
+		
+	}
+}
+
+
+.form-field-align-bottom {
+	.mat-input-flex.mat-form-field-flex {
+		align-items: flex-end;
+	}
+}	

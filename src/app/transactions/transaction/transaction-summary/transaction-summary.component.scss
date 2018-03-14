@@ -1,0 +1,10 @@
+.collapsible-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.collapsible-hidden {
+  overflow-x: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}

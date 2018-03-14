@@ -1,0 +1,54 @@
+<mat-input-container>
+<input matInput type="number" placeholder="Gravity" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.gravity">
+</mat-input-container>
+<br/>
+<mat-input-container>
+<input matInput type="number" placeholder="Drag coefficient" step="0.01" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.dragCoeff">
+</mat-input-container>
+<br/>
+<mat-input-container>
+<input matInput type="number" placeholder="Spring Coefficient" step="0.0001" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.springCoeff">
+</mat-input-container>
+<hr/>
+<mat-input-container>
+<input matInput type="number" placeholder="Icon size" step="1" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.iconSize">
+</mat-input-container>
+<br/>
+<mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.showValues">
+	Show values
+</mat-slide-toggle>
+<br/>
+<mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.shrinkExpanded">
+	Shrink expanded
+</mat-slide-toggle>
+<br/>
+<mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.scaleEdgeLines">
+	Scale edge lines
+</mat-slide-toggle>
+<br/>
+<mat-form-field>
+  <mat-select placeholder="Shape rendering" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.shapeRendering">
+    <mat-option value="auto">
+      auto
+		</mat-option>
+		<mat-option value="optimizeSpeed">
+      optimizeSpeed
+		</mat-option>
+		<mat-option value="crispEdges">
+      crispEdges
+		</mat-option>
+		<mat-option value="geometricPrecision">
+      geometricPrecision
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<hr/>
+<mat-input-container>
+<input matInput type="number" placeholder="Max transactions in live mode" step="1" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.liveMaxTransactions">
+</mat-input-container>
+<br/>
+<mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.soundEnabled">
+	Sound enabled
+</mat-slide-toggle>
+<hr/>
+<button mat-button (click)="restoreDefaults()" style="width: 100%">RESTORE DEFAULTS</button>

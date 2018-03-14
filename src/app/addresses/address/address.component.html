@@ -1,0 +1,77 @@
+
+<mat-card>
+	<mat-card-header style="word-break: break-all;">
+		<div mat-card-avatar class="header-image" [style.background-image]="'url(/assets/png2/64x64/single_color/dash_icon.png)'" [style.border-radius]="'initial'"></div>
+		<mat-card-title>ADDRESS</mat-card-title>
+		<mat-card-subtitle>{{addrStr}}</mat-card-subtitle>
+	</mat-card-header>
+
+	
+	<mat-card-content>
+		<div *ngIf="error; else noErrorBlock">
+			<strong>Error: Failed to load address</strong>
+			<br />
+			{{errorMessage}}
+		</div>
+		<ng-template #noErrorBlock>
+			<div *ngIf="address === undefined; else readyBlock">
+				<mat-spinner></mat-spinner>
+			</div>
+			<ng-template #readyBlock>
+				<mat-spinner *ngIf="address === undefined"></mat-spinner>
+				<div style="max-width: 100%">
+					<div fxLayout="row" fxLayout.lt-lg="row wrap" fxLayoutAlign="start center">
+						<div fxLayout="column" fxLayoutGap="5px" fxFlex.gt-md="0 0 350px" fxFlex.lt-lg="grow" style="font-size: 16px">
+							<div fxLayout="row wrap" fxLayoutAlign="start center">
+								<div fxFlex="12em">
+									<b>Total Sent</b>
+								</div>
+								<div fxFlex="nogrow">
+										{{address?.totalSent}}
+								</div>
+							</div>
+							<div fxLayout="row wrap" fxLayoutAlign="start center">
+								<div fxFlex="12em">
+									<b>Total Received</b>
+								</div>
+								<div fxFlex="nogrow">
+										{{address?.totalReceived}}
+								</div>
+							</div>
+							<div fxLayout="row wrap" fxLayoutAlign="start center">
+								<div fxFlex="12em">
+									<b>Final Balance</b>
+								</div>
+								<div fxFlex="nogrow">
+										{{address?.balance}}
+								</div>
+							</div>
+							<div fxLayout="row wrap" fxLayoutAlign="start center">
+									<div fxFlex="12em">
+										<b>Unconfirmed Balance</b>
+									</div>
+									<div fxFlex="nogrow">
+											{{address?.unconfirmedBalance}}
+									</div>
+							</div>
+						</div>
+						<app-address-balance-chart [address]="addrStr" fxFlex.gt-md="0 1 70%" fxFlex.lt-lg="0 1 100%;"></app-address-balance-chart>
+					</div>
+				</div>	
+				<h2>Transactions ({{address?.txApperances}})</h2>
+				<mat-spinner *ngIf="transactions === undefined"></mat-spinner>
+				<transactions-table *ngIf="transactions !== undefined" [transactions]="transactions" [currentAddress]="addrStr"></transactions-table>
+				<mat-paginator [length]="address?.txApperances"
+					[pageSize]="pageSize"
+					[pageIndex]="currentPage"
+					[pageSizeOptions]="pageSizeOptions"
+					(page)="pageChanged($event)">
+				</mat-paginator>
+			</ng-template>
+		</ng-template>	
+	</mat-card-content>
+</mat-card>
+
+<!--<div *ngFor="let transaction of transactions">
+		<app-transaction [transaction]="transaction"></app-transaction>
+</div>-->
