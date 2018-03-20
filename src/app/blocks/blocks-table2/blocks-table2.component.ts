@@ -46,7 +46,22 @@ export class BlocksTable2Component implements OnInit {
     
   }
 
+  updateBlocks() {
+    let lastBlock: number = this.lastBlockHeight-this.currentPage*this.pageSize;
+    let firstBlock: number = lastBlock-this.pageSize+1;
+    this.exampleDatabase.getBlocks(firstBlock, lastBlock);
+  }
+
   ngOnInit() {
+
+    Observable.interval(5000).subscribe(() => {
+      this.blockService.getHeight().subscribe((newHeight: number) => {
+        if (newHeight != this.lastBlockHeight) {
+          this.lastBlockHeight = newHeight;
+          this.updateBlocks();
+        }
+      });
+    });
 
     this.route.queryParams
     .filter(queryParams => queryParams.page !== undefined)
@@ -58,9 +73,7 @@ export class BlocksTable2Component implements OnInit {
       }
 
       if (this.lastBlockHeight) {
-        let lastBlock: number = this.lastBlockHeight-this.currentPage*this.pageSize;
-        let firstBlock: number = lastBlock-this.pageSize+1;
-        this.exampleDatabase.getBlocks(firstBlock, lastBlock);
+        this.updateBlocks();
       }
     })
 
