@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 import { TransactionService } from '../../transactions/transaction.service';
 import { AddressService } from '../address.service';
@@ -26,6 +28,8 @@ export class AddressComponent implements OnInit {
 
   currentPage = 0;
 
+  interval: Subscription;
+
   constructor(private route: ActivatedRoute,
     private router: Router,
   	private addressService: AddressService,
@@ -33,7 +37,40 @@ export class AddressComponent implements OnInit {
     private metaService: Meta,
     private titleService: Title) { }
 
+  ngOnDestroy() {
+    this.interval.unsubscribe();
+  }  
+
+
+  checkForUpdates() {
+    if (!this.address) return;
+    this.addressService.getAddress(this.addrStr).subscribe((address: Address) => {
+      if (this.address.txApperances != address.txApperances || this.address.unconfirmedTxApperances != address.unconfirmedTxApperances) {
+        this.transactionService.getTransactionsByAddress(this.addrStr, this.currentPage)
+        .subscribe((newTransactions: Transaction[]) => {
+          let transactions = newTransactions.map(newTx => {
+            let oldTx = this.transactions.find((value: Transaction, index: number) => {
+              return value.txid === newTx.txid}
+            );
+            if (oldTx === undefined)  {
+              return newTx;
+            } else {
+              return oldTx;
+            }
+          });
+          this.transactions = transactions;
+        });
+        this.address = address;
+      }
+    });
+  }
+
+
   ngOnInit() {
+
+    this.interval = Observable.interval(10000).subscribe(() => {
+      this.checkForUpdates();
+    });
 
     this.route.queryParams
     .filter(e => e.page !== undefined)
@@ -44,7 +81,8 @@ export class AddressComponent implements OnInit {
         this.currentPage = Math.max(0, Number(e.page));
       }
       if (this.address !== undefined) {
-        this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage).subscribe(transactions => this.transactions = transactions);
+        this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage)
+        .subscribe(transactions => this.transactions = transactions);
       }
     }); 
 

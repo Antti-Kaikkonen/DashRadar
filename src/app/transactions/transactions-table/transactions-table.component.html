@@ -3,12 +3,12 @@
     <mat-card fxLayout="row" fxLayoutAlign="start center">
       <app-transaction-summary [transaction]="transaction" [currentAddress]="currentAddress" style="min-width:0;"></app-transaction-summary>
       <div fxLayout="row" fxLayoutAlign="start center">
-        <button mat-icon-button (click)="expanded[i] = !expanded[i]">
-          <mat-icon>{{expanded[i] ? "expand_less" : "expand_more"}}</mat-icon>
+        <button mat-icon-button (click)="toggleExpanded(transaction)">
+          <mat-icon>{{isExpanded(transaction) ? "expand_less" : "expand_more"}}</mat-icon>
         </button>
       </div>
     </mat-card>
-    <mat-expansion-panel [expanded]="expanded[i]" class="remove-padding">
+    <mat-expansion-panel [expanded]="isExpanded(transaction)" class="remove-padding">
         <ng-template matExpansionPanelContent>
           <app-transaction-input-output-table  [transaction]="transaction" [txinindex]="txinindex" [txoutindex]="txoutindex" [currentAddress]="currentAddress"></app-transaction-input-output-table>
         </ng-template>
