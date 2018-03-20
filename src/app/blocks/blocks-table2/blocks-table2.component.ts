@@ -30,6 +30,8 @@ export class BlocksTable2Component implements OnInit {
 
   lastBlockHeight: number;
 
+  interval: Subscription;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private route: ActivatedRoute,
@@ -52,9 +54,13 @@ export class BlocksTable2Component implements OnInit {
     this.exampleDatabase.getBlocks(firstBlock, lastBlock);
   }
 
+  ngOnDestroy() {
+    this.interval.unsubscribe();
+  }  
+
   ngOnInit() {
 
-    Observable.interval(5000).subscribe(() => {
+    this.interval = Observable.interval(5000).subscribe(() => {
       this.blockService.getHeight().subscribe((newHeight: number) => {
         if (newHeight != this.lastBlockHeight) {
           this.lastBlockHeight = newHeight;
