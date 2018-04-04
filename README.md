@@ -6,6 +6,7 @@ https://dashradar.com
 
 ## Configuration
 [development config file](src/environments/environment.ts)
+
 [production config file](src/environments/environment.prod.ts)
 
 * insightApiUrl: HTTP API URL of https://github.com/dashpay/insight-api-dash
