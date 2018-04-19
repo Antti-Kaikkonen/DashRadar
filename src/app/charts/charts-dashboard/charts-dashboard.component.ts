@@ -16,7 +16,10 @@ import { CypherResponse } from '../cypher-response';
 })
 export class ChartsDashboardComponent implements OnInit {
 
-  all_data_query = "MATCH%0A%09(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(n%3ABlockChainTotals)%0ARETURN%0A%09d.day*60*60*24%20as%20date%2C%0A%09n.total_fees_sat%2C%0A%09n.privatesend_mixing_0_01_count%2C%0A%09n.tx_count%2C%0A%09n.total_transaction_size%2C%0A%09n.privatesend_mixing_10_0_count%2C%0A%09n.privatesend_tx_count%2C%0A%09n.total_block_size%2C%0A%09n.privatesend_mixing_100_0_count%2C%0A%09n.output_count%2C%0A%09n.input_count%2C%0A%09n.total_block_rewards_sat%2C%0A%09n.privatesend_mixing_1_0_count%2C%0A%09n.total_output_volume_sat%2C%0A%09n.privatesend_mixing_0_1_count%2C%0A%09n.height%0AORDER%20BY%20date%3B";
+  all_data_query: string = "MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(n%3ABlockChainTotals)%20RETURN%20d.day*60*60*24%20as%20date%2Cn.total_fees_sat%2Cn.tx_count%2Cn.total_transaction_size%2Cn.total_block_size%2Cn.output_count%2Cn.input_count%2Cn.total_block_rewards_sat%2Cn.total_output_volume_sat%2Cn.height%20ORDER%20BY%20date%3B";
+
+  privatesend_data_query: string = "MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(n%3APrivateSendTotals)%0ARETURN%0Ad.day*60*60*24%20as%20date%2C%0An.privatesend_tx_count%2C%0An.privatesend_tx_input_count%2C%0An.privatesend_mixing_0_01_count%2C%0An.privatesend_mixing_0_1_count%2C%0An.privatesend_mixing_1_0_count%2C%0An.privatesend_mixing_10_0_count%2C%0An.privatesend_mixing_100_0_count%2C%0An.privatesend_mixing_0_01_output_count%2C%0An.privatesend_mixing_0_1_output_count%2C%0An.privatesend_mixing_1_0_output_count%2C%0An.privatesend_mixing_10_0_output_count%2C%0An.privatesend_mixing_100_0_output_count%2C%0An.privatesend_mixing_0_01_spent_output_count%2C%0An.privatesend_mixing_0_1_spent_output_count%2C%0An.privatesend_mixing_1_0_spent_output_count%2C%0An.privatesend_mixing_10_0_spent_output_count%2C%0An.privatesend_mixing_100_0_spent_output_count%2C%0An.height%0AORDER%20BY%20date%3B";
+
 
   end_date = new FormControl(moment.utc().startOf('day'));
 
@@ -89,19 +92,31 @@ export class ChartsDashboardComponent implements OnInit {
     });
 
 
-    this.cypherService.executeQuery(decodeURIComponent(this.all_data_query), {})
-      .subscribe((response: CypherResponse) => {
+    let all_data_observable = this.cypherService.executeQuery(decodeURIComponent(this.all_data_query), {});
+    let privatesend_data_observable = this.cypherService.executeQuery(decodeURIComponent(this.privatesend_data_query), {});
+
+    let first = true;
+    all_data_observable.concat(privatesend_data_observable).subscribe((response: CypherResponse) => {
+      if (first) {
         this.charts.push({data: this.extractTransactionsPerDayData(response), sma: 1, title: "Transactions per day"});
         this.charts.push({data: this.extractFeesPerDayData(response), sma: 1, title: "Fees per day (Dash)"});
         this.charts.push({data: this.extractFeesPerByteData(response), sma: 1, title: "Average fee per byte (Duffs)"});
-        this.charts.push({data: this.extractPrivatesendTransactionsPerDayData(response), sma: 1, title: "Privatesend transactions per day"});
-        this.charts.push({data: this.extractMixingData(response), sma: 1, title: "Mixing transactions per day"});
+        //this.charts.push({data: this.extractPrivatesendTransactionsPerDayData(response), sma: 1, title: "Privatesend transactions per day"});
+        //this.charts.push({data: this.extractMixingData(response), sma: 1, title: "Mixing transactions per day"});
         this.charts.push({data: this.extractBlockRewardsData(response), sma: 1, title: "Block rewards per day (Dash)"});
         this.charts.push({data: this.extractOutputValueData(response), sma: 1, title: "Output volume per day (Dash)"});
         this.charts.push({data: this.extractBlockchainGrowthData(response), sma: 1, title: "Blockchain growth per day (MB)"});
         this.charts.push({data: this.extractUtxoData(response), sma: 1, title: "Unspent transaction output set size"});
         this.charts.push({data: this.extractInputOutputData(response), sma: 1, title: "Average number of inputs and outputs per transaction"});
-      });
+        first = false;
+      } else {
+        this.charts.push({data: this.extractPrivatesendTransactionsPerDayData(response), sma: 1, title: "Privatesend transactions per day"});
+        this.charts.push({data: this.extractTotalMixedDash(response), sma: 1, title: "Total unspent mixed Dash"});
+        this.charts.push({data: this.extractMixedDash(response), sma:1, title: "Unspent mixed Dash by denomination"});
+        this.charts.push({data: this.extractMixedUTXOCount(response), sma: 1, title: "Mixed unspent transaction output count by denomination"});
+        this.charts.push({data: this.extractMixingData(response), sma: 1, title: "Mixing transactions per day by denomination"});
+      }
+    });
 
   }
 
@@ -143,13 +158,136 @@ export class ChartsDashboardComponent implements OnInit {
     return privatesend_transactions_per_day_data;
   }
 
+
+  private extractMixedUTXOCount(cypherResponse: CypherResponse): ChartSeries[] {
+    let data = this.extractColumns(cypherResponse, [
+      "n.privatesend_mixing_0_01_output_count",
+      "n.privatesend_mixing_0_1_output_count",
+      "n.privatesend_mixing_1_0_output_count",
+      "n.privatesend_mixing_10_0_output_count",
+      "n.privatesend_mixing_100_0_output_count",
+      "n.privatesend_mixing_0_01_spent_output_count",
+      "n.privatesend_mixing_0_1_spent_output_count",
+      "n.privatesend_mixing_1_0_spent_output_count",
+      "n.privatesend_mixing_10_0_spent_output_count",
+      "n.privatesend_mixing_100_0_spent_output_count"]);
+    let utxo_0_01 = data[0].data.map((value, index) => value.y-data[5].data[index].y);
+    let utxo_0_1 = data[1].data.map((value, index) => value.y-data[6].data[index].y);
+    let utxo_1_0 = data[2].data.map((value, index) => value.y-data[7].data[index].y);
+    let utxo_10_0 = data[3].data.map((value, index) => value.y-data[8].data[index].y);
+    let utxo_100_0 = data[4].data.map((value, index) => value.y-data[9].data[index].y);
+    
+    let result: ChartSeries[];
+    for (let i = 1; i < utxo_0_01.length; i++) {
+      utxo_0_01[i] = utxo_0_01[i-1]+utxo_0_01[i];
+      utxo_0_1[i] = utxo_0_1[i-1]+utxo_0_1[i];
+      utxo_1_0[i] = utxo_1_0[i-1]+utxo_1_0[i];
+      utxo_10_0[i] = utxo_10_0[i-1]+utxo_10_0[i];
+      utxo_100_0[i] = utxo_100_0[i-1]+utxo_100_0[i];
+    }
+    data[0].label = "0.01";
+    data[1].label = "0.1";
+    data[2].label = "1.0";
+    data[3].label = "10.0";
+    data[4].label = "100.0";
+    for (let i = 0; i < utxo_0_01.length; i++) {
+      data[0].data[i].y = utxo_0_01[i];
+      data[1].data[i].y = utxo_0_1[i];
+      data[2].data[i].y = utxo_1_0[i];
+      data[3].data[i].y = utxo_10_0[i];
+      data[4].data[i].y = utxo_100_0[i];
+    }  
+    return data.slice(0, 5);
+  }
+
+
+  private extractMixedDash(cypherResponse: CypherResponse): ChartSeries[] {
+    let data = this.extractColumns(cypherResponse, [
+      "n.privatesend_mixing_0_01_output_count",
+      "n.privatesend_mixing_0_1_output_count",
+      "n.privatesend_mixing_1_0_output_count",
+      "n.privatesend_mixing_10_0_output_count",
+      "n.privatesend_mixing_100_0_output_count",
+      "n.privatesend_mixing_0_01_spent_output_count",
+      "n.privatesend_mixing_0_1_spent_output_count",
+      "n.privatesend_mixing_1_0_spent_output_count",
+      "n.privatesend_mixing_10_0_spent_output_count",
+      "n.privatesend_mixing_100_0_spent_output_count"]);
+    let utxo_0_01 = data[0].data.map((value, index) => (value.y-data[5].data[index].y)*0.01);
+    let utxo_0_1 = data[1].data.map((value, index) => (value.y-data[6].data[index].y)*0.1);
+    let utxo_1_0 = data[2].data.map((value, index) => (value.y-data[7].data[index].y)*1.0);
+    let utxo_10_0 = data[3].data.map((value, index) => (value.y-data[8].data[index].y)*10.0);
+    let utxo_100_0 = data[4].data.map((value, index) => (value.y-data[9].data[index].y)*100.0);
+    
+    let result: ChartSeries[];
+    for (let i = 1; i < utxo_0_01.length; i++) {
+      utxo_0_01[i] = utxo_0_01[i-1]+utxo_0_01[i];
+      utxo_0_1[i] = utxo_0_1[i-1]+utxo_0_1[i];
+      utxo_1_0[i] = utxo_1_0[i-1]+utxo_1_0[i];
+      utxo_10_0[i] = utxo_10_0[i-1]+utxo_10_0[i];
+      utxo_100_0[i] = utxo_100_0[i-1]+utxo_100_0[i];
+    }
+    data[0].label = "0.01";
+    data[1].label = "0.1";
+    data[2].label = "1.0";
+    data[3].label = "10.0";
+    data[4].label = "100.0";
+    for (let i = 0; i < utxo_0_01.length; i++) {
+      data[0].data[i].y = utxo_0_01[i];
+      data[1].data[i].y = utxo_0_1[i];
+      data[2].data[i].y = utxo_1_0[i];
+      data[3].data[i].y = utxo_10_0[i];
+      data[4].data[i].y = utxo_100_0[i];
+    }  
+    return data.slice(0, 5);
+  }
+
+
+  private extractTotalMixedDash(cypherResponse: CypherResponse): ChartSeries[] {
+    let data = this.extractColumns(cypherResponse, [
+      "n.privatesend_mixing_0_01_output_count",
+      "n.privatesend_mixing_0_1_output_count",
+      "n.privatesend_mixing_1_0_output_count",
+      "n.privatesend_mixing_10_0_output_count",
+      "n.privatesend_mixing_100_0_output_count",
+      "n.privatesend_mixing_0_01_spent_output_count",
+      "n.privatesend_mixing_0_1_spent_output_count",
+      "n.privatesend_mixing_1_0_spent_output_count",
+      "n.privatesend_mixing_10_0_spent_output_count",
+      "n.privatesend_mixing_100_0_spent_output_count"]);
+    let utxo_0_01 = data[0].data.map((value, index) => (value.y-data[5].data[index].y)*0.01);
+    let utxo_0_1 = data[1].data.map((value, index) => (value.y-data[6].data[index].y)*0.1);
+    let utxo_1_0 = data[2].data.map((value, index) => (value.y-data[7].data[index].y)*1.0);
+    let utxo_10_0 = data[3].data.map((value, index) => (value.y-data[8].data[index].y)*10.0);
+    let utxo_100_0 = data[4].data.map((value, index) => (value.y-data[9].data[index].y)*100.0);
+    
+    let result: ChartSeries[];
+    for (let i = 1; i < utxo_0_01.length; i++) {
+      utxo_0_01[i] = utxo_0_01[i-1]+utxo_0_01[i];
+      utxo_0_1[i] = utxo_0_1[i-1]+utxo_0_1[i];
+      utxo_1_0[i] = utxo_1_0[i-1]+utxo_1_0[i];
+      utxo_10_0[i] = utxo_10_0[i-1]+utxo_10_0[i];
+      utxo_100_0[i] = utxo_100_0[i-1]+utxo_100_0[i];
+    }
+    data[0].label = "Total mixed Dash";
+    for (let i = 0; i < utxo_0_01.length; i++) {
+      data[0].data[i].y = utxo_0_01[i]+utxo_0_1[i]+utxo_1_0[i]+utxo_10_0[i]+utxo_100_0[i];
+    }  
+    return data.slice(0, 1);
+  }
+
+  
+
+
   private extractMixingData(cypherResponse: CypherResponse): ChartSeries[] {
-    let mixing_data = this.extractColumns(cypherResponse, ["n.privatesend_mixing_100_0_count", "n.privatesend_mixing_10_0_count", "n.privatesend_mixing_1_0_count", "n.privatesend_mixing_0_1_count", "n.privatesend_mixing_0_01_count"]);
-    mixing_data[0].label = "Mixing 100.0";
-    mixing_data[1].label = "Mixing 10.0";
-    mixing_data[2].label = "Mixing 1.0";
-    mixing_data[3].label = "Mixing 0.1";
-    mixing_data[4].label = "Mixing 0.01";
+    let mixing_data = this.extractColumns(cypherResponse, ["n.privatesend_mixing_0_01_count", "n.privatesend_mixing_0_1_count", "n.privatesend_mixing_1_0_count" , "n.privatesend_mixing_10_0_count", "n.privatesend_mixing_100_0_count"]);
+    
+    mixing_data[0].label = "0.01";
+    mixing_data[1].label = "0.1";
+    mixing_data[2].label = "1.0";
+    mixing_data[3].label = "10.0";
+    mixing_data[4].label = "100.0";
+    
     return mixing_data;
   }
 
