@@ -40,6 +40,7 @@ import { AddressService } from './addresses/address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BlockService } from './blocks/block.service';
+import { NavbarModule } from './navbar/navbar.module';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { TransactionService } from './transactions/transaction.service';
 
@@ -49,6 +50,7 @@ import { TransactionService } from './transactions/transaction.service';
     PageNotFoundComponent
   ],
   imports: [
+    NavbarModule,
     FlexLayoutModule,
     BrowserModule,
     HttpModule,HttpClientModule,
