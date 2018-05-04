@@ -39,6 +39,7 @@ export class AddressComponent implements OnInit {
 
   ngOnDestroy() {
     this.interval.unsubscribe();
+    this.metaService.removeTag('name="description"');
   }  
 
 
@@ -94,6 +95,11 @@ export class AddressComponent implements OnInit {
     }).subscribe(
       (address: Address) => {
         this.titleService.setTitle("Dash Address "+address.addrStr+" | DashRadar");
+        this.metaService.removeTag('name="description"');
+        this.metaService.addTag({
+          name: "description", 
+          content: "Balance: "+address.balance+", transactions: "+address.txApperances+", received: "+address.totalReceived+", sent: "+address.totalSent
+        });
         this.address = address;
         this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage)
         .subscribe(tranactions => this.transactions = tranactions, 

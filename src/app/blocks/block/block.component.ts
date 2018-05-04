@@ -1,5 +1,6 @@
 import 'rxjs/add/operator/switchMap';
 
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -37,10 +38,15 @@ export class BlockComponent implements OnInit {
     private router: Router,
   	private blockService: BlockService,
     private transactionService: TransactionService,
+    private datePipe: DatePipe,
     private metaService: Meta,
     private titleService: Title) {
       
-    }
+  }
+
+  ngOnDestroy() {
+    this.metaService.removeTag('name="description"');
+  }
 
   ngOnInit() {
 
@@ -63,7 +69,12 @@ export class BlockComponent implements OnInit {
       return this.blockService.getBlockByHash(params['hash'])
     }).subscribe(
       (block: Block) => {
-        this.titleService.setTitle("Dash Block "+block.height+" | DashRadar");
+        this.titleService.setTitle("Dash Block #"+block.height+" | DashRadar");
+        this.metaService.removeTag('name="description"');
+        this.metaService.addTag({
+          name: "description", 
+          content: this.datePipe.transform(block.time, "mediumDate")+", hash: "+block.hash+", "+block.tx.length+" transaction, "+block.size/1000+" kB"
+        });
         this.block = block;
         this.loadBlockTransactions(block);
       },

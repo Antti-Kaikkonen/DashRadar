@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -30,6 +31,7 @@ export class TransactionComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
     private transactionService: TransactionService,
+    private datePipe: DatePipe,
     private metaService: Meta,
     private titleService: Title) { }
 
@@ -39,6 +41,10 @@ export class TransactionComponent implements OnInit {
       this.transactionChanged();
     }
   }  
+
+  ngOnDestroy() {
+    this.metaService.removeTag('name="description"');
+  }
 
 	ngOnInit() {
 		this.route.params
@@ -51,7 +57,6 @@ export class TransactionComponent implements OnInit {
     })
   	.subscribe(
   		(transaction: Transaction) => {
-        this.titleService.setTitle("Dash Transaction "+transaction.txid+" | DashRadar");
         this.transaction = transaction;
         this.transactionChanged();
       },
@@ -66,6 +71,12 @@ export class TransactionComponent implements OnInit {
       this.txinindex = e.txinindex;
     });
   }
+
+  private toTitleCase(str)
+  {
+      return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+  }
+  
   
   private transactionChanged() {
     this.fee = this.transaction.calculateFee();
@@ -94,6 +105,13 @@ export class TransactionComponent implements OnInit {
       this.transaction_type = "";
       this.imageName = "dual_color/tx.png";
     }
+
+    this.titleService.setTitle("Dash "+this.toTitleCase(this.transaction_type)+" Transaction | DashRadar");
+    this.metaService.removeTag('name="description"');
+    this.metaService.addTag({
+      name: "description", 
+      content: this.datePipe.transform(this.transaction.time, "mediumDate")+", "+this.transaction.vin.length+" inputs, "+this.transaction.vout.length+" outputs, fee: "+this.fee +" dash, txid: "+this.transaction.txid
+    });
   }
 
 }

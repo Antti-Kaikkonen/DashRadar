@@ -70,7 +70,6 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
     private metaService: Meta,
     private titleService: Title
   ) {
-    titleService.setTitle("Dash Transaction Graph Visualizer | DashRadar");
   }
 
   toggleFullScreen() {
@@ -79,11 +78,20 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
+    this.metaService.removeTag('name="description"');
     this.stopLive();
     this.changeDetector.detach();
   }
 
   ngOnInit() {
+
+    this.titleService.setTitle("Dash Transaction Graph Visualizer | DashRadar");
+
+    this.metaService.removeTag('name="description"');
+    this.metaService.addTag({
+      name: "description", 
+      content: "Visualize the dash blockchain live or start expanding from an address or a transaction to explore the transaction graph."
+    });
 
     screenfull.onchange((event)=>{
       this.isfullscreen = screenfull.isFullscreen;

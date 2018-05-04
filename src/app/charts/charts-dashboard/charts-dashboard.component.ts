@@ -32,7 +32,6 @@ export class ChartsDashboardComponent implements OnInit {
   constructor(public cypherService: CypherService,
     private metaService: Meta,
     private titleService: Title) {
-      titleService.setTitle("Dash Charts | DashRadar");
   }
 
 
@@ -79,7 +78,19 @@ export class ChartsDashboardComponent implements OnInit {
     if ((this.start_date.value as moment.Moment).isSame(moment.utc(0))) return "all";
   }
 
+  ngOnDestroy() {
+    this.metaService.removeTag('name="description"');
+  }
+
   ngOnInit() {
+
+    this.titleService.setTitle("Dash Charts | DashRadar");
+
+    this.metaService.removeTag('name="description"');
+    this.metaService.addTag({
+      name: "description", 
+      content: "Transactions per day, fees per day, average fee per byte, privatesend transactions per day, mixing transactions per day, ..."
+    });
 
     this.start_date.valueChanges.subscribe((e: moment.Moment) => {
       this.start_date.value.utc(true);

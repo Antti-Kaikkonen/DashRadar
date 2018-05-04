@@ -3,6 +3,7 @@ import 'cypher-codemirror';
 import { DataSource } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import * as CodeMirror from 'codemirror';
 import { environment } from 'environments/environment';
@@ -190,12 +191,24 @@ export class CypherComponent implements OnInit {
   customW: number = 250;
   customH: number = 200;
 
-  constructor(private route: ActivatedRoute, public cypherService: CypherService) { 
+  constructor(private route: ActivatedRoute, 
+    public cypherService: CypherService,
+    private metaService: Meta,
+    private titleService: Title) { 
 
   }
 
-  ngOnInit() {
+  ngOnDestroy() {
+    this.metaService.removeTag('name="description"');
+  }
 
+  ngOnInit() {
+    this.titleService.setTitle("Dash Data Explorer | DashRadar");
+    this.metaService.removeTag('name="description"');
+    this.metaService.addTag({
+      name: "description", 
+      content: "Search the blockchain using the Neo4j cypher query language."
+    });
     //let defaultQuery = "MATCH (b:Block)<-[:INCLUDED_IN]-(tx:Transaction) with b.time/86400 as epoc_date, count(tx) as tx_count return epoc_date*86400 as date, tx_count ORDER BY date;"
     //let defaultQuery = decodeURIComponent("MATCH %0A%09(b:Block)<-[:INCLUDED_IN]-(tx:Transaction {pstype: 2})-[:OUTPUT]->(txout:TransactionOutput)%2F%2Fonly include transactions with pstype%3D2 (privatesend) %0AWITH %2F%2FTo aggregate results for each day%0A%09b.time%2F86400 as days_since_epoch, %2F%2Fconvert unix timestamp to days since jan 1 1970%0A%09count(tx) as ps_count, %2F%2Fcount number privatesend transactions per day%0A%09sum(txout.valueSat)%2F100000000.0 as total_dash %2F%2Fcount dash volume in privatesend transactions per day%0ARETURN %0A%09days_since_epoch*86400 as date, %2F%2Fdate as unix timestamp%0A%09total_dash%2Fps_count as `average ps transaction amount (dash)`;%2F%2Faverage privatesend transaction amount");
     let defaultQuery = decodeURIComponent("MATCH%20%0A%09(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%0AWITH%0A%09d.day%20as%20date%2C%0A%09b%0AORDER%20BY%20%0A%09date%0AWITH%20%0A%09collect(date)%20as%20dates%2C%0A%090%2Bcollect(b.total_fees_sat)%20as%20fees%0AUNWIND%20%0A%09range(1%2C%20length(fees)-1)%20as%20i%0ARETURN%0A%09dates%5Bi-1%5D*24*60*60%20as%20date%2C%0A%09(fees%5Bi%5D-fees%5Bi-1%5D)%2F100000000.0%20as%20%60Fees%20(Dash)%60%3B");
@@ -203,7 +216,16 @@ export class CypherComponent implements OnInit {
     this.route
       .queryParams
       .subscribe(params => {
-        this.query = params['query'] || defaultQuery;
+        if (params['query']) {
+          this.query = params['query'];
+          this.metaService.removeTag('name="description"');
+          this.metaService.addTag({
+            name: "description", 
+            content: this.query
+          });
+        } else {
+          this.query = defaultQuery;
+        }
     });
 
     this.dataSource = new ExampleDataSource(this.exampleDatabase);
