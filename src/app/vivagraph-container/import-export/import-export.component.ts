@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Host, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Host, Inject, Input, OnInit, Output } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import * as Immutable from 'immutable';
 import { Observable } from 'rxjs/Observable';
 
@@ -31,7 +32,8 @@ export class ImportExportComponent implements OnInit {
 
   constructor(@Host() private parent: VivagraphContainerComponent,
   	private addressService: AddressService,
-  	private transactionService: TransactionService) { }
+    private transactionService: TransactionService,
+    public dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -54,13 +56,21 @@ export class ImportExportComponent implements OnInit {
 
 
   exportToJSON() {
-    let data: string = JSON.stringify({
+
+    let jsondata: string = JSON.stringify({
       transactions: this.transactions.valueSeq().map((transaction: Transaction) => transaction.txid), 
       addresses: this.addresses.valueSeq().map((address: Address) => address.addrStr)
     });
-    let url: string = 'data:text/json;charset=utf8,' + encodeURIComponent(data);
-    window.open(url, '_blank');
-    window.focus();
+
+    let dialogRef = this.dialog.open(ExportDialog, {
+      width: '250px',
+      data: { jsondata: jsondata }
+    });
+
+    /*dialogRef.afterClosed().subscribe(() => {
+      console.log('The dialog was closed');
+    });*/
+
   }
 
   toggleImportJSON() {
@@ -99,5 +109,22 @@ export class ImportExportComponent implements OnInit {
 
   }
 
+
+}
+
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'export-dialog.html',
+})
+export class ExportDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ExportDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 
 }

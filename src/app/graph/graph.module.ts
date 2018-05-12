@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import {
   MatButtonModule,
   MatCheckboxModule,
+  MatDialogModule,
   MatIconModule,
   MatInputModule,
   MatProgressSpinnerModule,
@@ -18,7 +19,7 @@ import {
 import { NavbarModule } from 'app/navbar/navbar.module';
 
 import { AddressDialogComponent } from './../vivagraph-container/address-dialog/address-dialog.component';
-import { ImportExportComponent } from './../vivagraph-container/import-export/import-export.component';
+import { ExportDialog, ImportExportComponent } from './../vivagraph-container/import-export/import-export.component';
 import { TransactionDialogComponent } from './../vivagraph-container/transaction-dialog/transaction-dialog.component';
 import {
   VivagraphAddressListComponent,
@@ -38,7 +39,7 @@ import { GraphComponent } from './graph.component';
     CommonModule,
     FormsModule,
     GraphRoutingModule,
-    MatButtonModule, MatSlideToggleModule, MatProgressSpinnerModule, MatInputModule, MatTableModule, MatCheckboxModule, 
+    MatButtonModule, MatDialogModule, MatSlideToggleModule, MatProgressSpinnerModule, MatInputModule, MatTableModule, MatCheckboxModule, 
     MatIconModule, MatSortModule, MatSnackBarModule, MatTabsModule, MatSelectModule,
 		FlexLayoutModule,
 		NavbarModule
@@ -53,7 +54,9 @@ import { GraphComponent } from './graph.component';
   	VivagraphTransactionListComponent,
   	AddressDialogComponent,
   	TransactionDialogComponent,
-  	GraphComponent
-  ]
+    GraphComponent,
+    ExportDialog
+  ],
+  entryComponents: [ExportDialog]
 })
 export class GraphModule { }

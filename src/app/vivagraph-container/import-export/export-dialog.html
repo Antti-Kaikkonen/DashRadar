@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Export JSON</h1>
+<div mat-dialog-content>
+  <p>You can copy the JSON data from the below text area</p>
+  <textarea rows="5" readonly style="width: 100%; resize: vertical;">{{data.jsondata}}</textarea>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Close</button>
+</div>
