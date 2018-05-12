@@ -33,6 +33,6 @@ export class VivagraphSettings {
 
 		this.showValues = false;
 
-		this.shapeRendering = "optimizeSpeed";
+		this.shapeRendering = "auto";
 	}
 }

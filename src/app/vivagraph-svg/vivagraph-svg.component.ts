@@ -132,9 +132,9 @@ export class VivagraphSvgComponent implements OnInit {
           springTransform: this.customSpringTransform
         });
       }
-      console.log("layout",this.layout);
+      //console.log("layout",this.layout);
       this.layout.graph.forEachLink(e => console.log("link", e));
-      console.log("simulator",this.layout.simulator);
+      //console.log("simulator",this.layout.simulator);
       if (this.layout.simulator.springs !== undefined) {
         this.layout.simulator.springs.forEach(spring => {
           let link = this.layout.graph.getLink(spring.from.id, spring.to.id);
@@ -146,7 +146,7 @@ export class VivagraphSvgComponent implements OnInit {
       }
       let current: VivagraphSettings = changes.vivagraphSettings.currentValue;
       let previous: VivagraphSettings = changes.vivagraphSettings.previousValue;
-      console.log(this.graphics.getSvgRoot());
+      //console.log(this.graphics.getSvgRoot());
 
       if (previous !== undefined && previous.showValues === true && current.showValues === false) {//remove all from dom
         let textElementArray = this.graphics.getSvgRoot().getElementsByTagName('text');
@@ -164,7 +164,7 @@ export class VivagraphSvgComponent implements OnInit {
         }    
       }
 
-      console.log(current.shapeRendering);
+      //console.log(current.shapeRendering);
       this.graphics.getSvgRoot().attr("shape-rendering", current.shapeRendering);
 
       if (current.gravity) {
