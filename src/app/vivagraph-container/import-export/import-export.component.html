@@ -2,11 +2,11 @@
 	<table>
 		<tr>
 			<td>
-				<mat-input-container>
+				<mat-form-field>
 			      <input matInput placeholder="Address" 
 			      [(ngModel)]="inputAddress"
 			      #address="ngModel" />
-		    	</mat-input-container>
+		    	</mat-form-field>
 			</td>
 			<td>
 				<button mat-button style="width: 100%;" (click)="addAddress()">Add address</button>
@@ -14,10 +14,10 @@
 		</tr>
 		<tr>
 			<td>
-				<mat-input-container>
+				<mat-form-field>
 					<input matInput placeholder="Transaction Id"
 					[(ngModel)]="inputTransaction">
-		    	</mat-input-container>
+		    	</mat-form-field>
 			</td>
 			<td>
 				<button mat-button style="width: 100%;" (click)="addTransaction()">Add transaction</button>

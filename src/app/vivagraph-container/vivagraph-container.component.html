@@ -6,9 +6,9 @@
 	</button>
 </div>
 
-<div id="toolbar">
+<div id="toolbar" fxLayout="row nowrap" fxLayoutAlign="end start">
 
-	<div id="toolwindow">
+	<div id="toolwindow" fxFlex="nogrow">
 		<app-vivagraph-guide *ngIf="showGuide" style="max-height: 100%"></app-vivagraph-guide>
 		<app-import-export *ngIf="showAddForm" [transactions]="transactions" [addresses]="addresses" (onExportSVG)="downloadSvg()"></app-import-export>
 		<app-vivagraph-settings *ngIf="showSettings" [vivagraphSettings]="vivagraphSettings" (onSettingsChanged)="onSettingsChanged($event);"></app-vivagraph-settings>
@@ -30,7 +30,7 @@
 		(onExpandSelectedTransactionsInputs)="expandSelectedTransactionsInputs()"
 		(onExpandSelectedTransactionsOutputs)="expandSelectedTransactionsOutputs()"></app-vivagraph-transaction-list>
 	</div>
-	<div style="display: inline-block; vertical-align: top;" fxFlex="nogrow">
+	<div fxFlex="nogrow" id="toolbuttons">
 		<div>
 			<button mat-icon-button (click)="toggleFullScreen()" color="accent"><mat-icon>{{isfullscreen ? "fullscreen_exit" : "fullscreen"}}</mat-icon></button>
 		</div>

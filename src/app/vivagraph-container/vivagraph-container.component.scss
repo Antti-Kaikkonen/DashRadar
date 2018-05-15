@@ -6,19 +6,23 @@
 
 #toolbar {
 	position: absolute;
-	display: block;
 	right:0;
-	text-align: right;
 	overflow: auto;
+	max-width: 100%;
 	max-height: 100%;
 
 	#toolwindow {
-		text-align: left;
+		position: relative;
 		color: white;
 		background: rgba(255,255,255,0.35);
-		display: inline-block; 
 		overflow: auto;
+		min-height: 0;
+	}
+
+	#toolbuttons {
 		max-height: 100%;
+		max-width: 100%;
+		overflow: visible;
 	}
 
 	.selected {
@@ -32,4 +36,5 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	min-height: 0;
 }	

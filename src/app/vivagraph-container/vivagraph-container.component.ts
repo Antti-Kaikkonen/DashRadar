@@ -3,13 +3,14 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { MatSnackBar } from '@angular/material';
 import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { environment } from 'environments/environment';
 import * as Immutable from 'immutable';
 import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import * as screenfull from 'screenfull';
 import * as io from 'socket.io-client';
 
+import { environment } from '../../environments/environment';
 import { AddressService } from '../addresses/address.service';
 import { Address } from '../addresses/address/address';
 import { BlockService } from '../blocks/block.service';
@@ -519,18 +520,23 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
     .filter((vin: VIn) => vin.addr !== undefined)//filter out coinbase inputs
     .distinct((vin: VIn) => vin.addr)
     .mergeMap(
-      (vin: VIn) => this.transactionService.getTransactionByHash(vin.txid, true),
-      (valueFromSource: VIn, valueFromPromise: Transaction) => {
-        let result: {input: VIn, transaction: Transaction} = {input: valueFromSource, transaction: valueFromPromise};
-        return result;
-      }, 6
+      (vin: VIn) => this.transactionService.getTransactionByHash(vin.txid, true)
+      .pipe(
+        map((tx: Transaction) => {
+          let result: {input: VIn, transaction: Transaction} = {input: vin, transaction: tx};
+          return result;
+        })
+      ),
+      6
     )
     .mergeMap(
-      (v: {input: VIn, transaction: Transaction}) => this.expandInputs(v.transaction, rounds+1, maxRounds, 1, 1),
-      (valueFromSource, valueFromPromise) => {
-        let result: {vin: VIn, transaction: Transaction, result: boolean} = {vin: valueFromSource.input, transaction: valueFromSource.transaction, result: valueFromPromise};
+      (v: {input: VIn, transaction: Transaction}) => 
+      this.expandInputs(v.transaction, rounds+1, maxRounds, 1, 1)
+      .pipe(map((valueFromPromise: boolean) => {
+        let result: {vin: VIn, transaction: Transaction, result: boolean} = {vin: v.input, transaction: v.transaction, result: valueFromPromise};
         return result;
-      }, 2
+      })),
+      2
     )
     .do((v: {vin: VIn, transaction: Transaction, result: boolean}) => {
         if (v.result === true) {

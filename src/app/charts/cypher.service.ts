@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { environment } from 'environments/environment';
 import { Observable } from 'rxjs/Observable';
 
+import { environment } from '../../environments/environment';
 import { CypherResponse } from './cypher-response';
 
 

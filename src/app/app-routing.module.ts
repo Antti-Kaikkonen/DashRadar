@@ -4,10 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 export const routes: Routes = [
-  { path: 'charts', loadChildren: 'app/charts/charts.module#ChartsModule' },
-  { path: 'explorer', loadChildren: 'app/explorer/explorer.module#ExplorerModule' },
+  { path: 'charts', loadChildren: './charts/charts.module#ChartsModule' },
+  { path: 'explorer', loadChildren: './explorer/explorer.module#ExplorerModule' },
   { path: 'cypher', redirectTo: '/charts/editor?query=:query', pathMatch: 'prefix'},
-  { path: '', loadChildren: 'app/graph/graph.module#GraphModule' },
+  { path: '', loadChildren: './graph/graph.module#GraphModule' },
   { path: '**', component: PageNotFoundComponent }
 ];
 @NgModule({

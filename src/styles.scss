@@ -1,5 +1,13 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+@import "~material-design-icons/iconfont/material-icons.css";
+
+@import "~roboto-fontface/css/roboto/roboto-fontface.css";
+
+@import "~codemirror/lib/codemirror.css";
+
+@import "~cypher-codemirror/dist/cypher-codemirror-all.css";
+
 @import '~@angular/material/theming';
 
 @include mat-core();

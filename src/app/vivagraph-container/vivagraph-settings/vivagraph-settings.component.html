@@ -1,18 +1,18 @@
-<mat-input-container>
+<mat-form-field>
 <input matInput type="number" placeholder="Gravity" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.gravity">
-</mat-input-container>
+</mat-form-field>
 <br/>
-<mat-input-container>
+<mat-form-field>
 <input matInput type="number" placeholder="Drag coefficient" step="0.01" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.dragCoeff">
-</mat-input-container>
+</mat-form-field>
 <br/>
-<mat-input-container>
+<mat-form-field>
 <input matInput type="number" placeholder="Spring Coefficient" step="0.0001" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.springCoeff">
-</mat-input-container>
+</mat-form-field>
 <hr/>
-<mat-input-container>
+<mat-form-field>
 <input matInput type="number" placeholder="Icon size" step="1" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.iconSize">
-</mat-input-container>
+</mat-form-field>
 <br/>
 <mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.showValues">
 	Show values
@@ -43,9 +43,9 @@
   </mat-select>
 </mat-form-field>
 <hr/>
-<mat-input-container>
+<mat-form-field>
 <input matInput type="number" placeholder="Max transactions in live mode" step="1" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.liveMaxTransactions">
-</mat-input-container>
+</mat-form-field>
 <br/>
 <mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.soundEnabled">
 	Sound enabled

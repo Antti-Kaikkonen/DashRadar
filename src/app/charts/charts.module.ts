@@ -19,9 +19,9 @@ import {
   MatToolbarModule,
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { NavbarModule } from 'app/navbar/navbar.module';
 import { ChartsModule as ChartJSModule } from 'ng2-charts/ng2-charts';
 
+import { NavbarModule } from '../navbar/navbar.module';
 import { SharedModule } from '../shared/shared.module';
 import { ChartsDashboardComponent } from './charts-dashboard/charts-dashboard.component';
 import { ChartsRoutingModule } from './charts-routing.module';

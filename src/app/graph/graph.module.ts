@@ -16,8 +16,8 @@ import {
   MatTableModule,
   MatTabsModule,
 } from '@angular/material';
-import { NavbarModule } from 'app/navbar/navbar.module';
 
+import { NavbarModule } from '../navbar/navbar.module';
 import { AddressDialogComponent } from './../vivagraph-container/address-dialog/address-dialog.component';
 import { ExportDialog, ImportExportComponent } from './../vivagraph-container/import-export/import-export.component';
 import { TransactionDialogComponent } from './../vivagraph-container/transaction-dialog/transaction-dialog.component';

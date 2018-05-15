@@ -3,9 +3,9 @@ import 'rxjs/add/operator/map';
 
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { environment } from 'environments/environment';
 import { Observable } from 'rxjs/Observable';
 
+import { environment } from '../../environments/environment';
 import { Transaction } from './transaction/transaction';
 import { VIn } from './transaction/vin';
 import { VOut } from './transaction/vout';

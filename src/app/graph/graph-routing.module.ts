@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
-import { VivagraphContainerComponent }  from './../vivagraph-container/vivagraph-container.component';
-import { GraphComponent } from 'app/graph/graph.component';
+import { GraphComponent } from '../graph/graph.component';
+import { VivagraphContainerComponent } from './../vivagraph-container/vivagraph-container.component';
 
 const routes: Routes = [
   { path: '', component: GraphComponent, children: 

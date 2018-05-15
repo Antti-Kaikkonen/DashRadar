@@ -28,6 +28,7 @@ import 'rxjs/add/operator/takeLast';
 import 'rxjs/add/operator/toArray';
 import 'rxjs/add/operator/zip';
 
+import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -56,7 +57,7 @@ import { TransactionService } from './transactions/transaction.service';
     HttpModule,HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    MatButtonModule,MatIconModule,MatToolbarModule,MatTabsModule
+    MatButtonModule,MatIconModule,MatToolbarModule,MatTabsModule,OverlayModule
   ],
   exports: [
   ],

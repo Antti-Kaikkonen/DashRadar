@@ -6,10 +6,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import * as CodeMirror from 'codemirror';
-import { environment } from 'environments/environment';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
+import { environment } from '../../../environments/environment';
 import { CypherService } from '../../charts/cypher.service';
 import { CypherResponse } from '../cypher-response';
 
