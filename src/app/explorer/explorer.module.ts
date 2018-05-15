@@ -38,6 +38,8 @@ import { SharedModule } from '../shared/shared.module';
 import { TransactionSummaryComponent } from '../transactions/transaction/transaction-summary/transaction-summary.component';
 import { TransactionComponent } from '../transactions/transaction/transaction.component';
 import { TransactionsTableComponent } from '../transactions/transactions-table/transactions-table.component';
+import { WalletService } from '../wallets/wallet.service';
+import { WalletComponent } from '../wallets/wallet/wallet.component';
 import {
   TransactionInputOutputTableComponent,
 } from './../transactions/transaction/transaction-input-output-table/transaction-input-output-table.component';
@@ -72,7 +74,8 @@ import { ExplorerComponent } from './explorer.component';
   	BlockComponent,
     TransactionComponent,
     TransactionInputOutputTableComponent,
-  	AddressComponent,
+    AddressComponent,
+    WalletComponent,
     BlockPropertiesDialogComponent,
     TransactionsTableComponent,
     TransactionSummaryComponent,
@@ -83,7 +86,8 @@ import { ExplorerComponent } from './explorer.component';
   ],
   providers: [
     DatePipe,
-    CypherService
+    CypherService,
+    WalletService
   ]
 })
 export class ExplorerModule { }
