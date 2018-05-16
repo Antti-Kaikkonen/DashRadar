@@ -54,6 +54,16 @@
 											{{address?.unconfirmedBalance}}
 									</div>
 							</div>
+							<div fxLayout="row wrap" fxLayoutAlign="start center">
+								<div fxFlex="12em">
+									<b>Guesstimated wallet</b>
+								</div>
+								<div fxFlex="nogrow">
+										<mat-spinner *ngIf="guesstimatedWallet === undefined" diameter="20"></mat-spinner>
+										<a *ngIf="guesstimatedWallet?.exists" [routerLink]="['/explorer/wallet', addrStr]">{{guesstimatedWallet.addressCount}} addresses</a>
+										<span *ngIf="guesstimatedWallet.exists === false">none</span>
+								</div>
+						</div>
 						</div>
 						<app-address-balance-chart [address]="addrStr" fxFlex.gt-md="0 1 70%" fxFlex.lt-lg="0 1 100%;"></app-address-balance-chart>
 					</div>

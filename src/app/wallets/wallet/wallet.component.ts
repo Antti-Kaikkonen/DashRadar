@@ -39,7 +39,7 @@ export class WalletComponent implements OnInit {
     .filter(params => params.addr)
     .switchMap((params: Params) => {
       this.sourceAddress = params.addr;
-      return this.walletService.getAddresses(this.sourceAddress)
+      return this.walletService.getWalletAddresses(this.sourceAddress)
     });
     this.loading = true;
     this.error = false;

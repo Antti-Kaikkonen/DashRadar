@@ -14,7 +14,13 @@ export class WalletService {
   constructor(private http: Http, private cypherService: CypherService) { }
 
 
-  getAddresses(sourceAddress:string) {
+  getWalletAddressCount(sourceAddress: string) {
+    let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:\""+sourceAddress+"\"})\n"
+    +"RETURN c.clusterSize;";
+    return this.cypherService.executeQuery(query, {});
+  }
+
+  getWalletAddresses(sourceAddress:string) {
 
     let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:\""+sourceAddress+"\"})\n"
     +"MATCH (c)<-[:INCLUDED_IN]-(a:Address) RETURN a.address;";

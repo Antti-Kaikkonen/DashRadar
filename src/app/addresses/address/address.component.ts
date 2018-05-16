@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { TransactionService } from '../../transactions/transaction.service';
+import { WalletService } from '../../wallets/wallet.service';
 import { AddressService } from '../address.service';
 import { Transaction } from './../../transactions/transaction/transaction';
 import { Address } from './address';
@@ -26,6 +27,8 @@ export class AddressComponent implements OnInit {
 
   addrStr: string;
 
+  guesstimatedWallet: {exists: boolean, addressCount?: number};
+
   currentPage = 0;
 
   interval: Subscription;
@@ -34,6 +37,7 @@ export class AddressComponent implements OnInit {
     private router: Router,
   	private addressService: AddressService,
     private transactionService: TransactionService,
+    private walletService: WalletService,
     private metaService: Meta,
     private titleService: Title) { }
 
@@ -43,26 +47,47 @@ export class AddressComponent implements OnInit {
   }  
 
 
+  addressChanged(address: Address) {
+    if (this.address.txApperances != address.txApperances || this.address.unconfirmedTxApperances != address.unconfirmedTxApperances) {
+      this.transactionService.getTransactionsByAddress(this.addrStr, this.currentPage)
+      .subscribe((newTransactions: Transaction[]) => {
+        let transactions = newTransactions.map(newTx => {
+          let oldTx = this.transactions.find((value: Transaction, index: number) => {
+            return value.txid === newTx.txid}
+          );
+          if (oldTx === undefined)  {
+            return newTx;
+          } else {
+            return oldTx;
+          }
+        });
+        this.transactions = transactions;
+      });
+      this.address = address;
+    }
+  }
+
+  checkGuestimatedWalletUpdates() {
+    this.walletService.getWalletAddressCount(this.addrStr).subscribe(e => {
+      try {
+        let count: number = e.data[0][0];
+        if (count >= 0) {
+          this.guesstimatedWallet = {addressCount: count, exists: true};
+        } else {
+          this.guesstimatedWallet = {exists: false};
+        }
+      } catch(error) {
+        this.guesstimatedWallet = {exists: false};
+      }
+    });
+  }
+
   checkForUpdates() {
     if (!this.address) return;
-    this.addressService.getAddress(this.addrStr).subscribe((address: Address) => {
-      if (this.address.txApperances != address.txApperances || this.address.unconfirmedTxApperances != address.unconfirmedTxApperances) {
-        this.transactionService.getTransactionsByAddress(this.addrStr, this.currentPage)
-        .subscribe((newTransactions: Transaction[]) => {
-          let transactions = newTransactions.map(newTx => {
-            let oldTx = this.transactions.find((value: Transaction, index: number) => {
-              return value.txid === newTx.txid}
-            );
-            if (oldTx === undefined)  {
-              return newTx;
-            } else {
-              return oldTx;
-            }
-          });
-          this.transactions = transactions;
-        });
-        this.address = address;
-      }
+    this.addressService.getAddress(this.addrStr)
+    .subscribe((address: Address) => {
+      this.addressChanged(address);
+      this.checkGuestimatedWalletUpdates();
     });
   }
 
@@ -91,6 +116,7 @@ export class AddressComponent implements OnInit {
     .filter(params => params.addr)
     .switchMap((params: Params) => {
       this.addrStr = params.addr;
+      this.guesstimatedWallet = undefined;
       return this.addressService.getAddress(params.addr)
     }).subscribe(
       (address: Address) => {
@@ -101,6 +127,7 @@ export class AddressComponent implements OnInit {
           content: "Balance: "+address.balance+", transactions: "+address.txApperances+", received: "+address.totalReceived+", sent: "+address.totalSent
         });
         this.address = address;
+        this.checkGuestimatedWalletUpdates();
         this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage)
         .subscribe(tranactions => this.transactions = tranactions, 
           error => console.log("error fetching address transactions: ", error));
