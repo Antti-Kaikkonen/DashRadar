@@ -33,7 +33,7 @@ export class Transaction {
 	}
 
 	public static isDenomination(value: number): boolean {
-    return (value == 0.0100001 || value == 0.100001 || value == 1.00001 || value == 10.0001); 
+    return (value == 0.0100001 || value == 0.100001 || value == 1.00001 || value == 10.0001 || value == 100.001); 
 	}
 	
 	public isCreateDenominationsTransaction(): boolean {
