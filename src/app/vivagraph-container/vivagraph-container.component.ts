@@ -29,8 +29,6 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
 
   socket: SocketIOClient.Socket;
 
-  limit: number = 200;
-
 	transactions: Immutable.Map<string, Transaction> = Immutable.Map<string, Transaction>();
 	addresses: Immutable.Map<string, Address> = Immutable.Map<string, Address>();
 
@@ -196,8 +194,8 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
   }
 
   expandAddress(address: Address) {
-    if (address.txApperances > this.limit) {
-      alert("This address has "+address.txApperances+" transactions. Max limit is "+this.limit);
+    if (address.txApperances > this.vivagraphSettings.maxNodeEdges) {
+      alert("This address has "+address.txApperances+" transactions. Max limit is "+this.vivagraphSettings.maxNodeEdges);
       return;
     }
     Observable.from(address.transactions).mergeMap(
@@ -231,12 +229,12 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
   }
 
   expandTransactionInputs(transaction: Transaction) {
-    if (transaction.vin.length > this.limit) {
-      alert("Transactions has "+transaction.vin.length+" inputs. Max limit is "+this.limit+".");
+    if (transaction.vin.length > this.vivagraphSettings.maxNodeEdges) {
+      alert("Transactions has "+transaction.vin.length+" inputs. Max limit is "+this.vivagraphSettings.maxNodeEdges+".");
       return;
     }
     Observable.from(transaction.vin)
-    .filter((vin: VIn) => vin.addr !== undefined)//filter out coinbase inputs
+    .filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null)//filter out coinbase inputs
     .distinct((vin: VIn) => vin.addr)//There can be many inputs from a single address
     .mergeMap( 
       (input: VIn) => 
@@ -256,8 +254,8 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
   }
 
   expandTransactionOutputs(transaction: Transaction) {
-    if (transaction.vout.length > this.limit) {
-      alert("Transactions has "+transaction.vout.length+" outputs. Max limit is "+this.limit+".");
+    if (transaction.vout.length > this.vivagraphSettings.maxNodeEdges) {
+      alert("Transactions has "+transaction.vout.length+" outputs. Max limit is "+this.vivagraphSettings.maxNodeEdges+".");
       return;
     }
     Observable.from(transaction.vout)
@@ -280,8 +278,8 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
   }
 
   expandTransaction(transaction: Transaction) {
-    if (transaction.vin.length+transaction.vout.length > this.limit) {
-      alert("Transactions has "+transaction.vin.length+" inputs and "+transaction.vout.length+" output. Max limit is "+this.limit+" inputs and outputs combined.");
+    if (transaction.vin.length+transaction.vout.length > this.vivagraphSettings.maxNodeEdges) {
+      alert("Transactions has "+transaction.vin.length+" inputs and "+transaction.vout.length+" output. Max limit is "+this.vivagraphSettings.maxNodeEdges+" inputs and outputs combined.");
       return;
     }
     this.expandTransactionInputs(transaction);
@@ -517,7 +515,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
     }
     if (rounds > 0 && !transaction.isMixingTransaction()) return Observable.of(false);
     return Observable.from(transaction.vin)
-    .filter((vin: VIn) => vin.addr !== undefined)//filter out coinbase inputs
+    .filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null)//filter out coinbase inputs
     .distinct((vin: VIn) => vin.addr)
     .mergeMap(
       (vin: VIn) => this.transactionService.getTransactionByHash(vin.txid, true)

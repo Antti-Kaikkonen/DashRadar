@@ -464,7 +464,7 @@ export class VivagraphSvgComponent implements OnInit {
 
   private getTransactionAddresses(transaction: Transaction): Immutable.Set<string> {
     let inputAddr = Immutable.Set(transaction.vin
-      .filter(vin => vin.addr !== undefined)
+      .filter(vin => vin.addr !== undefined && vin.addr !== null)
       .map((vin: VIn) => vin.addr));
     let outputAddr = Immutable.Set(transaction.vout
       .filter((vout: VOut) => vout.scriptPubKey.addresses !== undefined)

@@ -17,6 +17,8 @@ export class VivagraphSettings {
 
 	public shapeRendering: "auto" | "optimizeSpeed" | "crispEdges" | "geometricPrecision";
 
+	public maxNodeEdges: number;
+
 	constructor() {
 		this.edgeLineWidth = 1;
 		this.iconSize = 30;
@@ -34,5 +36,7 @@ export class VivagraphSettings {
 		this.showValues = false;
 
 		this.shapeRendering = "auto";
+
+		this.maxNodeEdges = 200;
 	}
 }
