@@ -24,6 +24,9 @@ export class TransactionSummaryComponent implements OnInit {
   newBalance: number;
   balanceChange: number;
 
+  inputsSummary: string;
+  outputsSummary: string;
+
   constructor(private cypherService: CypherService) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -31,10 +34,34 @@ export class TransactionSummaryComponent implements OnInit {
       this.asd();
     }
 
+  
+
     if (this.currentAddress !== undefined) {
       this.loadTransactionBalance();
       this.currentAddressIsInput = !this.transaction.vin.every(e => e.addr !== this.currentAddress);
       this.currentAddressIsOutput = !this.transaction.vout.every(e => e.scriptPubKey.addresses[0] !== this.currentAddress);
+    }
+
+    if (this.transaction.vin.length === 1 && this.transaction.vin[0].addr !== undefined && this.transaction.vin[0].addr !== this.currentAddress) {
+      this.inputsSummary = this.transaction.vin[0].addr;
+    } else if (this.transaction.vin.length === 1 && this.transaction.vin[0].addr !== undefined && this.transaction.vin[0].addr === this.currentAddress) {
+      this.inputsSummary = "This Address";
+    } else if (this.transaction.vin.length === 1 && this.transaction.vin[0].addr === undefined) {
+      this.inputsSummary = "Newly generated coins";
+    } else if (this.transaction.vin.length > 1 && !this.currentAddressIsInput) {
+      this.inputsSummary = this.transaction.vin.length + " Addresses";
+    } else if (this.transaction.vin.length > 1 && this.currentAddressIsInput) {
+      this.inputsSummary = "This + " + (this.transaction.vin.length-1) + (this.transaction.vin.length === 2 ? "Address" : "Addresses");
+    }
+
+    if (this.transaction.vout.length === 1 && this.transaction.vout[0].scriptPubKey.addresses[0] !== this.currentAddress) {
+      this.outputsSummary = this.transaction.vout[0].scriptPubKey.addresses[0];
+    } else if (this.transaction.vout.length === 1 && this.transaction.vout[0].scriptPubKey.addresses[0] === this.currentAddress) {
+      this.outputsSummary = "This Address";
+    } else if (this.transaction.vout.length > 1 && !this.currentAddressIsOutput) {
+      this.outputsSummary = this.transaction.vout.length + " Addresses";
+    } else if (this.transaction.vout.length > 1 && this.currentAddressIsOutput) {
+      this.outputsSummary = "This + " + (this.transaction.vout.length-1) + (this.transaction.vout.length === 2 ? " Address" : " Addresses");
     }
   }
 
