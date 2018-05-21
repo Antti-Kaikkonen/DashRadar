@@ -42,26 +42,29 @@ export class TransactionSummaryComponent implements OnInit {
       this.currentAddressIsOutput = !this.transaction.vout.every(e => e.scriptPubKey.addresses[0] !== this.currentAddress);
     }
 
-    if (this.transaction.vin.length === 1 && this.transaction.vin[0].addr !== undefined && this.transaction.vin[0].addr !== this.currentAddress) {
+    let uniqueInputAddresses = new Set(this.transaction.vin.filter(vin => vin.addr !== undefined && vin.addr != null).map(vin => vin.addr));
+    let uniqueOutputAddresses = new Set(this.transaction.vout.filter(vout => vout.scriptPubKey.addresses[0] !== undefined && vout.scriptPubKey.addresses[0] != null).map(vout => vout.scriptPubKey.addresses[0]));
+
+    if (uniqueInputAddresses.size === 1 && !this.currentAddressIsInput) {
       this.inputsSummary = this.transaction.vin[0].addr;
-    } else if (this.transaction.vin.length === 1 && this.transaction.vin[0].addr !== undefined && this.transaction.vin[0].addr === this.currentAddress) {
+    } else if (uniqueInputAddresses.size === 1 && this.currentAddressIsInput) {
       this.inputsSummary = "This Address";
     } else if (this.transaction.vin.length === 1 && this.transaction.vin[0].addr === undefined) {
       this.inputsSummary = "Newly generated coins";
-    } else if (this.transaction.vin.length > 1 && !this.currentAddressIsInput) {
-      this.inputsSummary = this.transaction.vin.length + " Addresses";
-    } else if (this.transaction.vin.length > 1 && this.currentAddressIsInput) {
-      this.inputsSummary = "This + " + (this.transaction.vin.length-1) + (this.transaction.vin.length === 2 ? "Address" : "Addresses");
+    } else if (uniqueInputAddresses.size > 1 && !this.currentAddressIsInput) {
+      this.inputsSummary = uniqueInputAddresses.size + " Addresses";
+    } else if (uniqueInputAddresses.size > 1 && this.currentAddressIsInput) {
+      this.inputsSummary = "This + " + (uniqueInputAddresses.size-1) + (uniqueInputAddresses.size === 2 ? " Address" : " Addresses");
     }
 
-    if (this.transaction.vout.length === 1 && this.transaction.vout[0].scriptPubKey.addresses[0] !== this.currentAddress) {
-      this.outputsSummary = this.transaction.vout[0].scriptPubKey.addresses[0];
-    } else if (this.transaction.vout.length === 1 && this.transaction.vout[0].scriptPubKey.addresses[0] === this.currentAddress) {
+    if (uniqueOutputAddresses.size === 1 && !this.currentAddressIsOutput) {
+      this.outputsSummary = uniqueOutputAddresses.values().next().value;
+    } else if (uniqueOutputAddresses.size === 1 && this.currentAddressIsOutput) {
       this.outputsSummary = "This Address";
-    } else if (this.transaction.vout.length > 1 && !this.currentAddressIsOutput) {
-      this.outputsSummary = this.transaction.vout.length + " Addresses";
-    } else if (this.transaction.vout.length > 1 && this.currentAddressIsOutput) {
-      this.outputsSummary = "This + " + (this.transaction.vout.length-1) + (this.transaction.vout.length === 2 ? " Address" : " Addresses");
+    } else if (uniqueOutputAddresses.size > 1 && !this.currentAddressIsOutput) {
+      this.outputsSummary = uniqueOutputAddresses.size + " Addresses";
+    } else if (uniqueOutputAddresses.size > 1 && this.currentAddressIsOutput) {
+      this.outputsSummary = "This + " + (uniqueOutputAddresses.size-1) + (uniqueOutputAddresses.size === 2 ? " Address" : " Addresses");
     }
   }
 
