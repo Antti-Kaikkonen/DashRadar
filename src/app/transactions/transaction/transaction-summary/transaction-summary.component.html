@@ -13,9 +13,9 @@
     <mat-icon class="noselect">date_range</mat-icon> {{transaction.time*1000 | date:'medium'}}
   </div>	
   <div fxLayout="row" fxLayoutAlign="start center" fxFlex="0 0 230px" *ngIf="newBalance !== undefined || balanceLoading === true" matTooltip="New balance and change in balance">
-    <mat-spinner style="margin:0 auto;" *ngIf="balanceLoading === true" [diameter]="25"></mat-spinner>
     <mat-icon class="noselect">account_balance_wallet</mat-icon> {{newBalance}}&nbsp;
-    <span [style.color]="balanceChange < 0 ? 'red' : 'green'">
+    <mat-spinner style="margin:0 auto;" *ngIf="balanceLoading === true" [diameter]="25"></mat-spinner>  
+    <span [style.color]="balanceChange < 0 ? 'red' : 'green'" *ngIf="balanceChange !== undefined">
       ({{balanceChange > 0 ? "+"+balanceChange:balanceChange}})
     </span>
   </div>

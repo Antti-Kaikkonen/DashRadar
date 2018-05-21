@@ -48,9 +48,11 @@ export class TransactionSummaryComponent implements OnInit {
     + "RETURN b.balanceAfterSat, b.balanceChangeSat;";
     this.balanceLoading = true;
     this.cypherService.executeQuery(query, {}).subscribe(e => {
-      this.newBalance = e.data[0][0]/100000000.0;
-      this.balanceChange = e.data[0][1]/100000000.0;
       this.balanceLoading = false;
+      if (e.data.length === 1) {
+        this.newBalance = e.data[0][0]/100000000.0;
+        this.balanceChange = e.data[0][1]/100000000.0;
+      }
     }, (error) => this.balanceLoading = false);
   }
 
