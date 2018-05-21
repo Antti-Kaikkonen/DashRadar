@@ -61,7 +61,7 @@
 								<div fxFlex="nogrow">
 										<mat-spinner *ngIf="guesstimatedWallet === undefined" diameter="20"></mat-spinner>
 										<a *ngIf="guesstimatedWallet?.exists" [routerLink]="['/explorer/wallet', addrStr]">{{guesstimatedWallet.addressCount}} addresses</a>
-										<span *ngIf="guesstimatedWallet.exists === false">none</span>
+										<span *ngIf="guesstimatedWallet?.exists === false">none</span>
 								</div>
 						</div>
 						</div>

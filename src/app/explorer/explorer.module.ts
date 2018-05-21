@@ -19,6 +19,7 @@ import {
   MatSortModule,
   MatTableModule,
   MatTabsModule,
+  MatTooltipModule,
 } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { ChartsModule as ChartJSModule } from 'ng2-charts/ng2-charts';
@@ -60,7 +61,7 @@ import { ExplorerComponent } from './explorer.component';
     MatIconModule, 
     MatSortModule, 
     MatCheckboxModule, 
-    MatSnackBarModule, MatMenuModule, MatTabsModule, MatChipsModule, MatExpansionModule, MatCardModule, MatPaginatorModule,
+    MatSnackBarModule, MatMenuModule, MatTabsModule, MatChipsModule, MatExpansionModule, MatCardModule, MatPaginatorModule, MatTooltipModule,
     RouterModule,
     FlexLayoutModule,
     ChartJSModule,

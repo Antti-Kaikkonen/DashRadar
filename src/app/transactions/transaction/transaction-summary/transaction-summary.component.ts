@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 
+import { CypherService } from '../../../charts/cypher.service';
 import { Transaction } from './../transaction';
 
 @Component({
@@ -19,7 +20,11 @@ export class TransactionSummaryComponent implements OnInit {
 
   imageName: string;
 
-  constructor() { }
+  balanceLoading: boolean = false;;
+  newBalance: number;
+  balanceChange: number;
+
+  constructor(private cypherService: CypherService) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.transaction) {
@@ -27,12 +32,26 @@ export class TransactionSummaryComponent implements OnInit {
     }
 
     if (this.currentAddress !== undefined) {
+      this.loadTransactionBalance();
       this.currentAddressIsInput = !this.transaction.vin.every(e => e.addr !== this.currentAddress);
       this.currentAddressIsOutput = !this.transaction.vout.every(e => e.scriptPubKey.addresses[0] !== this.currentAddress);
     }
   }
 
   ngOnInit() {
+  }
+
+  loadTransactionBalance() {
+    this.newBalance = undefined;
+    this.balanceChange = undefined;
+    let query: string = "MATCH (:Transaction {txid:\""+this.transaction.txid+"\"})-[:CREATES]->(b:BalanceEvent)-[:INCLUDED_IN]->(:Address {address:\""+this.currentAddress+"\"})\n"
+    + "RETURN b.balanceAfterSat, b.balanceChangeSat;";
+    this.balanceLoading = true;
+    this.cypherService.executeQuery(query, {}).subscribe(e => {
+      this.newBalance = e.data[0][0]/100000000.0;
+      this.balanceChange = e.data[0][1]/100000000.0;
+      this.balanceLoading = false;
+    }, (error) => this.balanceLoading = false);
   }
 
   private asd() {
