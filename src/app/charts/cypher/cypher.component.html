@@ -100,12 +100,14 @@
 		  	</mat-form-field>
 		</div>
 		<div *ngIf="selectedTabIndex!==3">
+			<mat-checkbox formControlName="x_axis_enabled">Show x-axis</mat-checkbox>
 			<mat-form-field floatPlaceholder="auto">
 				<mat-checkbox matPrefix formControlName="x_title_enabled"></mat-checkbox>
 			    <input matInput placeholder="X Title" formControlName="x_title">
 		  	</mat-form-field>
 		</div>
 		<div *ngIf="selectedTabIndex!==3">	
+		  <mat-checkbox formControlName="y_axis_enabled">Show y-axis</mat-checkbox>
 			<mat-form-field floatPlaceholder="auto">
 				<mat-checkbox matPrefix formControlName="y_title_enabled"></mat-checkbox>
 			    <input matInput placeholder="Y Title" formControlName="y_title">

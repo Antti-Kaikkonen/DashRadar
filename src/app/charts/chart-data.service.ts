@@ -1,0 +1,195 @@
+import { Injectable } from '@angular/core';
+
+import { ChartSeries } from './chartjs-types';
+import { CypherResponse } from './cypher-response';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ChartDataService {
+
+  charts: { 
+    [name:string]:
+    {
+      query?: string, 
+      previewUrl?: string, 
+      title?: string, 
+      description?: string,
+      cypherReader?: (cypherResponse:CypherResponse)=>ChartSeries[]
+    }; 
+  } = {
+    'transactions-per-day':{
+      query:
+      "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
+      "WITH d.day*86400 as time, b.tx_count as txcount\n"+
+      "RETURN time, txcount\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WITH%20d.day*86400%20as%20time%2C%20b.tx_count%20as%20txcount%20ORDER%20BY%20time%20WHERE%20time%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20%60Transactions%20per%20day%60%3B&width=320&height=180&x_axis=false&y_axis=false",
+      title: "Transactions per day",
+      description: "",
+      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["txcount"])}
+    },
+
+    'median-transaction-fee':{
+      query: 
+      "MATCH (d:Day)-[:DAILY_PERCENTILES]->(dp:DailyPercentiles {percentile:0.5})\n"+
+      "RETURN d.day*86400 as time, dp.tx_fee_sat/100000000.0 as `Median transaction fee (Dash)`\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(dp%3ADailyPercentiles%20%7Bpercentile%3A0.5%7D)%3C-%5B%3ADAILY_PERCENTILES%5D-(d%3ADay)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20RETURN%20d.day*86400%20as%20time%2C%20dp.tx_fee_sat%20as%20%60Median%20transaction%20fee%20(Duffs)%60%20ORDER%20BY%20time%3B&width=320&height=180&x_axis=false&y_axis=false",
+      title: "Median transaction fee (Dash)",
+      description: "",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Median transaction fee (Dash)"])
+    },
+
+
+    'average-transaction-fee':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
+      "WITH d.day as date, b\n"+
+      "ORDER BY date\n"+
+      "WITH collect(date) as dates, collect(b.total_fees_sat) as fees, collect(b.tx_count) as tx_counts, collect(b.height) as heights\n"+
+      "UNWIND range(1, length(dates)-1) as i\n"+
+      "WITH dates[i-1]*24*60*60 as date, (fees[i]-fees[i-1])/100000000.0 as fees, tx_counts[i]-tx_counts[i-1] as tx_count, heights[i]-heights[i-1] as coinbase_tx_count\n"+
+      "RETURN date, fees/(tx_count-coinbase_tx_count) as `Average transaction fee (DASH)`;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day%20as%20date%2C%20b%20ORDER%20BY%20date%20WITH%20collect(date)%20as%20dates%2C%20collect(b.total_fees_sat)%20as%20fees%2C%20collect(b.tx_count)%20as%20tx_counts%2C%20collect(b.height)%20as%20heights%20UNWIND%20range(1%2C%20length(dates)-1)%20as%20i%20WITH%20dates%5Bi-1%5D*24*60*60%20as%20date%2C%20(fees%5Bi%5D-fees%5Bi-1%5D)%2F100000000.0%20as%20fees%2C%20tx_counts%5Bi%5D-tx_counts%5Bi-1%5D%20as%20tx_count%2C%20heights%5Bi%5D-heights%5Bi-1%5D%20as%20coinbase_tx_count%20RETURN%20date%2C%20fees%2F(tx_count-coinbase_tx_count)%20as%20%60Fees%20per%20transaction%20(DASH)%60%3B&width=320&height=180&x_axis=false&y_axis=false",
+      title: "Average transaction fee (Dash)",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Average transaction fee (DASH)"]),
+      description: ""
+    },
+
+    
+    'median-transaction-fee-per-byte':{
+      query: 
+      "MATCH (d:Day)-[:DAILY_PERCENTILES]->(dp:DailyPercentiles {percentile:0.5})\n"+
+      "RETURN d.day*86400 as time, dp.tx_fee_per_byte_sat as `Median transaction fee per byte (Duffs)`\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ADAILY_PERCENTILES%5D-%3E(dp%3ADailyPercentiles%20%7Bpercentile%3A0.5%7D)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20RETURN%20d.day*86400%20as%20time%2C%20dp.tx_fee_per_byte_sat%20as%20fee%20ORDER%20BY%20time%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Median transaction fee per byte (Duffs)",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Median transaction fee per byte (Duffs)"]),
+      description: ""
+    },
+
+    'privatesend-transactions-per-day':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(bct:PrivateSendTotals)\n"+
+      "RETURN d.day*86400 as time, bct.privatesend_tx_count as tx_count\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(bct%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20bct.privatesend_tx_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "PrivateSend transactions per day",
+      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["tx_count"])},
+      description: ""
+    },
+    'mixing-transactions-per-day':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]-(pst:PrivateSendTotals)\n"+
+      "RETURN d.day*86400 as time, pst.privatesend_mixing_0_01_count+pst.privatesend_mixing_0_1_count+pst.privatesend_mixing_1_0_count+pst.privatesend_mixing_10_0_count as tx_count\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20pst.privatesend_mixing_0_01_count%2Bpst.privatesend_mixing_0_1_count%2Bpst.privatesend_mixing_1_0_count%2Bpst.privatesend_mixing_10_0_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Mixing transactions per day",
+      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["tx_count"])},
+      description: ""
+    },
+    'total-unspent-mixed-dash':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(pst:PrivateSendTotals)\n"+
+      "WITH\n"+
+      "  d.day*86400 as time,\n"+
+      "  (pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01+\n"+
+      "  (pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1+\n"+
+      "  (pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0+\n"+
+      "  (pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0+\n"+
+      "  (pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0 as unspent_dash\n"+
+      "RETURN time, unspent_dash\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20(pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01%2B%20(pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1%2B%20(pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0%2B%20(pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0%2B%20(pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0%20as%20unspent_dash%20RETURN%20time%2C%20unspent_dash%20ORDER%20BY%20time%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Total unspent mixed Dash",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["unspent_dash"]),
+      description: ""
+    },
+    'total-unspent-mixed-dash-by-denomination':{
+      query: "",
+      previewUrl: "",
+      title: "",
+      description: ""
+    },
+    "mixing-transactions-per-day-by-denomination":{
+      query:
+      "MATCH (d:Day)-[:LAST_BLOCK]->(n:PrivateSendTotals)\n"+
+      "WITH d.day as date, n\n"+
+      "ORDER BY date\n"+
+      "WITH \n"+
+      "collect(n.privatesend_mixing_10_0_count) as mixing_1,\n"+
+      "collect(n.privatesend_mixing_1_0_count) as mixing_2,\n"+
+      "collect(n.privatesend_mixing_0_1_count) as mixing_3,\n"+
+      "collect(n.privatesend_mixing_0_01_count) as mixing_4,\n"+
+      "collect(date) as dates\n"+
+      "UNWIND range(1, length(dates)-1) as i\n"+
+      "RETURN\n"+
+      "dates[i-1]*24*60*60 as time,\n"+
+      "mixing_1[i]-mixing_1[i-1] as `10.0`,\n"+
+      "mixing_2[i]-mixing_2[i-1] as `1.0`,\n"+
+      "mixing_3[i]-mixing_3[i-1] as `0.1`,\n"+
+      "mixing_4[i]-mixing_4[i-1] as `0.01`\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(n%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day%20as%20date%2C%20n%20ORDER%20BY%20date%20WITH%20collect(n.privatesend_mixing_10_0_count)%20as%20mixing_1%2C%20collect(n.privatesend_mixing_1_0_count)%20as%20mixing_2%2C%20collect(n.privatesend_mixing_0_1_count)%20as%20mixing_3%2C%20collect(n.privatesend_mixing_0_01_count)%20as%20mixing_4%2C%20collect(date)%20as%20dates%20UNWIND%20%5B%2210.0%22%2C%20%221.0%22%2C%20%220.1%22%2C%20%220.01%22%5D%20AS%20type%20UNWIND%20range(1%2C%20length(dates)-1)%20as%20i%20RETURN%20dates%5Bi-1%5D*24*60*60%20as%20time%2C%20CASE%20WHEN%20type%3D%2210.0%22%20THEN%20(mixing_1%5Bi%5D-mixing_1%5Bi-1%5D)%20WHEN%20type%3D%221.0%22%20THEN%20(mixing_2%5Bi%5D-mixing_2%5Bi-1%5D)%20WHEN%20type%3D%220.1%22%20THEN%20(mixing_3%5Bi%5D-mixing_3%5Bi-1%5D)%20WHEN%20type%3D%220.01%22%20THEN%20(mixing_4%5Bi%5D-mixing_4%5Bi-1%5D)%20END%20as%20Transactions%2C%20type%20ORDER%20BY%20time%3B&legend=true&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Mixing transaction per day by denomination",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["10.0", "1.0", "0.1", "0.01", ]),
+      description: ""
+    },
+    'block-rewards-per-day':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
+      "WITH d.day*86400 as time, b.total_block_rewards_sat/100000000.0 as total_block_rewards\n"+
+      "RETURN time, total_block_rewards as `Total block rewards per day (Dash)`\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20b.total_block_rewards_sat%20as%20block_rewards%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(block_rewards)%20as%20block_rewardss%20UNWIND%20range(1%2C%20length(times)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(block_rewardss%5Bi%5D-block_rewardss%5Bi-1%5D)%20as%20block_rewards%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Block rewards per day (Dash)",
+      cypherReader: (cypherResponse:CypherResponse)=>{return cypherResponse.extractColumns(["Total block rewards per day (Dash)"])},
+      description: ""
+    },
+    'number-of-unspent-transaction-outputs':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
+      "WITH d.day*86400 as time, b.output_count-b.input_count+b.height as utxo_count\n"+
+      "RETURN time, utxo_count\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20b.output_count-b.input_count%2Bb.height%20as%20utxo_count%20RETURN%20time%2C%20utxo_count%20ORDER%20BY%20time%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Number of unspent transaction outputs",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["utxo_count"]),
+      description: ""
+    },
+    'average-block-size':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
+      "WITH d.day*86400 as time, b.total_block_size as block_size, b.height as height\n"+
+      "ORDER BY time\n"+
+      "WITH collect(time) as times, collect(block_size) as block_sizes, collect(height) as heights\n"+
+      "UNWIND range(1, length(times)-1) as i\n"+
+      "WITH times[i-1] as time, (block_sizes[i]-block_sizes[i-1]) as block_size, heights[i]-heights[i-1] as blocks\n"+
+      "RETURN time, block_size/1000.0/blocks as average_block_size;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20b.total_block_size%20as%20block_size%2C%20b.height%20as%20height%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(block_size)%20as%20block_sizes%2C%20collect(height)%20as%20heights%20UNWIND%20range(1%2C%20length(times)-1)%20as%20i%20WITH%20times%5Bi-1%5D%20as%20time%2C%20(block_sizes%5Bi%5D-block_sizes%5Bi-1%5D)%20as%20block_size%2C%20heights%5Bi%5D-heights%5Bi-1%5D%20as%20blocks%20RETURN%20time%2C%20block_size%2F1000.0%2Fblocks%20as%20average_block_size%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Average block size (kB)",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["average_block_size"]),
+      description: ""
+    },
+    "total-output-volume": {
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
+      "WITH d.day*86400 as time, b.total_output_volume_sat/100000000.0 as total_output_volume\n"+
+      "RETURN time, total_output_volume as `Total output volume (Dash)`\n"+
+      "ORDER BY time;",
+      previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20b.total_output_volume_sat%2F100000000.0%20as%20total_output_volume%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(total_output_volume)%20as%20total_output_volumes%20UNWIND%20range(1%2C%20length(times)-1)%20as%20i%20WITH%20times%5Bi-1%5D%20as%20time%2C%20(total_output_volumes%5Bi%5D-total_output_volumes%5Bi-1%5D)%20as%20total_output_volume%20RETURN%20time%2C%20total_output_volume%3B&x_axis=false&y_axis=false&width=320&height=180",
+      title: "Total output volume (Dash)",
+      cypherReader: (cypherResponse:CypherResponse)=>{return cypherResponse.extractColumns(["Total output volume (Dash)"])},
+      description: ""
+    },
+    'average-number-of-inputs-and-outputs-per-transaction':{
+      query: "",
+      previewUrl: "",
+      title: "",
+      description: ""
+    },
+  }
+
+  constructor() { }
+}

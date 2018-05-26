@@ -1,0 +1,48 @@
+<mat-toolbar fxLayout="row nowrap" fxLayout.lt-lg="row wrap" fxLayoutAlign="center center" class="transparent-toolbar" ngClass.xs="nomargin" ngClass.sm="smallmargin">
+  <div fxFlex="1 1 33%" fxShow fxShow.lt-lg="false"></div>
+  <div fxFlex="1 0 auto" fxLayoutAlign="center center">
+    <mat-button-toggle-group  
+      [vertical]="false" 
+      #group="matButtonToggleGroup" 
+      [(ngModel)]="selectedPeriod" 
+      (ngModelChange)="selectedPeriodChanged($event)">
+      <mat-button-toggle value="week">Week</mat-button-toggle>
+      <mat-button-toggle value="month">Month</mat-button-toggle>
+      <mat-button-toggle value="year">Year</mat-button-toggle>
+      <mat-button-toggle value="all">All</mat-button-toggle>
+    </mat-button-toggle-group>
+   
+    <!--{{group.value}}-->
+  </div>
+  <div fxFlex="1 0 auto" fxLayoutAlign="end center" fxLayoutAlign.lt-lg="center center" fxLayout="row wrap">
+    <mat-form-field class="small-input">
+      <input matInput [matDatepicker]="starting_date" [formControl]="start_date" [max]="end_date.value">
+      <mat-datepicker-toggle matSuffix [for]="starting_date"></mat-datepicker-toggle>
+      <mat-datepicker #starting_date startView="year"></mat-datepicker>
+    </mat-form-field>
+    <span style="margin: 10px">to</span>
+    <mat-form-field class="small-input">
+      <input matInput [matDatepicker]="ending_date" [formControl]="end_date" [min]="start_date.value">
+      <mat-datepicker-toggle matSuffix [for]="ending_date"></mat-datepicker-toggle>
+      <mat-datepicker #ending_date startView="year"></mat-datepicker>
+    </mat-form-field>
+  </div>
+</mat-toolbar>
+<div *ngIf="chartSeries !== undefined" style="height:938px;">
+  <app-time-series-chart [data]="chartSeries" [sma]="sma" [from]="start_date.value" [to]="end_date.value" [title]="title">
+    <mat-form-field floatLabel="never" style="display: inline-block;" class="no-padding-input medium-input" fxHide.xs>
+      <mat-select [(value)]="sma">
+        <mat-option [value]="1">
+          Standard
+        </mat-option>
+        <mat-option [value]="7">
+          7 day SMA
+        </mat-option>
+        <mat-option [value]="30">
+          30 day SMA
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </app-time-series-chart>
+</div>
+

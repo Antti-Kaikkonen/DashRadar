@@ -44,11 +44,14 @@ export class CypherComponent implements OnInit {
   title: string = "";
   title_enabled: boolean = false;
 
+  x_axis_enabled: boolean = true;
   x_axis_title: string;
   x_axis_title_enabled: boolean = true;
 
+  y_axis_enabled: boolean = true;
   y_axis_title: string;
   y_axis_title_enabled: boolean = true;
+
 
   legend_enabled: boolean = true;
 
@@ -113,6 +116,7 @@ export class CypherComponent implements OnInit {
       },
       scales: {
           xAxes: [{
+              display: true,
               type: 'time',
               distribution: 'linear',
               scaleLabel: {
@@ -121,6 +125,7 @@ export class CypherComponent implements OnInit {
               }
           }],
           yAxes: [{
+            display: true,
             scaleLabel: {
               display: true,
               labelString: 'asd'
@@ -266,8 +271,10 @@ export class CypherComponent implements OnInit {
         legend_enabled:  new FormControl(true),
         title_enabled:   new FormControl(this.title_enabled),
         title:           new FormControl({value: this.title, disabled: !this.title_enabled}),
+        x_axis_enabled: new FormControl(this.x_axis_enabled),
         x_title_enabled: new FormControl(this.x_axis_title_enabled),
         x_title:         new FormControl({value: this.x_axis_title, disabled: !this.x_axis_title_enabled}),
+        y_axis_enabled: new FormControl(this.y_axis_enabled),
         y_title_enabled: new FormControl(this.y_axis_title_enabled),
         y_title:         new FormControl({value: this.y_axis_title, disabled: !this.y_axis_title_enabled})
       });
@@ -287,6 +294,8 @@ export class CypherComponent implements OnInit {
         this.x_axis_title_enabled = value.x_title_enabled;
         this.y_axis_title = value.y_title;
         this.y_axis_title_enabled = value.y_title_enabled;
+        this.x_axis_enabled = value.x_axis_enabled;
+        this.y_axis_enabled = value.y_axis_enabled;
         this.updateChart();
         this.updateChartImageURLs();
       });
@@ -414,6 +423,12 @@ export class CypherComponent implements OnInit {
     if (this.title_enabled) {
       chartURLData.title = this.title;
     }
+    if (!this.x_axis_enabled) {
+      chartURLData.x_axis = false;
+    }
+    if (!this.y_axis_enabled) {
+      chartURLData.y_axis = false;
+    }
     if (this.x_axis_title_enabled) {
       chartURLData.x_title = this.x_axis_title;
     }
@@ -441,6 +456,8 @@ export class CypherComponent implements OnInit {
     this.lineChartOptions.scales.xAxes[0].scaleLabel.display = this.x_axis_title_enabled;
     this.lineChartOptions.scales.yAxes[0].scaleLabel.labelString = this.y_axis_title;
     this.lineChartOptions.scales.yAxes[0].scaleLabel.display = this.y_axis_title_enabled;
+    this.lineChartOptions.scales.xAxes[0].display = this.x_axis_enabled;
+    this.lineChartOptions.scales.yAxes[0].display = this.y_axis_enabled;
     this.lineChartOptions = {... this.lineChartOptions};
 
 
@@ -450,6 +467,8 @@ export class CypherComponent implements OnInit {
     this.barChartOptions.scales.xAxes[0].scaleLabel.display = this.x_axis_title_enabled;
     this.barChartOptions.scales.yAxes[0].scaleLabel.labelString = this.y_axis_title;
     this.barChartOptions.scales.yAxes[0].scaleLabel.display = this.y_axis_title_enabled;
+    this.barChartOptions.scales.xAxes[0].display = this.x_axis_enabled;
+    this.barChartOptions.scales.yAxes[0].display = this.y_axis_enabled;
     this.barChartOptions = {... this.barChartOptions};
 
     this.pieChartOptions.title.text = this.title;

@@ -1,0 +1,8 @@
+app-time-series-chart {
+  &:fullscreen {
+		mat-form-field {
+			display: none !important;
+		}
+	}
+	height: 500px;
+}

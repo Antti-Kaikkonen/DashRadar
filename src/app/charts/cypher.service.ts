@@ -19,10 +19,7 @@ export class CypherService {
 		return this.http.post(this.cypherURL, {query: query, params: params})
 		.map((response: Response) => {
 			let json = response.json();
-			return {
-				columns: json.columns,
-				data: json.data
-			};
+			return new CypherResponse(json.columns, json.data);
 		});
 	}
 

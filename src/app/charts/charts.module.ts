@@ -10,6 +10,7 @@ import {
   MatCardModule,
   MatCheckboxModule,
   MatDatepickerModule,
+  MatDividerModule,
   MatIconModule,
   MatInputModule,
   MatProgressSpinnerModule,
@@ -23,7 +24,10 @@ import { ChartsModule as ChartJSModule } from 'ng2-charts/ng2-charts';
 
 import { NavbarModule } from '../navbar/navbar.module';
 import { SharedModule } from '../shared/shared.module';
+import { ChartDataService } from './chart-data.service';
+import { ChartComponent } from './chart/chart.component';
 import { ChartsDashboardComponent } from './charts-dashboard/charts-dashboard.component';
+import { ChartsDashboardComponent2 } from './charts-dashboard/charts-dashboard2.component';
 import { ChartsRoutingModule } from './charts-routing.module';
 import { ChartsComponent } from './charts.component';
 import { CypherService } from './cypher.service';
@@ -35,7 +39,7 @@ import { CypherComponent } from './cypher/cypher.component';
     FormsModule,
     ReactiveFormsModule,
     ChartsRoutingModule,
-    MatButtonModule, MatProgressSpinnerModule, MatTableModule, MatCheckboxModule, MatInputModule, MatTabsModule, MatIconModule, MatDatepickerModule, MatButtonToggleModule, MatToolbarModule, MatSelectModule, MatCardModule,
+    MatButtonModule, MatProgressSpinnerModule, MatTableModule, MatCheckboxModule, MatInputModule, MatTabsModule, MatIconModule, MatDatepickerModule, MatButtonToggleModule, MatToolbarModule, MatSelectModule, MatCardModule, MatDividerModule,
     MatMomentDateModule,
     ChartJSModule,
     FlexLayoutModule,
@@ -43,8 +47,8 @@ import { CypherComponent } from './cypher/cypher.component';
     NavbarModule
   ],
   declarations: [CypherComponent, 
-    ChartsDashboardComponent, ChartsComponent
+    ChartsDashboardComponent, ChartsDashboardComponent2, ChartsComponent, ChartComponent
   ],
-  providers: [CypherService]
+  providers: [CypherService, ChartDataService]
 })
 export class ChartsModule { }
