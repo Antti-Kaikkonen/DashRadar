@@ -10,3 +10,21 @@ app-time-series-chart {
 mat-spinner {
 	margin: 0 auto;
 }
+
+
+mat-toolbar {
+	max-width: 80%;
+	margin: 0 auto;
+	height: auto;
+	&.nomargin {
+		max-width: 100%;
+		margin: 0 0;
+	}
+	&.smallmargin {
+		max-width: 90%;
+	}
+
+	&.transparent-toolbar {
+		background-color: transparent;
+	}
+}
