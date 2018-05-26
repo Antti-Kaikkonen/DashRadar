@@ -22,12 +22,12 @@ export class ChartDataService {
       query:
       "MATCH (d:Day)-[:LAST_BLOCK]->(b:BlockChainTotals)\n"+
       "WITH d.day*86400 as time, b.tx_count as txcount\n"+
-      "RETURN time, txcount\n"+
+      "RETURN time, txcount as `Number of transactions`\n"+
       "ORDER BY time;",
       previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WITH%20d.day*86400%20as%20time%2C%20b.tx_count%20as%20txcount%20ORDER%20BY%20time%20WHERE%20time%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20%60Transactions%20per%20day%60%3B&width=320&height=180&x_axis=false&y_axis=false",
       title: "Transactions per day",
       description: "",
-      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["txcount"])}
+      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["Number of transactions"])}
     },
 
     'median-transaction-fee':{
@@ -72,21 +72,21 @@ export class ChartDataService {
     'privatesend-transactions-per-day':{
       query: 
       "MATCH (d:Day)-[:LAST_BLOCK]->(bct:PrivateSendTotals)\n"+
-      "RETURN d.day*86400 as time, bct.privatesend_tx_count as tx_count\n"+
+      "RETURN d.day*86400 as time, bct.privatesend_tx_count as `Number of PrivateSend transactions`\n"+
       "ORDER BY time;",
       previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(bct%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20bct.privatesend_tx_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "PrivateSend transactions per day",
-      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["tx_count"])},
+      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["Number of PrivateSend transactions"])},
       description: ""
     },
     'mixing-transactions-per-day':{
       query: 
       "MATCH (d:Day)-[:LAST_BLOCK]-(pst:PrivateSendTotals)\n"+
-      "RETURN d.day*86400 as time, pst.privatesend_mixing_0_01_count+pst.privatesend_mixing_0_1_count+pst.privatesend_mixing_1_0_count+pst.privatesend_mixing_10_0_count as tx_count\n"+
+      "RETURN d.day*86400 as time, pst.privatesend_mixing_0_01_count+pst.privatesend_mixing_0_1_count+pst.privatesend_mixing_1_0_count+pst.privatesend_mixing_10_0_count as `Number of mixing transactions`\n"+
       "ORDER BY time;",
       previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20pst.privatesend_mixing_0_01_count%2Bpst.privatesend_mixing_0_1_count%2Bpst.privatesend_mixing_1_0_count%2Bpst.privatesend_mixing_10_0_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Mixing transactions per day",
-      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["tx_count"])},
+      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["Number of mixing transactions"])},
       description: ""
     },
     'total-unspent-mixed-dash':{
@@ -99,11 +99,11 @@ export class ChartDataService {
       "  (pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0+\n"+
       "  (pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0+\n"+
       "  (pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0 as unspent_dash\n"+
-      "RETURN time, unspent_dash\n"+
+      "RETURN time, unspent_dash as `Unspent mixed Dash`\n"+
       "ORDER BY time;",
       previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20(pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01%2B%20(pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1%2B%20(pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0%2B%20(pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0%2B%20(pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0%20as%20unspent_dash%20RETURN%20time%2C%20unspent_dash%20ORDER%20BY%20time%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Total unspent mixed Dash",
-      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["unspent_dash"]),
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Unspent mixed Dash"]),
       description: ""
     },
     'total-unspent-mixed-dash-by-denomination':{
@@ -166,10 +166,10 @@ export class ChartDataService {
       "WITH collect(time) as times, collect(block_size) as block_sizes, collect(height) as heights\n"+
       "UNWIND range(1, length(times)-1) as i\n"+
       "WITH times[i-1] as time, (block_sizes[i]-block_sizes[i-1]) as block_size, heights[i]-heights[i-1] as blocks\n"+
-      "RETURN time, block_size/1000.0/blocks as average_block_size;",
+      "RETURN time, block_size/1000.0/blocks as `Average block size (kB)`;",
       previewUrl: "https://dashradar.com/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20b.total_block_size%20as%20block_size%2C%20b.height%20as%20height%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(block_size)%20as%20block_sizes%2C%20collect(height)%20as%20heights%20UNWIND%20range(1%2C%20length(times)-1)%20as%20i%20WITH%20times%5Bi-1%5D%20as%20time%2C%20(block_sizes%5Bi%5D-block_sizes%5Bi-1%5D)%20as%20block_size%2C%20heights%5Bi%5D-heights%5Bi-1%5D%20as%20blocks%20RETURN%20time%2C%20block_size%2F1000.0%2Fblocks%20as%20average_block_size%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Average block size (kB)",
-      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["average_block_size"]),
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Average block size (kB)"]),
       description: ""
     },
     "total-output-volume": {
