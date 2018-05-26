@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 
 import { ChartDataService } from '../chart-data.service';
 import { ChartSeries } from '../chartjs-types';
@@ -15,10 +16,12 @@ import { CypherService } from '../cypher.service';
 })
 export class ChartComponent implements OnInit {
 
-  description: string;
   query: string;
   title: string;
-  chartName: string;
+
+  chartLoading: boolean = false;
+  error: string;
+
   chartSeries: ChartSeries[];
 
   end_date = new FormControl(moment.utc().startOf('day'));
@@ -29,6 +32,7 @@ export class ChartComponent implements OnInit {
 
   sma: number = 1;
 
+  chartSubscription: Subscription;
 
   from: moment.Moment = moment.utc(0);
   to: moment.Moment = moment.utc().startOf('day');
@@ -39,21 +43,29 @@ export class ChartComponent implements OnInit {
   ) { }
   
 
+  ngOnDestroy() {
+    if (this.chartSubscription !== undefined) {
+      this.chartSubscription.unsubscribe();
+    }
+  }
+
   ngOnInit() {
     this.route.params
     .filter(params => params.chartName)
     .subscribe((params: Params) => {
-      this.chartName = params.chartName;
-      let data = this.chartData.charts[this.chartName];
-      this.description = data.description;
+      let data = this.chartData.charts[params.chartName];
+
       this.query = data.query;
       this.title = data.title;
-
-      this.cypherService.executeQuery(this.query, {}).subscribe((cypherResponse: CypherResponse) => {
+      this.chartLoading = true;
+      this.error = undefined;
+      this.chartSubscription = this.cypherService.executeQuery(data.query, {}).subscribe((cypherResponse: CypherResponse) => {
         this.chartSeries = data.cypherReader(cypherResponse);
-        console.log("chartseries", this.chartSeries);
+        this.chartLoading = false;
+      }, error => {
+        this.error = "Error loading chart ("+error+")";
+        this.chartLoading = false;
       });
-      console.log("CHART DATA", data);
     })
   }
 
