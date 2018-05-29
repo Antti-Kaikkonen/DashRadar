@@ -20,12 +20,17 @@ import { Block } from './block';
 })
 export class BlockComponent implements OnInit {
 
+  static SUPER_BLOCK_EVERY_N_BLOCKS: number = 16616;
+  static FIRST_SUPERBLOCK_HEIGHT: number = 332320;
+
 	block: Block;
   transactions: Array<Transaction>;
 	errorMessage: string;
 	error: boolean = false;
   currentTime: number;
   hash: string;
+
+  superBlock: boolean = false;
 
   pageSizeOptions = [10];
   pageSize = this.pageSizeOptions[0];
@@ -49,7 +54,6 @@ export class BlockComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.route.queryParams
     .filter(e => e.page !== undefined)
     .subscribe(e => {
@@ -65,6 +69,7 @@ export class BlockComponent implements OnInit {
 
   	this.route.params
     .switchMap((params: Params) => {
+      this.superBlock = false;
       this.hash=params.hash;
       return this.blockService.getBlockByHash(params['hash'])
     }).subscribe(
@@ -76,6 +81,7 @@ export class BlockComponent implements OnInit {
           content: this.datePipe.transform(block.time, "mediumDate")+", hash: "+block.hash+", "+block.tx.length+" transaction, "+block.size/1000+" kB"
         });
         this.block = block;
+        this.superBlock = (this.block.height%BlockComponent.SUPER_BLOCK_EVERY_N_BLOCKS === 0) && (this.block.height >= BlockComponent.FIRST_SUPERBLOCK_HEIGHT);
         this.loadBlockTransactions(block);
       },
 	    (error: string) =>  {this.errorMessage = error; this.error = true;}

@@ -1,7 +1,7 @@
 <mat-card>
 	<mat-card-header style="word-break: break-all;">
-		<div mat-card-avatar class="header-image" [style.background-image]="'url(/assets/png2/64x64/cube.png)'" [style.border-radius]="'initial'"></div>
-		<mat-card-title>BLOCK</mat-card-title>
+		<div mat-card-avatar class="header-image" [style.background-image]="superBlock ? 'url(/assets/png2/64x64/superblock.png)' : 'url(/assets/png2/64x64/cube.png)'" [style.border-radius]="'initial'"></div>
+		<mat-card-title>{{superBlock ? "SUPER BLOCK" : "BLOCK"}}</mat-card-title>
 		<mat-card-subtitle>{{hash}}</mat-card-subtitle>
 	</mat-card-header>
 	<mat-card-content>
