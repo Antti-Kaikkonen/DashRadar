@@ -22,7 +22,7 @@ export class AddressBalanceChartComponent implements OnInit {
     
     let queryOutputTimes = 
     "MATCH" + "\n" +
-	  "(a:Address {address:'"+address+"'})<-[:ADDRESS]-(output:TransactionOutput)<-[:OUTPUT]-(:Transaction)-[:INCLUDED_IN]-(receivedBlock:Block)" + "\n" +
+	  "(a:Address {address:$address})<-[:ADDRESS]-(output:TransactionOutput)<-[:OUTPUT]-(:Transaction)-[:INCLUDED_IN]-(receivedBlock:Block)" + "\n" +
     "WITH" + "\n" +
 	  "output, receivedBlock.time as receivedTime" + "\n" +
     "OPTIONAL MATCH" + "\n" +
@@ -30,7 +30,7 @@ export class AddressBalanceChartComponent implements OnInit {
     "RETURN" + "\n" +
     "output.valueSat, receivedTime, spentBlock.time as spentTime;";
 
-    this.cypherService.executeQuery(queryOutputTimes, {}).subscribe(e => {
+    this.cypherService.executeQuery(queryOutputTimes, {"address":address}).subscribe(e => {
 
       //TODO: messy. refactor
       let chartPoints: ChartPoint[] = [];

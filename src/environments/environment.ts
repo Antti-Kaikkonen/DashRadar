@@ -6,7 +6,9 @@ export const environment = {
   production: false,
   insightApiUrl: 'https://dashradar.com/insight-api-dash',
   insightSocketUrl: 'https://dashradar.com',
+  //cypherUrl: 'http://localhost:3002/db/data/read-only_query',
   cypherUrl: 'https://dashradar.com/db/data/read-only_query',
+  //chartJsImageURL: 'http://localhost:3000'
   chartJsImageURL: 'https://dashradar.com'
 };
 

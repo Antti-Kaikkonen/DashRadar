@@ -15,14 +15,14 @@ export class WalletService {
 
 
   getWalletAddressCount(sourceAddress: string) {
-    let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:\""+sourceAddress+"\"})\n"
+    let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:$address})\n"
     +"RETURN c.clusterSize;";
-    return this.cypherService.executeQuery(query, {});
+    return this.cypherService.executeQuery(query, {address:sourceAddress});
   }
 
   getWalletAddresses(sourceAddress:string) {
 
-    let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:\""+sourceAddress+"\"})\n"
+    let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:$address})\n"
     +"MATCH (c)<-[:INCLUDED_IN]-(a:Address) RETURN a.address;";
     /*let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:\""+sourceAddress+"\"})\n"
     +"WITH c\n"
@@ -33,6 +33,6 @@ export class WalletService {
     +"WITH address, totalReceived, totalSpent, totalReceived-totalSpent as balance\n"
     +"RETURN address, totalReceived, totalSpent, balance ORDER BY -balance;"
     */
-    return this.cypherService.executeQuery(query, {});
+    return this.cypherService.executeQuery(query, {address:sourceAddress});
   }
 }

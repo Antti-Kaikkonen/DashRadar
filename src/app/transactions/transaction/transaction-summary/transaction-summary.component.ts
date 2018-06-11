@@ -74,10 +74,10 @@ export class TransactionSummaryComponent implements OnInit {
   loadTransactionBalance() {
     this.newBalance = undefined;
     this.balanceChange = undefined;
-    let query: string = "MATCH (:Transaction {txid:\""+this.transaction.txid+"\"})-[:CREATES]->(b:BalanceEvent)-[:INCLUDED_IN]->(:Address {address:\""+this.currentAddress+"\"})\n"
+    let query: string = "MATCH (:Transaction {txid:$txid})-[:CREATES]->(b:BalanceEvent)-[:INCLUDED_IN]->(:Address {address:\""+this.currentAddress+"\"})\n"
     + "RETURN b.balanceAfterSat, b.balanceChangeSat;";
     this.balanceLoading = true;
-    this.cypherService.executeQuery(query, {}).subscribe(e => {
+    this.cypherService.executeQuery(query, {txid:this.transaction.txid}).subscribe(e => {
       this.balanceLoading = false;
       if (e.data.length === 1) {
         this.newBalance = e.data[0][0]/100000000.0;
