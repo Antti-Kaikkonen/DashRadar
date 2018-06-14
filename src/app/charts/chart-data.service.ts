@@ -50,10 +50,17 @@ export class ChartDataService {
       "MATCH (d:Day)-[:LAST_BLOCK]->(b:Block)-[:BLOCKCHAIN_TOTALS]->(bct:BlockChainTotals)\n"+
       "WITH d.day as date, b, bct\n"+
       "ORDER BY date\n"+
+      "WITH collect(date) as dates, 0+collect(bct.total_fees_sat) as fees, 0+collect(bct.tx_count) as tx_counts, 0+collect(b.height) as heights\n"+
+      "UNWIND range(1, length(dates)) as i\n"+
+      "WITH dates[i-1]*24*60*60 as date, (fees[i]-fees[i-1])/100000000.0 as fees, tx_counts[i]-tx_counts[i-1] as tx_count, heights[i]-heights[i-1] as coinbase_tx_count\n"+
+      "RETURN date, fees/(tx_count-coinbase_tx_count) as `Average transaction fee (DASH)`",
+      /*"MATCH (d:Day)-[:LAST_BLOCK]->(b:Block)-[:BLOCKCHAIN_TOTALS]->(bct:BlockChainTotals)\n"+
+      "WITH d.day as date, b, bct\n"+
+      "ORDER BY date\n"+
       "WITH collect(date) as dates, collect(bct.total_fees_sat) as fees, collect(bct.tx_count) as tx_counts, collect(b.height) as heights\n"+
       "UNWIND range(1, length(dates)-1) as i\n"+
       "WITH dates[i-1]*24*60*60 as date, (fees[i]-fees[i-1])/100000000.0 as fees, tx_counts[i]-tx_counts[i-1] as tx_count, heights[i]-heights[i-1] as coinbase_tx_count\n"+
-      "RETURN date, fees/(tx_count-coinbase_tx_count) as `Average transaction fee (DASH)`;",
+      "RETURN date, fees/(tx_count-coinbase_tx_count) as `Average transaction fee (DASH)`;",*/
       previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlock)-%5B%3ABLOCKCHAIN_TOTALS%5D-%3E(bct%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day%20as%20date%2C%20b%2C%20bct%20ORDER%20BY%20date%20WITH%20collect(date)%20as%20dates%2C%20collect(bct.total_fees_sat)%20as%20fees%2C%20collect(bct.tx_count)%20as%20tx_counts%2C%20collect(b.height)%20as%20heights%20UNWIND%20range(1%2C%20length(dates)-1)%20as%20i%20WITH%20dates%5Bi-1%5D*24*60*60%20as%20date%2C%20(fees%5Bi%5D-fees%5Bi-1%5D)%2F100000000.0%20as%20fees%2C%20tx_counts%5Bi%5D-tx_counts%5Bi-1%5D%20as%20tx_count%2C%20heights%5Bi%5D-heights%5Bi-1%5D%20as%20coinbase_tx_count%20RETURN%20date%2C%20fees%2F(tx_count-coinbase_tx_count)%20as%20%60Fees%20per%20transaction%20(DASH)%60%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Average transaction fee (Dash)",
       cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Average transaction fee (DASH)"]),
@@ -122,12 +129,12 @@ export class ChartDataService {
       "WITH d.day as date, n\n"+
       "ORDER BY date\n"+
       "WITH \n"+
-      "collect(n.privatesend_mixing_10_0_count) as mixing_1,\n"+
-      "collect(n.privatesend_mixing_1_0_count) as mixing_2,\n"+
-      "collect(n.privatesend_mixing_0_1_count) as mixing_3,\n"+
-      "collect(n.privatesend_mixing_0_01_count) as mixing_4,\n"+
+      "0+collect(n.privatesend_mixing_10_0_count) as mixing_1,\n"+
+      "0+collect(n.privatesend_mixing_1_0_count) as mixing_2,\n"+
+      "0+collect(n.privatesend_mixing_0_1_count) as mixing_3,\n"+
+      "0+collect(n.privatesend_mixing_0_01_count) as mixing_4,\n"+
       "collect(date) as dates\n"+
-      "UNWIND range(1, length(dates)-1) as i\n"+
+      "UNWIND range(1, length(dates)) as i\n"+
       "RETURN\n"+
       "dates[i-1]*24*60*60 as time,\n"+
       "mixing_1[i]-mixing_1[i-1] as `10.0`,\n"+
@@ -156,8 +163,8 @@ export class ChartDataService {
       "MATCH (d:Day)-[:LAST_BLOCK]->(b:Block)-[:BLOCKCHAIN_TOTALS]->(bct:BlockChainTotals)\n"+
       "WITH d.day*86400 as time, bct.total_block_size as block_size, b.height as height\n"+
       "ORDER BY time\n"+
-      "WITH collect(time) as times, collect(block_size) as block_sizes, collect(height) as heights\n"+
-      "UNWIND range(1, length(times)-1) as i\n"+
+      "WITH collect(time) as times, 0+collect(block_size) as block_sizes, 0+collect(height) as heights\n"+
+      "UNWIND range(1, length(times)) as i\n"+
       "WITH times[i-1] as time, (block_sizes[i]-block_sizes[i-1]) as block_size, heights[i]-heights[i-1] as blocks\n"+
       "RETURN time, block_size/1000.0/blocks as `Average block size (kB)`;",
       previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(b%3ABlock)-%5B%3ABLOCKCHAIN_TOTALS%5D-%3E(bct%3ABlockChainTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20bct.total_block_size%20as%20block_size%2C%20b.height%20as%20height%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(block_size)%20as%20block_sizes%2C%20collect(height)%20as%20heights%20UNWIND%20range(1%2C%20length(times)-1)%20as%20i%20WITH%20times%5Bi-1%5D%20as%20time%2C%20(block_sizes%5Bi%5D-block_sizes%5Bi-1%5D)%20as%20block_size%2C%20heights%5Bi%5D-heights%5Bi-1%5D%20as%20blocks%20RETURN%20time%2C%20block_size%2F1000.0%2Fblocks%20as%20average_block_size%3B&x_axis=false&y_axis=false&width=320&height=180",
