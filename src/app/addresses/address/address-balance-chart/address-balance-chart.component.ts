@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { ChartPoint, ChartSeries } from '../../../charts/chartjs-types';
 import { CypherService } from '../../../charts/cypher.service';
@@ -15,6 +16,11 @@ export class AddressBalanceChartComponent implements OnInit {
 
   data: ChartSeries[];
 
+  sub: Subscription;
+
+  ngOnDestroy() {
+    if (this.sub !== undefined) this.sub.unsubscribe();
+  }
 
   @Input()
   set address(address: string) {
@@ -22,7 +28,8 @@ export class AddressBalanceChartComponent implements OnInit {
     
     let newQuery = "MATCH (:Address {address:$address})<-[:INCLUDED_IN]-(be:BalanceEvent)<-[:CREATES]-(:Transaction)-[:INCLUDED_IN]->(b:Block) RETURN b.time, be.balanceChangeSat ORDER BY b.time;"
 
-    this.cypherService.executeQuery(newQuery, {"address":address}).subscribe(e => {
+    if (this.sub !== undefined) this.sub.unsubscribe();
+    this.sub = this.cypherService.executeQuery(newQuery, {"address":address}).subscribe(e => {
 
       let chartPoints: ChartPoint[] = [];
 

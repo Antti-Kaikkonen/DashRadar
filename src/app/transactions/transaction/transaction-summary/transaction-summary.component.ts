@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { CypherService } from '../../../charts/cypher.service';
 import { Transaction } from './../transaction';
@@ -27,7 +28,14 @@ export class TransactionSummaryComponent implements OnInit {
   inputsSummary: string;
   outputsSummary: string;
 
+  txBalanceSub: Subscription;
+
   constructor(private cypherService: CypherService) { }
+
+  ngOnDestroy() {
+    if (this.txBalanceSub !== undefined) this.txBalanceSub.unsubscribe();
+  }
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.transaction) {
@@ -39,11 +47,11 @@ export class TransactionSummaryComponent implements OnInit {
     if (this.currentAddress !== undefined) {
       this.loadTransactionBalance();
       this.currentAddressIsInput = !this.transaction.vin.every(e => e.addr !== this.currentAddress);
-      this.currentAddressIsOutput = !this.transaction.vout.every(e => e.scriptPubKey.addresses[0] !== this.currentAddress);
+      this.currentAddressIsOutput = !this.transaction.vout.every(e => e.scriptPubKey.addresses === undefined || e.scriptPubKey.addresses[0] !== this.currentAddress);
     }
 
     let uniqueInputAddresses = new Set(this.transaction.vin.filter(vin => vin.addr !== undefined && vin.addr != null).map(vin => vin.addr));
-    let uniqueOutputAddresses = new Set(this.transaction.vout.filter(vout => vout.scriptPubKey.addresses[0] !== undefined && vout.scriptPubKey.addresses[0] != null).map(vout => vout.scriptPubKey.addresses[0]));
+    let uniqueOutputAddresses = new Set(this.transaction.vout.filter(vout => vout.scriptPubKey.addresses !== undefined && vout.scriptPubKey.addresses[0] !== undefined && vout.scriptPubKey.addresses[0] != null).map(vout => vout.scriptPubKey.addresses[0]));
 
     if (uniqueInputAddresses.size === 1 && !this.currentAddressIsInput) {
       this.inputsSummary = this.transaction.vin[0].addr;
@@ -72,12 +80,13 @@ export class TransactionSummaryComponent implements OnInit {
   }
 
   loadTransactionBalance() {
+    if (this.txBalanceSub !== undefined) this.txBalanceSub.unsubscribe();
     this.newBalance = undefined;
     this.balanceChange = undefined;
     let query: string = "MATCH (:Transaction {txid:$txid})-[:CREATES]->(b:BalanceEvent)-[:INCLUDED_IN]->(:Address {address:$address})\n"
     + "RETURN b.balanceAfterSat, b.balanceChangeSat;";
     this.balanceLoading = true;
-    this.cypherService.executeQuery(query, {txid:this.transaction.txid, address:this.currentAddress}).subscribe(e => {
+    this.txBalanceSub = this.cypherService.executeQuery(query, {txid:this.transaction.txid, address:this.currentAddress}).subscribe(e => {
       this.balanceLoading = false;
       if (e.data.length === 1) {
         this.newBalance = e.data[0][0]/100000000.0;

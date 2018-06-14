@@ -70,7 +70,7 @@
 				</div>	
 				<h2>Transactions ({{address?.txApperances}})</h2>
 				<mat-spinner *ngIf="transactions === undefined"></mat-spinner>
-				<transactions-table *ngIf="transactions !== undefined" [transactions]="transactions" [currentAddress]="addrStr"></transactions-table>
+				<transactions-table *ngIf="transactions !== undefined && transactions.length > 0" [transactions]="transactions" [currentAddress]="addrStr"></transactions-table>
 				<mat-paginator [length]="address?.txApperances"
 					[pageSize]="pageSize"
 					[pageIndex]="currentPage"

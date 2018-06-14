@@ -32,6 +32,9 @@ export class AddressComponent implements OnInit {
   currentPage = 0;
 
   interval: Subscription;
+  transactionsSub: Subscription;
+  walletSub: Subscription;
+  addressSub: Subscription;
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -43,18 +46,21 @@ export class AddressComponent implements OnInit {
 
   ngOnDestroy() {
     this.interval.unsubscribe();
+    if (this.transactionsSub !== undefined) this.transactionsSub.unsubscribe();
+    if (this.addressSub !== undefined) this.addressSub.unsubscribe();
+    if (this.walletSub !== undefined) this.walletSub.unsubscribe();
     this.metaService.removeTag('name="description"');
   }  
 
 
   addressChanged(address: Address) {
     if (this.address === undefined || this.address.txApperances != address.txApperances || this.address.unconfirmedTxApperances != address.unconfirmedTxApperances) {
-      this.transactionService.getTransactionsByAddress(this.addrStr, this.currentPage)
+      this.transactionsSub = this.transactionService.getTransactionsByAddress(address.addrStr, this.currentPage)
       .subscribe((newTransactions: Transaction[]) => {
         let transactions = newTransactions.map(newTx => {
           let oldTx = this.transactions.find((value: Transaction, index: number) => {
-            return value.txid === newTx.txid}
-          );
+            return value.txid === newTx.txid
+          });
           if (oldTx === undefined)  {
             return newTx;
           } else {
@@ -68,7 +74,8 @@ export class AddressComponent implements OnInit {
   }
 
   checkGuestimatedWalletUpdates() {
-    this.walletService.getWalletAddressCount(this.addrStr).subscribe(e => {
+    if (this.walletSub !== undefined) this.walletSub.unsubscribe();
+    this.walletSub = this.walletService.getWalletAddressCount(this.addrStr).subscribe(e => {
       try {
         let count: number = e.data[0][0];
         if (count >= 0) {
@@ -84,7 +91,8 @@ export class AddressComponent implements OnInit {
 
   checkForUpdates() {
     if (!this.address) return;
-    this.addressService.getAddress(this.addrStr)
+    if (this.addressSub !== undefined) this.addressSub.unsubscribe();
+    this.addressSub = this.addressService.getAddress(this.addrStr)
     .subscribe((address: Address) => {
       this.addressChanged(address);
       this.checkGuestimatedWalletUpdates();
@@ -106,8 +114,9 @@ export class AddressComponent implements OnInit {
       } else {
         this.currentPage = Math.max(0, Number(e.page));
       }
-      if (this.address !== undefined) {
-        this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage)
+      if (this.address !== undefined && this.address.addrStr === this.route.snapshot.params.addr) {//only if address didn't change simulataneously
+        if (this.transactionsSub !== undefined) this.transactionsSub.unsubscribe();
+        this.transactionsSub = this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage)
         .subscribe(transactions => this.transactions = transactions);
       }
     }); 
@@ -115,8 +124,11 @@ export class AddressComponent implements OnInit {
     this.route.params
     .filter(params => params.addr)
     .switchMap((params: Params) => {
+      this.transactions = [];
       this.addrStr = params.addr;
+      this.address = undefined;
       this.guesstimatedWallet = undefined;
+      if (this.addressSub !== undefined) this.addressSub.unsubscribe();
       return this.addressService.getAddress(params.addr)
     }).subscribe(
       (address: Address) => {
