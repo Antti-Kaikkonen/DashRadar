@@ -28,3 +28,4 @@ export function valuesToRunningTotal(values: number[]): number[] {
   values.forEach((value: number, index: number) => result.push(result[result.length - 1] + value));
   return result;
 }
+

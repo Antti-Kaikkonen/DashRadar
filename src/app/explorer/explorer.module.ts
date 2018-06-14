@@ -1,3 +1,5 @@
+import 'chartjs-plugin-downsample';
+
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';

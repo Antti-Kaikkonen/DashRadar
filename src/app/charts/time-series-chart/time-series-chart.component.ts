@@ -117,6 +117,11 @@ export class TimeSeriesChartComponent implements OnInit {
       drag: false,
       mode: 'x',
       sensitivity: 3 
+    },
+
+    downsample: {
+        enabled: true,
+        threshold: 2000 // change this
     }
   };
 
