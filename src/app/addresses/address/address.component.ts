@@ -20,7 +20,7 @@ export class AddressComponent implements OnInit {
 	public address: Address;
 	errorMessage: string;
   error: boolean;
-  transactions: Transaction[];
+  transactions: Transaction[] = [];
 
   pageSizeOptions = [10];
   pageSize = this.pageSizeOptions[0];
@@ -48,7 +48,7 @@ export class AddressComponent implements OnInit {
 
 
   addressChanged(address: Address) {
-    if (this.address.txApperances != address.txApperances || this.address.unconfirmedTxApperances != address.unconfirmedTxApperances) {
+    if (this.address === undefined || this.address.txApperances != address.txApperances || this.address.unconfirmedTxApperances != address.unconfirmedTxApperances) {
       this.transactionService.getTransactionsByAddress(this.addrStr, this.currentPage)
       .subscribe((newTransactions: Transaction[]) => {
         let transactions = newTransactions.map(newTx => {
@@ -99,7 +99,7 @@ export class AddressComponent implements OnInit {
     });
 
     this.route.queryParams
-    .filter(e => e.page !== undefined)
+    //.filter(e => e.page !== undefined)
     .subscribe(e => {
       if (isNaN(e.page)) {
         this.currentPage = 0;
@@ -126,16 +126,8 @@ export class AddressComponent implements OnInit {
           name: "description", 
           content: "Balance: "+address.balance+", transactions: "+address.txApperances+", received: "+address.totalReceived+", sent: "+address.totalSent
         });
-        this.address = address;
+        this.addressChanged(address);
         this.checkGuestimatedWalletUpdates();
-        this.transactionService.getTransactionsByAddress(this.address.addrStr, this.currentPage)
-        .subscribe(tranactions => this.transactions = tranactions, 
-          error => console.log("error fetching address transactions: ", error));
-        /*Observable.from(this.address.transactions)
-        .mergeMap(txid => this.transactionService.getTransactionByHash(txid))
-        .toArray()
-        .subscribe(transactions => this.transactions = transactions, 
-          error => console.log("error fetching address transactions: ", error));*/
       },
 	    (error: string) =>  {this.errorMessage = error; this.error = true;}
     );
