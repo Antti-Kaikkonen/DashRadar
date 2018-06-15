@@ -33,15 +33,30 @@ export class AddressBalanceChartComponent implements OnInit {
 
       let chartPoints: ChartPoint[] = [];
 
-      let total = 0;
-
-      let running_total = chart_utils.valuesToRunningTotal(e.data.map(e => e[1])).splice(1);
-      running_total = chart_utils.valuesToRunningTotal(running_total).splice(1);
-      e.data.forEach((row, index) => {
+      let sameTimeRemoved: any[] = [];
+      let previousTime: number
+      let sum: number;
+      for (let i = 0; i < e.data.length; i++) {
+        let row = e.data[i];
+        let time = e.data[i][0];
+        let value = e.data[i][1];
+        if (i === 0) {
+          //sameTimeRemoved.push(row);
+          previousTime = time;
+          sum = value;
+        } else if (time > previousTime) {
+          sameTimeRemoved.push([previousTime, sum]);
+          previousTime = time;
+          sum = value;
+        } else {
+          sum += value;
+        }
+      }
+      if (sum !== undefined) sameTimeRemoved.push([previousTime, sum]);
+      let running_total = chart_utils.valuesToRunningTotal(sameTimeRemoved.map(e => e[1])).splice(1);//Deltas to values
+      running_total = chart_utils.valuesToRunningTotal(running_total).splice(1);//Values to running total
+      sameTimeRemoved.forEach((row, index) => {
         let time = row[0];
-        let delta = row[1]/100000000.0;
-        let current = total + delta;
-        total += delta;
         chartPoints.push({x:time*1000, y: running_total[index]/100000000.0});
 
       });
