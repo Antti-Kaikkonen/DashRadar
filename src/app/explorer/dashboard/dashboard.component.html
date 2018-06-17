@@ -1,0 +1,16 @@
+<div fxLayout="row wrap" fxLayoutAlign="start start">
+
+  <mat-card fxFlex>
+      <mat-card-title>Lastest blocks</mat-card-title> 
+      <app-blocks-table2></app-blocks-table2>
+  </mat-card>
+
+  <mat-card fxFlex>
+    <mat-card-title>Unconfirmed transactions</mat-card-title>
+    <div *ngFor="let transaction of transactions">
+      <img src="/assets/png2/64x64/{{transaction.image}}" width="24" height="24"/>
+      <a style="display: inline-block; width:200px; overflow-x:hidden; text-overflow: ellipsis;" [routerLink]="['/explorer/tx', transaction.txid]">{{transaction.txid}}</a>
+      <span style="display: inline-block; width:150px;"> {{transaction.time*1000 | date : "mediumTime"}}</span>
+    </div>
+  </mat-card>
+</div>

@@ -48,6 +48,7 @@ import {
 } from './../transactions/transaction/transaction-input-output-table/transaction-input-output-table.component';
 import { ExplorerRoutingModule } from './explorer-routing.module';
 import { ExplorerComponent } from './explorer.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 @NgModule({
@@ -85,7 +86,8 @@ import { ExplorerComponent } from './explorer.component';
     AddressBalanceChartComponent,
     DurationPipe,
     RelativeTimePipe,
-    ExplorerComponent
+    ExplorerComponent,
+    DashboardComponent
   ],
   providers: [
     DatePipe,
