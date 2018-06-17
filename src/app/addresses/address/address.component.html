@@ -68,7 +68,7 @@
 						<app-address-balance-chart [address]="addrStr" fxFlex.gt-md="0 1 70%" fxFlex.lt-lg="0 1 100%;"></app-address-balance-chart>
 					</div>
 				</div>	
-				<h2>Transactions ({{address?.txApperances}})</h2>
+				<h2>Transactions ({{address?.txApperances + address?.unconfirmedTxApperances}})</h2>
 				<mat-spinner *ngIf="transactions === undefined"></mat-spinner>
 				<transactions-table *ngIf="transactions !== undefined && transactions.length > 0" [transactions]="transactions" [currentAddress]="addrStr"></transactions-table>
 				<mat-paginator [length]="address?.txApperances"
