@@ -16,6 +16,8 @@ export class AddressBalanceChartComponent implements OnInit {
 
   data: ChartSeries[];
 
+  enabled: boolean = true;;
+
   sub: Subscription;
 
   ngOnDestroy() {
@@ -53,6 +55,8 @@ export class AddressBalanceChartComponent implements OnInit {
         }
       }
       if (sum !== undefined) sameTimeRemoved.push([previousTime, sum]);
+      this.enabled = sameTimeRemoved.length >= 2;
+      if (!this.enabled) return;
       let running_total = chart_utils.valuesToRunningTotal(sameTimeRemoved.map(e => e[1])).splice(1);//Deltas to values
       running_total = chart_utils.valuesToRunningTotal(running_total).splice(1);//Values to running total
       sameTimeRemoved.forEach((row, index) => {
@@ -60,7 +64,6 @@ export class AddressBalanceChartComponent implements OnInit {
         chartPoints.push({x:time*1000, y: running_total[index]/100000000.0});
 
       });
-
       this.data = [{
         label: "Balance (Dash)", 
         fill: false, 
@@ -71,6 +74,7 @@ export class AddressBalanceChartComponent implements OnInit {
         steppedLine: true,
         showLine: true
       }];
+
     });  
 
   }
