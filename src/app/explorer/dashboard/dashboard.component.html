@@ -1,16 +1,36 @@
-<div fxLayout="row wrap" fxLayoutAlign="start start">
+<div fxLayout="row wrap" fxLayoutGap="5px">
 
-  <mat-card fxFlex>
-      <mat-card-title>Lastest blocks</mat-card-title> 
+<mat-card fxFlex.lt-md="grow" fxFlex="1 1 calc(50%-5px)">
+      <mat-card-title>Latest blocks</mat-card-title> 
       <app-blocks-table2></app-blocks-table2>
-  </mat-card>
+</mat-card>
 
-  <mat-card fxFlex>
+<mat-card fxFlex.lt-md="grow" fxFlex="1 1 calc(50%-5px)">
     <mat-card-title>Unconfirmed transactions</mat-card-title>
-    <div *ngFor="let transaction of transactions">
-      <img src="/assets/png2/64x64/{{transaction.image}}" width="24" height="24"/>
-      <a style="display: inline-block; width:200px; overflow-x:hidden; text-overflow: ellipsis;" [routerLink]="['/explorer/tx', transaction.txid]">{{transaction.txid}}</a>
-      <span style="display: inline-block; width:150px;"> {{transaction.time*1000 | date : "mediumTime"}}</span>
-    </div>
-  </mat-card>
+
+    <mat-table [dataSource]="transactions" style="max-height: 547px; overflow-y:auto;">
+
+      <ng-container matColumnDef="image">
+        <mat-header-cell mat-header-cell *matHeaderCellDef fxFlex="60px">  </mat-header-cell>
+        <mat-cell *matCellDef="let transaction" fxFlex="60px"> <img src="/assets/png2/64x64/{{transaction.image}}" width="24" height="24"/> </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="txid">
+        <mat-header-cell mat-header-cell *matHeaderCellDef fxFlex="0 1 300px"> Txid </mat-header-cell>
+        <mat-cell *matCellDef="let transaction" fxFlex="0 1 300px"> 
+          <a style="white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis;" [routerLink]="['/explorer/tx', transaction.txid]">{{transaction.txid}}</a> 
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <mat-header-cell *matHeaderCellDef fxFlex="0 0 100px"> Time </mat-header-cell>
+        <mat-cell *matCellDef="let transaction" fxFlex="0 0 100px"> {{transaction.time*1000 | date : "mediumTime"}} </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+      <mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></mat-row>
+    
+    </mat-table>
+</mat-card>
+
 </div>

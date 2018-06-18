@@ -7,7 +7,7 @@
 
     <ng-container matColumnDef="hash">
       <mat-header-cell *matHeaderCellDef [style.max-width.px]="550" [style.min-width.px]="150"> Hash </mat-header-cell>
-      <mat-cell *matCellDef="let block" [style.max-width.px]="550" [style.min-width.px]="150"> <a [routerLink]="['/explorer/blocks', block.hash]">{{block?.hash}}</a> </mat-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="550" [style.min-width.px]="150"> <a style="white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis;" [routerLink]="['/explorer/blocks', block.hash]">{{block?.hash}}</a> </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="height">

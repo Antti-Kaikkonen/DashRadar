@@ -13,6 +13,8 @@ export class DashboardComponent implements OnInit {
 
   transactions: {txid: string, time: number, pstype: number, image: string}[] = [];
 
+  columnsToDisplay = ["image", "txid", "time"];
+
   private pstype2img = {
     0:"dual_color/tx.png",
     1:"create_denominations.png",
