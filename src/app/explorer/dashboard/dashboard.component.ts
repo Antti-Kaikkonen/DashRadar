@@ -27,13 +27,13 @@ export class DashboardComponent implements OnInit {
   };
 
   interval: Subscription;
+  mempoolSub: Subscription;
 
   constructor(private cypherService: CypherService) { }
 
   ngOnDestroy() {
-    if (this.interval !== undefined) {
-      this.interval.unsubscribe();
-    }
+    if (this.interval !== undefined) this.interval.unsubscribe();
+    if (this.mempoolSub !== undefined) this.mempoolSub.unsubscribe();
   }  
 
 
@@ -51,14 +51,16 @@ export class DashboardComponent implements OnInit {
 
     this.interval = Observable.interval(2000).pipe(startWith(0)).subscribe(() => {
       let query: string = "MATCH (tx:Transaction)-[INCLUDED_IN]->(:Mempool) RETURN tx.txid as txid, tx.receivedTime as time, tx.pstype as pstype ORDER BY time DESC;"
-      this.cypherService.executeQuery(query, {}).subscribe(e => {
-        let newTxs = e.data.map(row => {
-          let pstype: number = row[2];
-          
-          return {txid: row[0], time: row[1], pstype: row[2], image:this.pstype2img[row[2]]};
+      if (this.mempoolSub == undefined || this.mempoolSub.closed) {
+        this.mempoolSub = this.cypherService.executeQuery(query, {}).subscribe(e => {
+          let newTxs = e.data.map(row => {
+            let pstype: number = row[2];
+            
+            return {txid: row[0], time: row[1], pstype: row[2], image:this.pstype2img[row[2]]};
+          });
+          this.updateTransactions(newTxs);
         });
-        this.updateTransactions(newTxs);
-      });
+      }
     });
   }
 
