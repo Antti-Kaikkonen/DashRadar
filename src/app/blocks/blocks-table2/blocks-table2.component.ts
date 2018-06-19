@@ -18,7 +18,7 @@ import { Block } from '../block/block';
 })
 export class BlocksTable2Component implements OnInit {
 
-	displayedColumns = ['height', 'hash', 'transactions'];
+	displayedColumns = ['height', 'time', 'transactions'];
   exampleDatabase: BlockDatabase;
   dataSource: BlockDataSource | null;
 

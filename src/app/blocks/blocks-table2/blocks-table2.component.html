@@ -5,9 +5,9 @@
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 
-    <ng-container matColumnDef="hash">
-      <mat-header-cell *matHeaderCellDef [style.max-width.px]="550" [style.min-width.px]="150"> Hash </mat-header-cell>
-      <mat-cell *matCellDef="let block" [style.max-width.px]="550" [style.min-width.px]="150"> <a [routerLink]="['/explorer/blocks', block.hash]">{{block?.hash}}</a> </mat-cell>
+    <ng-container matColumnDef="time">
+      <mat-header-cell *matHeaderCellDef [style.max-width.px]="160" [style.min-width.px]="115"> Time </mat-header-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="160" [style.min-width.px]="115">{{block?.time | date : "mediumTime"}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="height">
