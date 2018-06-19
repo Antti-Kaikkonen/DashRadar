@@ -2,9 +2,7 @@
         <div fxFlex="nogrow">
             <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
                 <a mat-tab-link routerLink="/explorer" routerLinkActive #rl1="routerLinkActive"
-                [active]="rl1.isActive">
-                    EXPLORER
-                    <div style="position: absolute; bottom: 0; width: 100%; left: 0; text-align:center; color: #75D41D;">beta</div>
+                [active]="rl1.isActive">EXPLORER
                 </a>
                 <a mat-tab-link routerLink="/" routerLinkActive #rl2="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
                 [active]="rl2.isActive">GRAPH</a>
