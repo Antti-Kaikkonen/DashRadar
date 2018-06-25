@@ -1,15 +1,12 @@
-import { DataSource } from '@angular/cdk/collections';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
-import { Meta, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { BlockService } from '../block.service';
-import { Block } from '../block/block';
+import { CypherService } from '../../charts/cypher.service';
 
 @Component({
   selector: 'app-blocks-table2',
@@ -19,59 +16,63 @@ import { Block } from '../block/block';
 export class BlocksTable2Component implements OnInit {
 
 	displayedColumns = ['height', 'time', 'transactions'];
-  exampleDatabase: BlockDatabase;
-  dataSource: BlockDataSource | null;
+
+  blocks: Block2[] = [];
 
   pageSizeOptions = [10];
   pageSize = this.pageSizeOptions[0];
-  length = 100;
+  length = 0;
 
   currentPage = 0;
 
-  lastBlockHeight: number;
-
   interval: Subscription;
-  heightSub: Subscription;
+  blocksub: Subscription;
+
+  query: string = "CYPHER planner=rule MATCH (b:BestBlock) WITH b.height as tipHeight MATCH (b:Block)<-[:INCLUDED_IN]-(tx:Transaction) WHERE b.height > tipHeight-($page+1)*$pageSize AND b.height <= tipHeight-$page*$pageSize RETURN b.hash, b.height, b.time, count(tx) as txcount ORDER BY b.height DESC;"
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private route: ActivatedRoute,
     private router: Router,
-    private blockService: BlockService,
-    private metaService: Meta,
-    private titleService: Title) { 
-      titleService.setTitle("Dash Block Explorer | DashRadar");
-      this.exampleDatabase = new BlockDatabase(this.blockService, this.lastBlockHeight);
-      this.dataSource = new BlockDataSource(this.exampleDatabase);
+    private titleService: Title,
+    private cypherService: CypherService) { 
+      this.titleService.setTitle("Dash Block Explorer | DashRadar");
   }
 
   ngAfterViewInit() {
     
   }
 
-  updateBlocks() {
-    let lastBlock: number = this.lastBlockHeight-this.currentPage*this.pageSize;
-    let firstBlock: number = lastBlock-this.pageSize+1;
-    this.exampleDatabase.getBlocks(firstBlock, lastBlock);
+  updateBlocks(force: boolean = false) {
+    if (force && this.blocksub != undefined) {
+      this.blocksub.unsubscribe();
+    }
+    if (force || this.blocksub == undefined || this.blocksub.closed) {
+      let currentPage: number = this.currentPage;
+      this.blocksub = 
+      this.cypherService.executeQuery(this.query, {page:currentPage, pageSize:10}).subscribe(e => {
+        this.blocks = e.data.map(row => new Block2(row[0], row[1], row[2], row[3]));
+        if (this.blocks.length > 0) {
+          this.length = this.blocks[0].height+currentPage*10;
+        }
+      });
+    }  
   }
 
   ngOnDestroy() {
     if (this.interval !== undefined) this.interval.unsubscribe();
-    if (this.heightSub !== undefined) this.heightSub.unsubscribe();
+    if (this.blocksub !== undefined) this.blocksub.unsubscribe();
   }  
 
   ngOnInit() {
 
     this.interval = Observable.interval(2000).subscribe(() => {
-      if (this.heightSub === undefined || this.heightSub.closed) {
-        this.heightSub = this.blockService.getHeight().subscribe((newHeight: number) => {
-          if (newHeight != this.lastBlockHeight) {
-            this.lastBlockHeight = newHeight;
-            this.updateBlocks();
-          }
-        });
-      }
+      this.updateBlocks();
     });
+
+    if (!this.route.snapshot.queryParams.page) {
+      this.updateBlocks();
+    }
 
     this.route.queryParams
     .filter(queryParams => queryParams.page !== undefined)
@@ -81,13 +82,9 @@ export class BlocksTable2Component implements OnInit {
       } else {
         this.currentPage = Math.max(0, Number(queryParams.page));
       }
-
-      if (this.lastBlockHeight) {
-        this.updateBlocks();
-      }
-    })
-
-    this.get10Blocks();
+      if (this.blocks.length > 0) this.blocks = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];
+      this.updateBlocks(true);
+    });
   }
 
   pageChanged(event: PageEvent) {
@@ -96,88 +93,13 @@ export class BlocksTable2Component implements OnInit {
     let urlTree = this.router.parseUrl(this.router.url);
     urlTree.queryParams['page'] = ""+event.pageIndex;
     this.router.navigateByUrl(urlTree);
-
-    /*
-    console.log("pageEvent", pageEvent);
-      let lastBlock: number = this.lastHeight-pageEvent.pageIndex*pageEvent.pageSize;
-      let firstBlock: number = lastBlock-pageEvent.pageSize+1;
-      console.log("min", firstBlock, "last", lastBlock);
-      this.getBlocks(firstBlock, lastBlock);
-    */  
   }
 
-
-  get10Blocks() {
-    this.blockService.getHeight()
-    .subscribe(
-      (height: number) => {
-        this.lastBlockHeight = height;
-        //this.paginator.pageIndex = 1;
-        this.length = height;
-        //this.exampleDatabase = new BlockDatabase(this.blockService, this.lastBlockHeight);
-        //this.dataSource = new BlockDataSource(this.exampleDatabase);
-        this.exampleDatabase.getBlocks(height-9-this.currentPage*10, height-this.currentPage*10);
-        //this.getBlocks(height-9, height);
-      },
-      (error: string) =>  {
-        //this.errorMessage = error; this.error=true
-      }
-    );
-  }
 
 }
 
-export class BlockDatabase {
-  /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<Block[]> = new BehaviorSubject<Block[]>([]);
-  get data(): Block[] { return this.dataChange.value; }
+export class Block2 {
 
-  subscription: Subscription;
+  constructor(public hash: string, public height: number, public time: number, public txappearances: number) {}
 
-
-  constructor(private blockService: BlockService, public lastHeight: number) {
-    //paginator.page.subscribe((pageEvent:PageEvent) => this.pageChanged(pageEvent));
-  }
-
-  getBlocks(min: number, max: number) {
-    this.dataChange.next(new Array(10).fill(new Block(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)));
-    if (this.subscription !== undefined) {
-      this.subscription.unsubscribe();
-    }
-
-    this.subscription = Observable.range(min, max-min+1)
-    .mergeMap((height: number) => this.blockService.getBlockByHeight(height))
-    .toArray()
-    .map(
-      (blocks: Array<Block>) => 
-      blocks.sort((block1: Block, block2: Block) => block2.height-block1.height)
-    ).subscribe(
-      (blocks : Array<Block>) => this.dataChange.next(blocks),
-      (error: string) => {
-        //this.errorMessage = error; this.error=true;
-    });
-  }
-
-}
-
-export class BlockDataSource extends DataSource<any> {
-
-
-  constructor(private _exampleDatabase: BlockDatabase) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Block[]> {
-    const displayDataChanges = [
-      this._exampleDatabase.dataChange,
-    ];
-
-    return Observable.merge(...displayDataChanges).map(() => {
-      let filteredData = this._exampleDatabase.data;//.slice().filter((item: Block) => {
-      return filteredData;
-    });
-  }
-
-  disconnect() {}
 }

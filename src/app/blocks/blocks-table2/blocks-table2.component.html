@@ -1,13 +1,13 @@
 <div>
 
-  <mat-table #table [dataSource]="dataSource">
+  <mat-table [dataSource]="blocks">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 
     <ng-container matColumnDef="time">
       <mat-header-cell *matHeaderCellDef [style.max-width.px]="160" [style.min-width.px]="115"> Time </mat-header-cell>
-      <mat-cell *matCellDef="let block" [style.max-width.px]="160" [style.min-width.px]="115">{{block?.time | date : "mediumTime"}}</mat-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="160" [style.min-width.px]="115">{{block?.time*1000 | date : "mediumTime"}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="height">
@@ -17,7 +17,7 @@
 
     <ng-container matColumnDef="transactions">
       <mat-header-cell *matHeaderCellDef [style.max-width.px]="150" [style.min-width.px]="70"> Transactions </mat-header-cell>
-      <mat-cell *matCellDef="let block" [style.max-width.px]="150" [style.min-width.px]="70"> {{block?.tx?.length}}</mat-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="150" [style.min-width.px]="70"> {{block?.txappearances}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
