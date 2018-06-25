@@ -1,15 +1,15 @@
-<mat-card *ngFor="let category of categories" [style.background-color]="category.bgcolor === undefined ? 'intial' : category.bgcolor">
+<mat-card *ngFor="let category of categories" [style.background-color]="category.bgcolor === undefined ? 'intial' : category.bgcolor" style="padding-left: 0; padding-right: 0;">
     <h1 style="text-align:center">{{category.name}}</h1>
-    <div fxLayout="row wrap" fxLayout.lt-lg="row wrap" fxLayoutAlign="center center">
+    <div class="category-items" fxLayoutAlign="center center" fxLayout="row wrap">
         <a *ngFor="let chart of category.charts" [routerLink]="['/charts', chart]">
-          <mat-card  fxFlex="nogrow" fxFlex.md="0 1 calc(25% - 20px)" fxFlex.sm="0 1 calc(50% - 14px)" fxFlex.xs="0 1 calc(100% - 20px)" style="margin: 7px;">
-            <mat-card-header>
-                <mat-card-title>{{chartData.charts[chart].title}}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <img width="320" height="180" [src]="chartData.charts[chart].previewUrl"/>
-            </mat-card-content>
-          </mat-card>
+            <mat-card style="margin: 7px;">
+                <mat-card-header>
+                    <mat-card-title>{{chartData.charts[chart].title}}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <img width="320" height="180" [src]="chartData.charts[chart].previewUrl"/>
+                </mat-card-content>
+            </mat-card>
         </a>
     </div>
 </mat-card>

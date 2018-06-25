@@ -1,3 +1,9 @@
+$card-size: 382px;
+
+$mat-card-padding: 24px;
+
+$scrollbar-width: 20px;
+
 .chart-container {
   display: inline-block;
   max-width: 320px;
@@ -19,3 +25,17 @@
 mat-card-title {
   height:2em;
 }
+
+.category-items {
+  margin: 0 auto;
+  @media screen and (max-width: $card-size*2 + $scrollbar-width - 1) {
+    max-width: $card-size+$scrollbar-width;
+  }  
+  @media screen and (min-width: $card-size*2+$scrollbar-width) and (max-width: $card-size * 4 + $scrollbar-width - 1) {
+    max-width: $card-size*2+$scrollbar-width;
+  }
+  @media screen and (min-width: $card-size*4+$scrollbar-width) {
+    max-width: 100%;
+  }
+}
+
