@@ -1,14 +1,15 @@
-<div fxLayout="row wrap" fxLayoutGap="5px" fxLayoutGap.sm="2px" fxLayoutGap.xs="0px" fxLayoutAlign="center">
+<div fxLayout="row nowrap" fxLayout.xs="column nowrap" fxLayoutGap="0px" fxLayoutAlign="center">
 
-<mat-card fxFlex.lt-sm="grow" fxFlex="0 0 calc(50%-5px)" fxFlex.sm="0 0 calc(50%-2px)" fxFlex.gt-lg="0 0 800px">
+<mat-card fxFlex.lt-sm="grow" fxFlex="0 0 50%" fxFlex.gt-lg="0 0 800px">
       <mat-card-title>Latest blocks</mat-card-title> 
       <app-blocks-table2></app-blocks-table2>
 </mat-card>
-
-<mat-card fxFlex.lt-sm="grow" fxFlex="0 0 calc(50%-5px)" fxFlex.sm="0 0 calc(50%-2px)" fxFlex.gt-lg="0 0 800px">
+<mat-divider fxHide.xs [vertical]="true"></mat-divider>
+<mat-divider fxShow.xs [vertical]="false"></mat-divider>
+<mat-card fxFlex.lt-sm="grow" fxFlex="0 0 50%" fxFlex.gt-lg="0 0 800px">
     <mat-card-title fxHide.sm>Unconfirmed transactions</mat-card-title>
     <mat-card-title fxHide fxShow.sm>Unconfirmed tx</mat-card-title>
-    <mat-table [dataSource]="transactions" style="max-height: 547px; overflow-y:auto;">
+    <mat-table [dataSource]="transactions" ngStyle.gt-xs="max-height: 547px; overflow-y:auto;">
 
       <ng-container matColumnDef="image">
         <mat-header-cell mat-header-cell *matHeaderCellDef [style.max-width.px]="60" [style.min-width.px]="10">  </mat-header-cell>

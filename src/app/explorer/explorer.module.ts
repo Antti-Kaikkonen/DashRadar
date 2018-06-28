@@ -10,6 +10,7 @@ import {
   MatCheckboxModule,
   MatChipsModule,
   MatDialogModule,
+  MatDividerModule,
   MatExpansionModule,
   MatIconModule,
   MatInputModule,
@@ -46,9 +47,9 @@ import { WalletComponent } from '../wallets/wallet/wallet.component';
 import {
   TransactionInputOutputTableComponent,
 } from './../transactions/transaction/transaction-input-output-table/transaction-input-output-table.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExplorerRoutingModule } from './explorer-routing.module';
 import { ExplorerComponent } from './explorer.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 @NgModule({
@@ -64,7 +65,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MatIconModule, 
     MatSortModule, 
     MatCheckboxModule, 
-    MatSnackBarModule, MatMenuModule, MatTabsModule, MatChipsModule, MatExpansionModule, MatCardModule, MatPaginatorModule, MatTooltipModule,
+    MatSnackBarModule, MatMenuModule, MatTabsModule, MatChipsModule, MatExpansionModule, MatCardModule, MatPaginatorModule, MatTooltipModule, MatDividerModule,
     RouterModule,
     FlexLayoutModule,
     ChartJSModule,
