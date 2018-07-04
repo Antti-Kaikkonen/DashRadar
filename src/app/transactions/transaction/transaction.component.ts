@@ -82,8 +82,13 @@ export class TransactionComponent implements OnInit {
     this.fee = this.transaction.calculateFee();
     this.txid = this.transaction.txid;
     if (this.transaction.isPrivateSendTransaction()) {
-      this.imageName = "private_send.png";
-      this.transaction_type = "PRIVATESEND";
+      if (this.transaction.txlock) {
+        this.imageName = "private_instant_send.png";
+        this.transaction_type = "INSTANT PRIVATESEND";
+      } else {
+        this.imageName = "private_send.png";
+        this.transaction_type = "PRIVATESEND";
+      }
     } else if (this.transaction.isCreateDenominationsTransaction()) {
       this.imageName = "create_denominations.png";
       this.transaction_type = "CREATE DENOMINATIONS";
@@ -102,8 +107,13 @@ export class TransactionComponent implements OnInit {
         this.imageName = "dual_color/private_send_10-0_black.png";
       }
     } else {
-      this.transaction_type = "";
-      this.imageName = "dual_color/tx.png";
+      if (this.transaction.txlock) {
+        this.transaction_type = "INSTANTSEND";
+        this.imageName = "single_color/instantx.png";
+      } else {
+        this.transaction_type = "";
+        this.imageName = "dual_color/tx.png";
+      }
     }
 
     this.titleService.setTitle("Dash "+this.toTitleCase(this.transaction_type)+" Transaction | DashRadar");
