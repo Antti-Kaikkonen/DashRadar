@@ -1,6 +1,6 @@
 
 <div fxLayout="row wrap" fxLayoutAlign="start center" fxFlex="0 1 100%">
-  <img src="/assets/png2/64x64/{{imageName}}" *ngIf="imageName !== undefined" width="32"/>
+  <img src="/assets/{{imageName}}" *ngIf="imageName !== undefined" width="24" style="margin-right: 6px;"/>
   <div fxLayout="row" fxLayoutAlign="start center" fxFlex="0 0 568px" fxFlex.sm="1 1 100%" fxFlex.xs="1 1 100%">
     
       <a class="collapsible-hidden" [routerLink]="['/explorer/tx', transaction.txid]">{{transaction.txid}}</a>

@@ -98,29 +98,29 @@ export class TransactionSummaryComponent implements OnInit {
   private setImageName() {
     if (this.transaction.isPrivateSendTransaction()) {
       if (this.transaction.txlock) {
-        this.imageName = "private_instant_send.png";
+        this.imageName = "png2/64x64/private_instant_send.png";
       } else {
-        this.imageName = "private_send.png";
+        this.imageName = "png2/64x64/private_send.png";
       }
     } else if (this.transaction.isCreateDenominationsTransaction()) {
-      this.imageName = "create_denominations.png";
+      this.imageName = "png2/64x64/create_denominations.png";
     } else if (this.transaction.isCoinbase()) {
-      this.imageName = "single_color/coinbase_black.png";
+      this.imageName = "png2/64x64/single_color/coinbase_black.png";
     } else if (this.transaction.isMixingTransaction()) {
       if (this.transaction.vin[0].value==0.0100001) {
-        this.imageName = "dual_color/private_send_0-01_black.png";
+        this.imageName = "png2/64x64/dual_color/private_send_0-01_black.png";
       } else if (this.transaction.vin[0].value==0.100001) {
-        this.imageName = "dual_color/private_send_0-1_black.png";
+        this.imageName = "png2/64x64/dual_color/private_send_0-1_black.png";
       } else if (this.transaction.vin[0].value==1.00001) {
-        this.imageName = "dual_color/private_send_1-0_black.png";
+        this.imageName = "png2/64x64/dual_color/private_send_1-0_black.png";
       } else if (this.transaction.vin[0].value==10.0001) {
-        this.imageName = "dual_color/private_send_10-0_black.png";
+        this.imageName = "png2/64x64/dual_color/private_send_10-0_black.png";
       }
     } else {
       if (this.transaction.txlock) {
-        this.imageName = "single_color/instantx.png";
+        this.imageName = "SVG/instantx_black.svg";
       } else {
-        this.imageName = "dual_color/tx.png";
+        this.imageName = "png2/64x64/dual_color/tx.png";
       }
     }
   }  

@@ -2,7 +2,7 @@
 	<mat-card-header style="word-break: break-all;">
 		<div mat-card-avatar 
 			class="header-image" 
-			[style.background-image]="'url(/assets/png2/64x64/' + imageName + ')'" 
+			[style.background-image]="'url(/assets/' + imageName + ')'" 
 			[style.border-radius]="'initial'"></div>
 		<mat-card-title><ng-container *ngIf="transaction_type !== undefined">{{transaction_type}} </ng-container>TRANSACTION</mat-card-title>
 		<mat-card-subtitle>{{txid}}</mat-card-subtitle>
