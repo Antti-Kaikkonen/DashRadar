@@ -50,13 +50,21 @@ export class DashboardComponent implements OnInit {
 
 
     this.interval = Observable.interval(2000).pipe(startWith(0)).subscribe(() => {
-      let query: string = "MATCH (tx:Transaction)-[INCLUDED_IN]->(:Mempool) RETURN tx.txid as txid, tx.receivedTime as time, tx.pstype as pstype ORDER BY time DESC;"
+      let query: string = "MATCH (tx:Transaction)-[INCLUDED_IN]->(:Mempool) RETURN tx.txid as txid, tx.receivedTime as time, tx.pstype as pstype, tx.txlock as txlock ORDER BY time DESC;"
       if (this.mempoolSub == undefined || this.mempoolSub.closed) {
         this.mempoolSub = this.cypherService.executeQuery(query, {}).subscribe(e => {
           let newTxs = e.data.map(row => {
             let pstype: number = row[2];
-            
-            return {txid: row[0], time: row[1], pstype: row[2], image:this.pstype2img[row[2]]};
+            let txlock: boolean = row[3];
+            let image: string;
+            if (txlock && pstype === 2) {
+              image = "private_instant_send.png";
+            } else if (txlock && pstype === 0) {
+              image = "single_color/instantx.png";
+            } else {
+              image = this.pstype2img[pstype];
+            }
+            return {txid: row[0], time: row[1], pstype: row[2], image:image};
           });
           this.updateTransactions(newTxs);
         });
