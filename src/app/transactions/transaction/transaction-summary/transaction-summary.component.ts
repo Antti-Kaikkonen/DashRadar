@@ -39,7 +39,7 @@ export class TransactionSummaryComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.transaction) {
-      this.asd();
+      this.setImageName();
     }
 
   
@@ -95,9 +95,13 @@ export class TransactionSummaryComponent implements OnInit {
     }, (error) => this.balanceLoading = false);
   }
 
-  private asd() {
+  private setImageName() {
     if (this.transaction.isPrivateSendTransaction()) {
-      this.imageName = "private_send.png";
+      if (this.transaction.txlock) {
+        this.imageName = "private_instant_send.png";
+      } else {
+        this.imageName = "private_send.png";
+      }
     } else if (this.transaction.isCreateDenominationsTransaction()) {
       this.imageName = "create_denominations.png";
     } else if (this.transaction.isCoinbase()) {
@@ -113,7 +117,11 @@ export class TransactionSummaryComponent implements OnInit {
         this.imageName = "dual_color/private_send_10-0_black.png";
       }
     } else {
-      this.imageName = "dual_color/tx.png"
+      if (this.transaction.txlock) {
+        this.imageName = "single_color/instantx.png";
+      } else {
+        this.imageName = "dual_color/tx.png";
+      }
     }
   }  
 
