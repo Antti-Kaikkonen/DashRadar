@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  insightApiUrl: 'https://dashradar.com/insight-api-dash',
+  insightApiUrl: 'https://dashradar.com/insight-api',
   insightSocketUrl: 'https://dashradar.com',
   //cypherUrl: 'http://localhost:3002/db/data/read-only_query',
   cypherUrl: 'https://dashradar.com/db/data/read-only_query',
