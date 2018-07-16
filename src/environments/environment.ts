@@ -9,7 +9,8 @@ export const environment = {
   //cypherUrl: 'http://localhost:3002/db/data/read-only_query',
   cypherUrl: 'https://dashradar.com/db/data/read-only_query',
   //chartJsImageURL: 'http://localhost:3000'
-  chartJsImageURL: 'https://dashradar.com'
+  chartJsImageURL: 'https://dashradar.com',
+  privateSendAnalysisURL: "https://dashradar.com/psresults"
 };
 
 /*

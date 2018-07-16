@@ -55,6 +55,15 @@
 							{{transaction.confirmations}}
 						</div>
 					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="transaction_type==='PRIVATESEND' && privateSendAnalysisURL !== undefined">
+						<div fxFlex="15em">
+							<b>PrivateSend analysis</b>
+						</div>
+						<div fxFlex="nogrow">
+							
+							<a [routerLink]="['/explorer/privatesend', transaction.txid]">Open</a>
+						</div>
+					</div>
 				</div>
 				<app-transaction-input-output-table  [transaction]="transaction" [txinindex]="txinindex" [txoutindex]="txoutindex"></app-transaction-input-output-table>
 			</ng-template>

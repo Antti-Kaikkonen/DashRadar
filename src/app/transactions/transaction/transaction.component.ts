@@ -3,6 +3,7 @@ import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
+import { environment } from '../../../environments/environment';
 import { TransactionService } from '../../transactions/transaction.service';
 import { Transaction } from './transaction';
 
@@ -24,9 +25,11 @@ export class TransactionComponent implements OnInit {
   imageName: string = "png2/64x64/dual_color/tx.png";
   txid: string;
 
-  transaction_type: string = "";
+  transaction_type: "" | "PRIVATESEND" | "INSTANT PRIVATESEND" | "CREATE DENOMINATIONS" | "COINBASE" | "MIXING" | "INSTANTSEND" = "";
 
   fee: number;
+
+  privateSendAnalysisURL: string = environment.privateSendAnalysisURL;
 
 	constructor(
 		private route: ActivatedRoute,

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { PrivatesendAnalysisComponent } from '../transactions/privatesend-analysis/privatesend-analysis.component';
 import { WalletComponent } from '../wallets/wallet/wallet.component';
 import { AddressComponent } from './../addresses/address/address.component';
 import { BlockComponent } from './../blocks/block/block.component';
@@ -16,6 +17,7 @@ const routes: Routes = [
     { path: 'blocks', component: BlocksTable2Component },
     { path: 'blocks/:hash',   component: BlockComponent },
     { path: 'tx/:txid', component: TransactionComponent},
+    { path: 'privatesend/:txid', component: PrivatesendAnalysisComponent},
     { path: 'address/:addr', component: AddressComponent},
     { path: 'wallet/:addr', component: WalletComponent}
   ] },

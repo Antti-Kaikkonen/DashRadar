@@ -1,0 +1,52 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<mat-card style="text-align:center">
+  <h1>
+    PrivateSend analysis
+  </h1>
+  <a *ngIf="txid" [routerLink]="['/explorer/tx', txid]">Back to transaction page</a>
+  <mat-tab-group mat-stretch-tabs>
+    <mat-tab *ngFor="let round of rounds" label="{{round}} rounds">
+      <div *ngIf="errors && errors[round]">
+        {{errors[round]}}
+      </div>
+      <div *ngIf="roundValues && roundValues[round]">
+        <b *ngIf="roundNotFound[round]">No {{round}}-round mixings exist</b>
+        <b *ngIf="!roundNotFound[round] && roundTotals[round]===0">No {{round}}-round mixings found yet, but it is possible that some exists.</b>
+        <b *ngIf="!roundNotFound[round] && roundTotals[round]!==0">Found {{roundTotals[round]}} randomly simulated {{round}}-round mixings containing {{roundValues[round].length}} different create denominations transactions.</b>
+        <table border="1" style="margin: 0px auto;">
+          <thead>
+            <tr>
+              <td>
+                create denominations txid
+              </td>
+              <td>
+                appearances
+              </td>
+              <td>
+                percentage (appearances/{{roundTotals[round]}})
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let line of roundValues[round]">
+              <td>
+                <a [routerLink]="['/explorer/tx', line.name]">{{line.name}}</a>
+              </td>
+              <td>
+                {{line.value}}
+              </td>
+              <td>
+                {{100.0*line.value/roundTotals[round]}}%
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          Analyzed for: {{roundTimes[round]/1000}} seconds.
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  
+</mat-card>
+
