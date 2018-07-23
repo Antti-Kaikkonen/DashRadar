@@ -55,7 +55,7 @@
 							{{transaction.confirmations}}
 						</div>
 					</div>
-					<div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="transaction_type==='PRIVATESEND' && privateSendAnalysisURL !== undefined">
+					<div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="transaction_type==='PRIVATESEND' || transaction_type==='INSTANT PRIVATESEND' && privateSendAnalysisURL !== undefined">
 						<div fxFlex="15em">
 							<b>PrivateSend analysis</b>
 						</div>
