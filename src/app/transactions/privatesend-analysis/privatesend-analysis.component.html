@@ -1,11 +1,65 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<mat-card style="text-align:center">
-  <h1>
-    PrivateSend analysis
-  </h1>
-  <a *ngIf="txid" [routerLink]="['/explorer/tx', txid]">Back to transaction page</a>
-  <mat-tab-group mat-stretch-tabs>
+<mat-card>
+
+  <mat-card-header style="word-break: break-all;">
+    <div mat-card-avatar 
+      class="header-image" 
+      [style.background-image]="'url(/assets/png2/64x64/private_send.png)'" 
+      [style.border-radius]="'initial'"></div>
+    <mat-card-title>PRIVATESEND ANALYSIS</mat-card-title>
+    <mat-card-subtitle>{{txid}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-spinner *ngIf="txinfoLoading"></mat-spinner>
+  <div fxLayout="column" fxLayoutGap="5px" style="font-size: 16px" *ngIf="txinfo !== undefined">
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Block</b>
+        </div>
+        <div fxFlex="nogrow">
+          <a [routerLink]="['/explorer/blocks', txinfo.blockHash]">{{txinfo.blockHeight}}</a>
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Time</b>
+        </div>
+        <div fxFlex="nogrow" *ngIf="txinfo.receivedTime">
+            {{txinfo.receivedTime*1000 | date:'medium'}}
+        </div>
+        <div fxFlex="nogrow" *ngIf="!txinfo.receivedTime">
+            {{txinfo.blockTime*1000 | date:'medium'}}
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Inputs</b>
+        </div>
+        <div fxFlex="nogrow">
+            {{txinfo.nInputs}}
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Value</b>
+        </div>
+        <div fxFlex="nogrow">
+            {{txinfo.valueSat/100000000}} DASH
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Transaction details</b>
+        </div>
+        <div fxFlex="nogrow">
+            <a *ngIf="txid" [routerLink]="['/explorer/tx', txid]">Open</a>
+        </div>
+      </div>
+  </div>    
+
+  <mat-tab-group mat-stretch-tabs style="text-align: center">
     <mat-tab *ngFor="let round of rounds" label="{{round}} rounds">
+
+      
+      <mat-spinner style="margin: 0 auto;" *ngIf="roundLoading[round]"></mat-spinner>
       <div *ngIf="errors && errors[round]">
         {{errors[round]}}
       </div>
