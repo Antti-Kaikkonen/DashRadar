@@ -31,6 +31,17 @@ export class DashboardComponent implements OnInit {
     7:"png2/64x64/dual_color/private_send_0-01_black.png"
   };
 
+  private pstype2tooltip = {
+    0: TransactionType.TRANSACTION,
+    1: TransactionType.CREATE_DENOMINATIONS,
+    2: TransactionType.PRIVATESEND,
+    3: TransactionType.MIXING,
+    4: TransactionType.MIXING,
+    5: TransactionType.MIXING,
+    6: TransactionType.MIXING,
+    7: TransactionType.MIXING
+  }
+
   interval: Subscription;
   mempoolSub: Subscription;
 
@@ -101,14 +112,18 @@ export class DashboardComponent implements OnInit {
           let pstype: number = row[2];
           let txlock: boolean = row[3];
           let image: string;
+          let tooltip: TransactionType;
           if (txlock && pstype === 2) {
             image = "png2/64x64/private_instant_send.png";
+            tooltip = TransactionType.INSTANT_PRIVATESEND;
           } else if (txlock && pstype === 0) {
             image = "SVG/instantx_black.svg";
+            tooltip = TransactionType.INSTANTSEND;
           } else {
             image = this.pstype2img[pstype];
+            tooltip = this.pstype2tooltip[pstype];
           }
-          return {txid: row[0], time: row[1], pstype: row[2], image:image};
+          return {txid: row[0], time: row[1], pstype: row[2], image:image, tooltip:tooltip};
         });
         this.updateTransactions(newTxs);
       });
@@ -127,9 +142,20 @@ export class DashboardComponent implements OnInit {
 
 }
 
+enum TransactionType {
+  PRIVATESEND = "PRIVATESEND TRANSACTION",
+  TRANSACTION = "TRANSACTION",
+  INSTANTSEND = "INSTANTSEND TRANSACTION",
+  INSTANT_PRIVATESEND = "INSTANT PRIVATESEND TRANSACTION",
+  CREATE_DENOMINATIONS = "CREATE DENOMINATIONS TRANSACTION",
+  COINBASE = "COINBASE TRANSACTION",
+  MIXING = "MIXING TRANSACTION"
+}
+
 export interface Transaction {
   txid: string, 
   time: number, 
   pstype: number, 
-  image: string
+  image: string,
+  tooltip: TransactionType
 }

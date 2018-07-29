@@ -13,7 +13,9 @@
 
       <ng-container matColumnDef="image">
         <mat-header-cell mat-header-cell *matHeaderCellDef [style.max-width.px]="60" [style.min-width.px]="10">  </mat-header-cell>
-        <mat-cell *matCellDef="let transaction" [style.max-width.px]="60" [style.min-width.px]="10"> <img src="/assets/{{transaction.image}}" width="24" height="24"/> </mat-cell>
+        <mat-cell *matCellDef="let transaction" [style.max-width.px]="60" [style.min-width.px]="10"> 
+          <img src="/assets/{{transaction.image}}" width="24" height="24" [matTooltip]="transaction.tooltip"/> 
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="txid">

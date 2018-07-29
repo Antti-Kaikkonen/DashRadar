@@ -21,6 +21,8 @@ export class TransactionSummaryComponent implements OnInit {
 
   imageName: string;
 
+  tooltip: string;
+
   balanceLoading: boolean = false;;
   newBalance: number;
   balanceChange: number;
@@ -98,15 +100,20 @@ export class TransactionSummaryComponent implements OnInit {
   private setImageName() {
     if (this.transaction.isPrivateSendTransaction()) {
       if (this.transaction.txlock) {
+        this.tooltip = "INSTANT PRIVATESEND TRANSACTION";
         this.imageName = "png2/64x64/private_instant_send.png";
       } else {
+        this.tooltip = "PRIVATESEND TRANSACTION";
         this.imageName = "png2/64x64/private_send.png";
       }
     } else if (this.transaction.isCreateDenominationsTransaction()) {
+      this.tooltip = "CREATE DENOMINATIONS TRANSACTION";
       this.imageName = "png2/64x64/create_denominations.png";
     } else if (this.transaction.isCoinbase()) {
+      this.tooltip = "COINBASE TRANSACTION";
       this.imageName = "png2/64x64/single_color/coinbase_black.png";
     } else if (this.transaction.isMixingTransaction()) {
+      this.tooltip = "MIXING TRANSACTION";
       if (this.transaction.vin[0].value==0.0100001) {
         this.imageName = "png2/64x64/dual_color/private_send_0-01_black.png";
       } else if (this.transaction.vin[0].value==0.100001) {
@@ -118,8 +125,10 @@ export class TransactionSummaryComponent implements OnInit {
       }
     } else {
       if (this.transaction.txlock) {
+        this.tooltip = "INSTANTSEND TRANSACTION";
         this.imageName = "SVG/instantx_black.svg";
       } else {
+        this.tooltip = "TRANSACTION";
         this.imageName = "png2/64x64/dual_color/tx.png";
       }
     }
