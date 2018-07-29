@@ -1,0 +1,106 @@
+<mat-card>
+
+  <mat-card-header style="word-break: break-all;">
+    <div mat-card-avatar 
+      class="header-image" 
+      [style.background-image]="'url(/assets/png2/64x64/private_send.png)'" 
+      [style.border-radius]="'initial'"></div>
+    <mat-card-title>PRIVATESEND ANALYSIS</mat-card-title>
+    <mat-card-subtitle>{{txid}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-spinner *ngIf="txinfoLoading"></mat-spinner>
+  <div fxLayout="column" fxLayoutGap="5px" style="font-size: 16px" *ngIf="txinfo !== undefined">
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Block</b>
+        </div>
+        <div fxFlex="nogrow">
+          <a [routerLink]="['/explorer/blocks', txinfo.blockHash]">{{txinfo.blockHeight}}</a>
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Time</b>
+        </div>
+        <div fxFlex="nogrow" *ngIf="txinfo.receivedTime">
+            {{txinfo.receivedTime*1000 | date:'medium'}}
+        </div>
+        <div fxFlex="nogrow" *ngIf="!txinfo.receivedTime">
+            {{txinfo.blockTime*1000 | date:'medium'}}
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Inputs</b>
+        </div>
+        <div fxFlex="nogrow">
+            {{txinfo.nInputs}}
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Value</b>
+        </div>
+        <div fxFlex="nogrow">
+            {{txinfo.valueSat/100000000}} DASH
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="15em">
+          <b>Transaction details</b>
+        </div>
+        <div fxFlex="nogrow">
+            <a *ngIf="txid" [routerLink]="['/explorer/tx', txid]">Open</a>
+        </div>
+      </div>
+  </div>    
+
+  <mat-tab-group mat-stretch-tabs style="text-align: center">
+    <mat-tab *ngFor="let round of rounds" label="{{round}} rounds">
+
+      
+      <mat-spinner style="margin: 0 auto;" *ngIf="roundLoading[round]"></mat-spinner>
+      <div *ngIf="errors && errors[round]">
+        {{errors[round]}}
+      </div>
+      <div *ngIf="roundValues && roundValues[round]">
+        <b *ngIf="roundNotFound[round]">No {{round}}-round mixings exist</b>
+        <b *ngIf="!roundNotFound[round] && roundTotals[round]===0">No {{round}}-round mixings found yet, but it is possible that some exists.</b>
+        <b *ngIf="!roundNotFound[round] && roundTotals[round]!==0">Found {{roundTotals[round]}} randomly simulated {{round}}-round mixings containing {{roundValues[round].length}} different source wallets transactions.</b>
+        <table border="1" style="margin: 0px auto;">
+          <thead>
+            <tr>
+              <td>
+                wallet
+              </td>
+              <td>
+                appearances
+              </td>
+              <td>
+                percentage (appearances/{{roundTotals[round]}})
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let line of roundValues[round]">
+              <td>
+                <a [routerLink]="['/explorer/wallet', line.name]">{{line.name}}</a>
+              </td>
+              <td>
+                {{line.value}}
+              </td>
+              <td>
+                {{100.0*line.value/roundTotals[round]}}%
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          Analyzed for: {{roundTimes[round]/1000}} seconds.
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  
+</mat-card>
+

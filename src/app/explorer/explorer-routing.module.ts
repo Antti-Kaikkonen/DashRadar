@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { PrivatesendAnalysisComponent } from '../transactions/privatesend-analysis/privatesend-analysis.component';
+import { PrivatesendAnalysis2Component } from '../transactions/privatesend-analysis2/privatesend-analysis2.component';
 import { WalletComponent } from '../wallets/wallet/wallet.component';
 import { AddressComponent } from './../addresses/address/address.component';
 import { BlockComponent } from './../blocks/block/block.component';
@@ -18,6 +19,7 @@ const routes: Routes = [
     { path: 'blocks/:hash',   component: BlockComponent },
     { path: 'tx/:txid', component: TransactionComponent},
     { path: 'privatesend/:txid', component: PrivatesendAnalysisComponent},
+    { path: 'privatesend2/:txid', component: PrivatesendAnalysis2Component},
     { path: 'address/:addr', component: AddressComponent},
     { path: 'wallet/:addr', component: WalletComponent}
   ] },

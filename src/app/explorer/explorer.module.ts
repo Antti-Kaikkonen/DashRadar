@@ -41,6 +41,7 @@ import { DurationPipe } from '../pipes/duration.pipe';
 import { RelativeTimePipe } from '../pipes/relative-time.pipe';
 import { SharedModule } from '../shared/shared.module';
 import { PrivatesendAnalysisComponent } from '../transactions/privatesend-analysis/privatesend-analysis.component';
+import { PrivatesendAnalysis2Component } from '../transactions/privatesend-analysis2/privatesend-analysis2.component';
 import { TransactionSummaryComponent } from '../transactions/transaction/transaction-summary/transaction-summary.component';
 import { TransactionComponent } from '../transactions/transaction/transaction.component';
 import { TransactionsTableComponent } from '../transactions/transactions-table/transactions-table.component';
@@ -88,6 +89,7 @@ import { ExplorerComponent } from './explorer.component';
     TransactionSummaryComponent,
     AddressBalanceChartComponent,
     PrivatesendAnalysisComponent,
+    PrivatesendAnalysis2Component,
     DurationPipe,
     RelativeTimePipe,
     ExplorerComponent,
