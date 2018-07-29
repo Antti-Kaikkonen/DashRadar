@@ -21,9 +21,16 @@ export class WalletService {
   }
 
   getWalletAddresses(sourceAddress:string) {
+    let query = "MATCH (oa:Address {address:$address})\n" +
+    "WITH oa\n" +
+    "OPTIONAL MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(oa)\n" +
+    "WITH c, oa\n" +
+    "OPTIONAL MATCH (c)<-[:INCLUDED_IN]-(a:Address)\n" +
+    "RETURN \n" +
+    "CASE c WHEN NULL THEN oa.address ELSE a.address END as address;"
 
-    let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:$address})\n"
-    +"MATCH (c)<-[:INCLUDED_IN]-(a:Address) RETURN a.address;";
+    //let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:$address})\n"
+    //+"MATCH (c)<-[:INCLUDED_IN]-(a:Address) RETURN a.address;";
     /*let query: string = "MATCH (c:MultiInputHeuristicCluster)<-[:INCLUDED_IN]-(:Address {address:\""+sourceAddress+"\"})\n"
     +"WITH c\n"
     +"MATCH (c)<-[:INCLUDED_IN]-(a:Address)<-[:ADDRESS]-(output:TransactionOutput)\n"
