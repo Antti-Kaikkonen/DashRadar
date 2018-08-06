@@ -6,11 +6,11 @@ import { environment } from '../../../environments/environment';
 import { CypherService } from '../../charts/cypher.service';
 
 @Component({
-  selector: 'app-privatesend-analysis',
-  templateUrl: './privatesend-analysis.component.html',
-  styleUrls: ['./privatesend-analysis.component.scss']
+  selector: 'app-privatesend-analysis-create-denominations',
+  templateUrl: './privatesend-analysis-create-denominations.component.html',
+  styleUrls: ['./privatesend-analysis-create-denominations.component.scss']
 })
-export class PrivatesendAnalysisComponent implements OnInit {
+export class PrivatesendAnalysisCreateDenominationsComponent implements OnInit {
 
   rounds = [2, 3, 4, 5, 6, 7, 8];
 

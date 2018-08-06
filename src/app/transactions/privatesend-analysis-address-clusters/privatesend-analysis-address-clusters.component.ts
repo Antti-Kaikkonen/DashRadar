@@ -6,11 +6,11 @@ import { environment } from '../../../environments/environment';
 import { CypherService } from '../../charts/cypher.service';
 
 @Component({
-  selector: 'app-privatesend-analysis',
-  templateUrl: './privatesend-analysis.component.html',
-  styleUrls: ['./privatesend-analysis.component.scss']
+  selector: 'app-privatesend-analysis-address-clusters',
+  templateUrl: './privatesend-analysis-address-clusters.component.html',
+  styleUrls: ['./privatesend-analysis-address-clusters.component.scss']
 })
-export class PrivatesendAnalysis2Component implements OnInit {
+export class PrivatesendAnalysisAddressClustersComponent implements OnInit {
 
   rounds = [2, 3, 4, 5, 6, 7, 8];
 

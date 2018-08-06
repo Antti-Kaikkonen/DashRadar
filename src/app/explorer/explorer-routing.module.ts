@@ -1,8 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { PrivatesendAnalysisComponent } from '../transactions/privatesend-analysis/privatesend-analysis.component';
-import { PrivatesendAnalysis2Component } from '../transactions/privatesend-analysis2/privatesend-analysis2.component';
+import {
+  PrivatesendAnalysisAddressClustersComponent,
+} from '../transactions/privatesend-analysis-address-clusters/privatesend-analysis-address-clusters.component';
+import {
+  PrivatesendAnalysisCreateDenominationsComponent,
+} from '../transactions/privatesend-analysis-create-denominations/privatesend-analysis-create-denominations.component';
 import { WalletComponent } from '../wallets/wallet/wallet.component';
 import { AddressComponent } from './../addresses/address/address.component';
 import { BlockComponent } from './../blocks/block/block.component';
@@ -18,8 +22,8 @@ const routes: Routes = [
     { path: 'blocks', component: BlocksTable2Component },
     { path: 'blocks/:hash',   component: BlockComponent },
     { path: 'tx/:txid', component: TransactionComponent},
-    { path: 'privatesend/:txid', component: PrivatesendAnalysisComponent},
-    { path: 'privatesend2/:txid', component: PrivatesendAnalysis2Component},
+    { path: 'privatesend/:txid', component: PrivatesendAnalysisAddressClustersComponent},
+    { path: 'privatesend-old/:txid', component: PrivatesendAnalysisCreateDenominationsComponent},
     { path: 'address/:addr', component: AddressComponent},
     { path: 'wallet/:addr', component: WalletComponent}
   ] },

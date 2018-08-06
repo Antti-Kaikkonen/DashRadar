@@ -40,8 +40,12 @@ import { NavbarModule } from '../navbar/navbar.module';
 import { DurationPipe } from '../pipes/duration.pipe';
 import { RelativeTimePipe } from '../pipes/relative-time.pipe';
 import { SharedModule } from '../shared/shared.module';
-import { PrivatesendAnalysisComponent } from '../transactions/privatesend-analysis/privatesend-analysis.component';
-import { PrivatesendAnalysis2Component } from '../transactions/privatesend-analysis2/privatesend-analysis2.component';
+import {
+  PrivatesendAnalysisAddressClustersComponent,
+} from '../transactions/privatesend-analysis-address-clusters/privatesend-analysis-address-clusters.component';
+import {
+  PrivatesendAnalysisCreateDenominationsComponent,
+} from '../transactions/privatesend-analysis-create-denominations/privatesend-analysis-create-denominations.component';
 import { TransactionSummaryComponent } from '../transactions/transaction/transaction-summary/transaction-summary.component';
 import { TransactionComponent } from '../transactions/transaction/transaction.component';
 import { TransactionsTableComponent } from '../transactions/transactions-table/transactions-table.component';
@@ -88,8 +92,8 @@ import { ExplorerComponent } from './explorer.component';
     TransactionsTableComponent,
     TransactionSummaryComponent,
     AddressBalanceChartComponent,
-    PrivatesendAnalysisComponent,
-    PrivatesendAnalysis2Component,
+    PrivatesendAnalysisCreateDenominationsComponent,
+    PrivatesendAnalysisAddressClustersComponent,
     DurationPipe,
     RelativeTimePipe,
     ExplorerComponent,
