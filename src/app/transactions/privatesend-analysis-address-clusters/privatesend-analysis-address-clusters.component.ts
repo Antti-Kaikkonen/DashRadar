@@ -95,7 +95,8 @@ export class PrivatesendAnalysisAddressClustersComponent implements OnInit {
           } else if (name === "time") {
             this.roundTimes[round] = Number.parseInt(components[1]);
           } else {
-            roundValues.push({name: name, value: Number.parseInt(components[1])});
+            let splitted: string[] = name.split(",");
+            roundValues.push({name: splitted[0], value: Number.parseInt(components[1])});
           }
         });
         roundValues.sort((a, b) => b.value-a.value);
