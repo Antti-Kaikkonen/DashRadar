@@ -39,8 +39,9 @@ export class Transaction {
 	public isCreateDenominationsTransaction(): boolean {
     //All outputs except change address should be denominations
     if (this.vout.length < 2) return false;
-    let nonDenominations: Array<VOut> = this.vout.filter((vout: VOut) => !Transaction.isDenomination(vout.value));
-    if (nonDenominations.length === 1) return true;
+		let nonDenominations: Array<VOut> = this.vout.filter((vout: VOut) => !Transaction.isDenomination(vout.value));
+		if (nonDenominations.length === this.vout.length) return false;//Must contain at least one denomination
+    if (nonDenominations.length < 2) return true;
     if (nonDenominations.length === 2) {
       return nonDenominations.some((vout: VOut) => vout.value == 0.04 || vout.value == 0.004);
     }
