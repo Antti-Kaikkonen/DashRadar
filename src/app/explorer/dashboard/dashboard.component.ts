@@ -28,7 +28,9 @@ export class DashboardComponent implements OnInit {
     4:"png2/64x64/dual_color/private_send_10-0_black.png",
     5:"png2/64x64/dual_color/private_send_1-0_black.png",
     6:"png2/64x64/dual_color/private_send_0-1_black.png",
-    7:"png2/64x64/dual_color/private_send_0-01_black.png"
+    7:"png2/64x64/dual_color/private_send_0-01_black.png",
+    8:"SVG/make_collateral_inputs.svg",
+    9:"SVG/collateral_payment.svg"
   };
 
   private pstype2tooltip = {
@@ -39,7 +41,9 @@ export class DashboardComponent implements OnInit {
     4: TransactionType.MIXING,
     5: TransactionType.MIXING,
     6: TransactionType.MIXING,
-    7: TransactionType.MIXING
+    7: TransactionType.MIXING,
+    8: TransactionType.MAKE_COLLATERAL_INPUTS,
+    9: TransactionType.COLLATERAL_PAYMENT
   }
 
   interval: Subscription;
@@ -149,7 +153,9 @@ enum TransactionType {
   INSTANT_PRIVATESEND = "INSTANT PRIVATESEND TRANSACTION",
   CREATE_DENOMINATIONS = "CREATE DENOMINATIONS TRANSACTION",
   COINBASE = "COINBASE TRANSACTION",
-  MIXING = "MIXING TRANSACTION"
+  MIXING = "MIXING TRANSACTION",
+  MAKE_COLLATERAL_INPUTS = "PRIVATESEND MAKE COLLATERAL INPUTS",
+  COLLATERAL_PAYMENT = "PRIVATESEND COLLATERAL PAYMENT"
 }
 
 export interface Transaction {
