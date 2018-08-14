@@ -25,7 +25,7 @@ export class TransactionComponent implements OnInit {
   imageName: string = "png2/64x64/dual_color/tx.png";
   txid: string;
 
-  transaction_type: "" | "PRIVATESEND" | "INSTANT PRIVATESEND" | "CREATE DENOMINATIONS" | "COINBASE" | "MIXING" | "INSTANTSEND" = "";
+  transaction_type: "" | "PRIVATESEND" | "INSTANT PRIVATESEND" | "CREATE DENOMINATIONS" | "COINBASE" | "MIXING" | "INSTANTSEND" | "PRIVATESEND COLLATERAL PAYMENT" | "PRIVATESEND MAKE COLLATERAL INPUTS" = "";
 
   fee: number;
 
@@ -109,6 +109,12 @@ export class TransactionComponent implements OnInit {
       } else if (this.transaction.vin[0].value==10.0001) {
         this.imageName = "png2/64x64/dual_color/private_send_10-0_black.png";
       }
+    } else if (this.transaction.isCollateralPaymentTransaction()) {
+      this.transaction_type = "PRIVATESEND COLLATERAL PAYMENT";
+      this.imageName = "SVG/collateral_payment.svg";
+    } else if (this.transaction.isMakeCollateralInputsTransaction()) {
+      this.transaction_type = "PRIVATESEND MAKE COLLATERAL INPUTS";
+      this.imageName = "SVG/make_collateral_inputs.svg";
     } else {
       if (this.transaction.txlock) {
         this.transaction_type = "INSTANTSEND";

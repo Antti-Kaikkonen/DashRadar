@@ -123,6 +123,12 @@ export class TransactionSummaryComponent implements OnInit {
       } else if (this.transaction.vin[0].value==10.0001) {
         this.imageName = "png2/64x64/dual_color/private_send_10-0_black.png";
       }
+    } else if (this.transaction.isCollateralPaymentTransaction()) {
+      this.tooltip = "PRIVATESEND COLLATERAL PAYMENT";
+      this.imageName = "SVG/collateral_payment.svg";
+    } else if (this.transaction.isMakeCollateralInputsTransaction()) {
+      this.tooltip = "PRIVATESEND MAKE COLLATERAL INPUTS";
+      this.imageName = "SVG/make_collateral_inputs.svg";
     } else {
       if (this.transaction.txlock) {
         this.tooltip = "INSTANTSEND TRANSACTION";

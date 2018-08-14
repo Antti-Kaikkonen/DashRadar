@@ -46,7 +46,34 @@ export class Transaction {
       return nonDenominations.some((vout: VOut) => vout.value == 0.04 || vout.value == 0.004);
     }
     return false;
-  }
+	}
+	
+	public isCollateralPaymentTransaction(): boolean {
+		if (this.vin.length !== 1 || this.vout.length !== 1 || this.isCoinbase()) return false;
+		let vin: VIn = this.vin[0];
+		let vout: VOut = this.vout[0];
+		if (Transaction.isCollateralPaymentOutput(vout.valueSat)) {
+			let fee: number = vin.valueSat-vout.valueSat;
+			if (fee === 100000 || fee === 1000000) return true;
+			console.log("not collateral inputs tx", fee);
+		}
+		return false;
+	}
+
+	public static isMakeCollateralInputsOutput(valueSat: number): boolean {
+		return valueSat === 400000 || valueSat === 4000000;
+	}
+
+	public static isCollateralPaymentOutput(valueSat: number): boolean {
+		if (valueSat % 100000 === 0 && valueSat < 400000 && valueSat > 0) return true;
+		if (valueSat % 1000000 === 0 && valueSat < 4000000 && valueSat > 0) return true;
+		return false;
+	}
+
+	public isMakeCollateralInputsTransaction(): boolean {
+		return this.vout.findIndex(vout => vout.valueSat === 400000 || vout.valueSat === 4000000) !== -1;
+	}
+	
 
 	public isMixingTransaction() {
     if (this.vin.length !== this.vout.length) return false;
