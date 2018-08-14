@@ -8,14 +8,14 @@
     <ng-container matColumnDef="time">
       <mat-header-cell *matHeaderCellDef ngStyle.lt-md="min-width:125px; max-width: 180px;" ngStyle.gt-sm="min-width:170px; max-width: 200px;"> Time </mat-header-cell>
       <mat-cell *matCellDef="let block" ngStyle.lt-md="min-width:125px; max-width: 180px;" ngStyle.gt-sm="min-width:170px; max-width: 200px;">
-        <span fxHide.lt-md>{{block?.time*1000 | date : "medium"}}</span>
-        <span fxHide.gt-sm>{{block?.time*1000 | date : "short"}}</span>
+        <span fxHide.lt-md *ngIf="block !== undefined">{{block?.time*1000 | date : "medium"}}</span>
+        <span fxHide.gt-sm *ngIf="block !== undefined">{{block?.time*1000 | date : "short"}}</span>
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="height">
       <mat-header-cell *matHeaderCellDef [style.max-width.px]="100" [style.min-width.px]="60"> Height </mat-header-cell>
-      <mat-cell *matCellDef="let block" [style.max-width.px]="100" [style.min-width.px]="60"> <a [routerLink]="['/explorer/blocks', block.hash]">{{block?.height}}</a> </mat-cell>
+      <mat-cell *matCellDef="let block" [style.max-width.px]="100" [style.min-width.px]="60"> <a *ngIf="block !== undefined" [routerLink]="['/explorer/blocks', block.hash]">{{block?.height}}</a> </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="transactions">
