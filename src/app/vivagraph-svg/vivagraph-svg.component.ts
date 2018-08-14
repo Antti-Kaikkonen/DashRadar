@@ -217,7 +217,9 @@ export class VivagraphSvgComponent implements OnInit {
       transaction?: Transaction, address?: Address, 
       mixingTransaction?: boolean, 
       privateSendTransaction?: boolean,
-      createDenominationsTransaction?: boolean
+      createDenominationsTransaction?: boolean,
+      makeCollateralInputsTransaction?: boolean,
+      collateralPaymentTransaction?: boolean
     }
   }): string => {
     let prefix = "assets/png2/64x64/";
@@ -254,6 +256,10 @@ export class VivagraphSvgComponent implements OnInit {
         return selected ? prefix_selected + "create_denominations_b.png" : prefix + "create_denominations.png";
       } else if (node.data.transaction.vin.length === 1 && node.data.transaction.vin[0].coinbase) {
         return selected ? prefix_selected + "coinbase_b.png" : prefixSingleColor + "coinbase.png";
+      } else if (node.data.collateralPaymentTransaction) {
+        return selected ? prefix_selected + "collateral_payment_b.png" : prefixSingleColor + "collateral_payment.png";
+      } else if (node.data.makeCollateralInputsTransaction) {
+        return selected ? prefix_selected + "make_collateral_inputs_b.png" : prefixSingleColor + "make_collateral_inputs.png";
       } else {
         return selected ? prefix_selected + "tx_b.png" : prefixDualColor+"tx.png";;
       }   
@@ -267,7 +273,9 @@ export class VivagraphSvgComponent implements OnInit {
         transaction?: Transaction, address?: Address, 
         mixingTransaction?: boolean, 
         privateSendTransaction?: boolean,
-        createDenominationsTransaction?: boolean
+        createDenominationsTransaction?: boolean,
+        makeCollateralInputsTransaction?: boolean,
+        collateralPaymentTransaction?: boolean
       }
     }) => {
     if (node.data.address && node.data.transaction) {
@@ -476,6 +484,8 @@ export class VivagraphSvgComponent implements OnInit {
     let mixingTransaction: boolean = transaction.isMixingTransaction();
     let privateSendTransaction: boolean = transaction.isPrivateSendTransaction();
     let createDenominationsTransaction: boolean = transaction.isCreateDenominationsTransaction();
+    let makeCollateralInputsTransaction: boolean = transaction.isMakeCollateralInputsTransaction();
+    let collateralPaymentTransaction: boolean = transaction.isCollateralPaymentTransaction();
     let allAddr = this.getTransactionAddresses(transaction);
 
     this.addressToTransaction = this.addressToTransaction.withMutations(map => {
@@ -494,6 +504,8 @@ export class VivagraphSvgComponent implements OnInit {
       mixingTransaction: mixingTransaction, 
       privateSendTransaction: privateSendTransaction, 
       createDenominationsTransaction: createDenominationsTransaction,
+      makeCollateralInputsTransaction: makeCollateralInputsTransaction,
+      collateralPaymentTransaction: collateralPaymentTransaction,
       addressCount: addressCount
     });
     this.addresses.filter((address: Address) => 
