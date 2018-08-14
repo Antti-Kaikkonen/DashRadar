@@ -21,19 +21,19 @@
   </div>
   <div fxLayout="row wrap" fxLayoutAlign="start center" fxFlex="0 0 440px" fxFlex.sm="1 1 100%" fxFlex.xs="1 1 100%" class="collapsible-hidden">
 
-    <a *ngIf="inputsSummary === transaction.vin[0].addr" [routerLink]="['/explorer/address', inputsSummary]" class="collapsible-hidden">
+    <a *ngIf="inputsIsLink" [routerLink]="['/explorer/address', inputsSummary]" class="collapsible-hidden">
       {{inputsSummary}}
     </a>
-    <span *ngIf="inputsSummary !== transaction.vin[0].addr" class="collapsible-hidden">
+    <span *ngIf="!inputsIsLink" class="collapsible-hidden">
       {{inputsSummary}}
     </span>
 
     <mat-icon aria-hidden="true"><span class="noselect">chevron_right</span><span class="cdk-visually-hidden"> -> </span></mat-icon>
 
-    <a *ngIf="outputsSummary === transaction.vout[0].scriptPubKey.addresses[0]" [routerLink]="['/explorer/address', outputsSummary]" class="collapsible-hidden">
+    <a *ngIf="outputsIsLink" [routerLink]="['/explorer/address', outputsSummary]" class="collapsible-hidden">
       {{outputsSummary}}
     </a>
-    <span *ngIf="outputsSummary !== transaction.vout[0].scriptPubKey.addresses[0]" class="collapsible-hidden">
+    <span *ngIf="!outputsIsLink" class="collapsible-hidden">
       {{outputsSummary}}
     </span>
   </div>

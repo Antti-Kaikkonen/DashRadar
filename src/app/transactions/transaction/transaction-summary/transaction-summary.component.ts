@@ -30,6 +30,9 @@ export class TransactionSummaryComponent implements OnInit {
   inputsSummary: string;
   outputsSummary: string;
 
+  inputsIsLink: boolean = false;
+  outputsIsLink: boolean = false;
+
   txBalanceSub: Subscription;
 
   constructor(private cypherService: CypherService) { }
@@ -54,8 +57,9 @@ export class TransactionSummaryComponent implements OnInit {
 
     let uniqueInputAddresses = new Set(this.transaction.vin.filter(vin => vin.addr !== undefined && vin.addr != null).map(vin => vin.addr));
     let uniqueOutputAddresses = new Set(this.transaction.vout.filter(vout => vout.scriptPubKey.addresses !== undefined && vout.scriptPubKey.addresses[0] !== undefined && vout.scriptPubKey.addresses[0] != null).map(vout => vout.scriptPubKey.addresses[0]));
-
+    this.inputsIsLink = false;
     if (uniqueInputAddresses.size === 1 && !this.currentAddressIsInput) {
+      this.inputsIsLink = true;
       this.inputsSummary = this.transaction.vin[0].addr;
     } else if (uniqueInputAddresses.size === 1 && this.currentAddressIsInput) {
       this.inputsSummary = "This Address";
@@ -65,16 +69,22 @@ export class TransactionSummaryComponent implements OnInit {
       this.inputsSummary = uniqueInputAddresses.size + " Addresses";
     } else if (uniqueInputAddresses.size > 1 && this.currentAddressIsInput) {
       this.inputsSummary = "This + " + (uniqueInputAddresses.size-1) + (uniqueInputAddresses.size === 2 ? " Address" : " Addresses");
+    } else if (uniqueInputAddresses.size === 0) {
+      this.inputsSummary = "0 Addresses";
     }
 
+    this.outputsIsLink = false;
     if (uniqueOutputAddresses.size === 1 && !this.currentAddressIsOutput) {
       this.outputsSummary = uniqueOutputAddresses.values().next().value;
+      this.outputsIsLink = true;
     } else if (uniqueOutputAddresses.size === 1 && this.currentAddressIsOutput) {
       this.outputsSummary = "This Address";
     } else if (uniqueOutputAddresses.size > 1 && !this.currentAddressIsOutput) {
       this.outputsSummary = uniqueOutputAddresses.size + " Addresses";
     } else if (uniqueOutputAddresses.size > 1 && this.currentAddressIsOutput) {
       this.outputsSummary = "This + " + (uniqueOutputAddresses.size-1) + (uniqueOutputAddresses.size === 2 ? " Address" : " Addresses");
+    } else if (uniqueOutputAddresses.size === 0) {
+      this.outputsSummary = "0 Addresses";
     }
   }
 
