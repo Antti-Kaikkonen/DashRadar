@@ -37,7 +37,8 @@ export class Transaction {
 	}
 	
 	public isCreateDenominationsTransaction(): boolean {
-    //All outputs except change address should be denominations
+		//All outputs except change address should be denominations
+		if (this.isMixingTransaction()) return false;
     if (this.vout.length < 2) return false;
 		let nonDenominations: Array<VOut> = this.vout.filter((vout: VOut) => !Transaction.isDenomination(vout.value));
 		if (nonDenominations.length === this.vout.length) return false;//Must contain at least one denomination
