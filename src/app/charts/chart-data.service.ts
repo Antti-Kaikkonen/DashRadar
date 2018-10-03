@@ -30,7 +30,7 @@ export class ChartDataService {
       previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3ABLOCKCHAIN_TOTALS%5D-%3E(b%3ABlockChainTotals)%20WITH%20d.day*86400%20as%20time%2C%20b.tx_count%20as%20txcount%20ORDER%20BY%20time%20WHERE%20time%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20%60Transactions%20per%20day%60%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Transactions per day",
       description: "",
-      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["Number of transactions"])}
+      cypherReader: (cypherResponse:CypherResponse)=>{return cypherResponse.extractColumns(["Number of transactions"])}
     },
 
     'median-transaction-fee':{
@@ -86,7 +86,7 @@ export class ChartDataService {
       "ORDER BY time;",
       previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(bct%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20bct.privatesend_tx_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "PrivateSend transactions per day",
-      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["Number of PrivateSend transactions"])},
+      cypherReader: (cypherResponse:CypherResponse)=>{return cypherResponse.extractColumns(["Number of PrivateSend transactions"])},
       description: ""
     },
     'mixing-transactions-per-day':{
@@ -96,7 +96,7 @@ export class ChartDataService {
       "ORDER BY time;",
       previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20pst.privatesend_mixing_0_01_count%2Bpst.privatesend_mixing_0_1_count%2Bpst.privatesend_mixing_1_0_count%2Bpst.privatesend_mixing_10_0_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Mixing transactions per day",
-      cypherReader: (cypherResponse:CypherResponse)=>{console.log("testing");return cypherResponse.extractColumns(["Number of mixing transactions"])},
+      cypherReader: (cypherResponse:CypherResponse)=>{return cypherResponse.extractColumns(["Number of mixing transactions"])},
       description: ""
     },
     'total-unspent-mixed-dash':{
@@ -200,6 +200,34 @@ export class ChartDataService {
       title: "",
       description: ""
     },
+    'average-mixing-transaction-size-by-denomination':{
+      query: 
+      "MATCH (d:Day)-[:LAST_BLOCK]->(:Block)-[:PRIVATESEND_TOTALS]->(n:PrivateSendTotals)\n"+
+      "WITH d.day as date, n\n"+
+      "ORDER BY date\n"+
+      "WITH \n"+
+      "0+collect(n.privatesend_mixing_10_0_size) as mixing_1_size,\n"+
+      "0+collect(n.privatesend_mixing_1_0_size) as mixing_2_size,\n"+
+      "0+collect(n.privatesend_mixing_0_1_size) as mixing_3_size,\n"+
+      "0+collect(n.privatesend_mixing_0_01_size) as mixing_4_size,\n"+
+      "0+collect(n.privatesend_mixing_10_0_count) as mixing_1_count,\n"+
+      "0+collect(n.privatesend_mixing_1_0_count) as mixing_2_count,\n"+
+      "0+collect(n.privatesend_mixing_0_1_count) as mixing_3_count,\n"+
+      "0+collect(n.privatesend_mixing_0_01_count) as mixing_4_count,\n"+
+      "collect(date) as dates\n"+
+      "UNWIND range(1, length(dates)) as i\n"+
+      "RETURN\n"+
+      "dates[i-1]*24*60*60 as time,\n"+
+      "CASE (mixing_1_count[i]-mixing_1_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_1_size[i]-mixing_1_size[i-1])/(mixing_1_count[i]-mixing_1_count[i-1]) END as `10.0`,\n"+
+      "CASE (mixing_2_count[i]-mixing_2_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_2_size[i]-mixing_2_size[i-1])/(mixing_2_count[i]-mixing_2_count[i-1]) END as `1.0`,\n"+
+      "CASE (mixing_3_count[i]-mixing_3_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_3_size[i]-mixing_3_size[i-1])/(mixing_3_count[i]-mixing_3_count[i-1]) END as `0.1`,\n"+
+      "CASE (mixing_4_count[i]-mixing_4_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_4_size[i]-mixing_4_size[i-1])/(mixing_4_count[i]-mixing_4_count[i-1]) END as `0.01`\n"+
+      "ORDER BY time;",
+      previewUrl: "",
+      title: "Average mixing transaction size by denomination (bytes)",
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["10.0", "1.0", "0.1", "0.01", ]),
+      description: ""
+    }
   }
 
   constructor() { }
