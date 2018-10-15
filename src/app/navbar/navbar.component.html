@@ -1,17 +1,19 @@
 <mat-toolbar color="primary">
-        <div fxFlex="nogrow">
-            <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
-                <a mat-tab-link routerLink="/explorer" routerLinkActive #rl1="routerLinkActive"
-                [active]="rl1.isActive">EXPLORER
-                </a>
-                <a mat-tab-link routerLink="/" routerLinkActive #rl2="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
-                [active]="rl2.isActive">GRAPH</a>
-                <a mat-tab-link routerLink="/charts" routerLinkActive #rl3="routerLinkActive"
-                [active]="rl3.isActive">CHARTS</a>
-            </nav>
-        </div>
-        <div fxFlex="nogrow">
-            <ng-content>
-            </ng-content>
-        </div>
+    <div fxFlex="nogrow">
+        <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
+            <a mat-tab-link routerLink="/explorer" routerLinkActive #rl1="routerLinkActive"
+            [active]="rl1.isActive">EXPLORER
+            </a>
+            <a mat-tab-link routerLink="/" routerLinkActive #rl2="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+            [active]="rl2.isActive">GRAPH</a>
+            <a mat-tab-link routerLink="/charts" routerLinkActive #rl3="routerLinkActive"
+            [active]="rl3.isActive">CHARTS</a>
+            <a mat-tab-link routerLink="/nodes" routerLinkActive #rl4="routerLinkActive"
+            [active]="rl4.isActive">NODES</a>
+        </nav>
+    </div>
+    <div fxFlex="nogrow">
+        <ng-content>
+        </ng-content>
+    </div>
 </mat-toolbar>

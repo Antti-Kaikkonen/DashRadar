@@ -1,0 +1,136 @@
+<app-navbar></app-navbar>
+<mat-card>
+  <mat-tab-group dynamicHeight (selectedTabChange)="tabChanged($event)" mat-stretch-tabs>
+    <mat-tab label="Map">
+      <mat-spinner *ngIf="versions.length === 0" style="margin: 0 auto"></mat-spinner>
+      <div id="mapContainer" style="width: 700px; height: 475px; position: relative;"></div>
+    </mat-tab>
+    <mat-tab label="Versions">
+      <mat-spinner *ngIf="versions.length === 0" style="margin: 0 auto"></mat-spinner>
+      <table mat-table [dataSource]="versions" *ngIf="versions.length > 0">
+        <ng-container matColumnDef="key">
+          <th mat-header-cell *matHeaderCellDef> Version. </th>
+          <td mat-cell *matCellDef="let element"> {{element[0]}} </td>
+        </ng-container>
+        <ng-container matColumnDef="nodes">
+          <th mat-header-cell *matHeaderCellDef> Nodes </th>
+          <td mat-cell *matCellDef="let element"> {{element[1]}} </td>
+        </ng-container>
+        <ng-container matColumnDef="masternodes">
+            <th mat-header-cell *matHeaderCellDef> Masternodes </th>
+            <td mat-cell *matCellDef="let element"> {{element[2]}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table> 
+    </mat-tab>
+    <mat-tab label="Countries"> 
+      <mat-spinner *ngIf="countries.length === 0" style="margin: 0 auto"></mat-spinner>
+      <table mat-table [dataSource]="countries" *ngIf="countries.length > 0">
+        <ng-container matColumnDef="key">
+          <th mat-header-cell *matHeaderCellDef> Country </th>
+          <td mat-cell *matCellDef="let element"> <span class="flag-icon flag-icon-{{element[3]}}"></span> {{element[0]}}</td>
+        </ng-container>
+        <ng-container matColumnDef="nodes">
+          <th mat-header-cell *matHeaderCellDef> Nodes </th>
+          <td mat-cell *matCellDef="let element"> {{element[1]}} </td>
+        </ng-container>
+        <ng-container matColumnDef="masternodes">
+            <th mat-header-cell *matHeaderCellDef> Masternodes </th>
+            <td mat-cell *matCellDef="let element"> {{element[2]}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>       
+    </mat-tab>
+    <mat-tab label="Organizations">
+      <mat-spinner *ngIf="organizations.length === 0" style="margin: 0 auto"></mat-spinner>
+      <table mat-table [dataSource]="organizations" *ngIf="organizations.length > 0">
+        <ng-container matColumnDef="key">
+          <th mat-header-cell *matHeaderCellDef> Organization. </th>
+          <td mat-cell *matCellDef="let element"> {{element[0]}} </td>
+        </ng-container>
+        <ng-container matColumnDef="nodes">
+          <th mat-header-cell *matHeaderCellDef> Nodes </th>
+          <td mat-cell *matCellDef="let element"> {{element[1]}} </td>
+        </ng-container>
+        <ng-container matColumnDef="masternodes">
+            <th mat-header-cell *matHeaderCellDef> Masternodes </th>
+            <td mat-cell *matCellDef="let element"> {{element[2]}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>        
+    </mat-tab>
+    <mat-tab label="All nodes">
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <mat-icon>filter_list</mat-icon>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" style="width: 40%; max-width: 300px; border-bottom: 1px solid grey; margin: 0 10px">
+          <button mat-flat-button [matMenuTriggerFor]="menu">{{ismn}}<mat-icon>arrow_drop_down</mat-icon></button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let mnoption of mnoptions" (click)="applyMnFilter(mnoption)">{{mnoption}}</button>
+          </mat-menu>
+          <div style="flex: 1 1 auto;"></div>
+          <mat-select placeholder="Columns" multiple [(value)]="nodeColumns" style="width: 200px;" focused>
+            <mat-option *ngFor="let availableColumn of availableNodeColumns" [value]="availableColumn.property">{{availableColumn.label}}</mat-option>
+          </mat-select>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <mat-spinner *ngIf="nodes.data.length === 0" style="margin: 0 auto"></mat-spinner>
+      <table mat-table [dataSource]="nodes" matSort [hidden]="nodes.data.length === 0">
+        <ng-container matColumnDef="host">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Ip </th>
+          <td mat-cell *matCellDef="let node"> {{node.host}} </td>
+        </ng-container>
+        <ng-container matColumnDef="port">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Port </th>
+          <td mat-cell *matCellDef="let node"> {{node.port}} </td>
+        </ng-container>
+        <ng-container matColumnDef="uptime2h">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Uptime 2h </th>
+            <td mat-cell *matCellDef="let node"> {{node.uptime2h | percent}} </td>
+        </ng-container>
+        <ng-container matColumnDef="uptime8h">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Uptime 8h </th>
+            <td mat-cell *matCellDef="let node"> {{node.uptime8h | percent}} </td>
+        </ng-container>
+        <ng-container matColumnDef="uptime24h">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Uptime 24h </th>
+            <td mat-cell *matCellDef="let node"> {{node.uptime24h | percent}} </td>
+        </ng-container>
+        <ng-container matColumnDef="uptime7d">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Uptime 7d </th>
+            <td mat-cell *matCellDef="let node"> {{node.uptime7d | percent}} </td>
+        </ng-container>
+        <ng-container matColumnDef="uptime30d">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Uptime 30d </th>
+            <td mat-cell *matCellDef="let node"> {{node.uptime30d | percent}} </td>
+        </ng-container>
+        <ng-container matColumnDef="country">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Country </th>
+            <td mat-cell *matCellDef="let node"> {{node.country}} </td>
+        </ng-container>
+        <ng-container matColumnDef="city">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
+            <td mat-cell *matCellDef="let node"> {{node.city}} </td>
+        </ng-container>
+        <ng-container matColumnDef="organization">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Organization </th>
+            <td mat-cell *matCellDef="let node"> {{node.organization}} </td>
+        </ng-container>
+        <ng-container matColumnDef="subversion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Version </th>
+            <td mat-cell *matCellDef="let node"> {{node.subversion}} </td>
+        </ng-container>
+        <ng-container matColumnDef="masternode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Masternode </th>
+            <td mat-cell *matCellDef="let node"> <mat-icon *ngIf="node.masternode">check</mat-icon></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="nodeColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: nodeColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[20, 50, 10]" showFirstLastButtons></mat-paginator>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>
