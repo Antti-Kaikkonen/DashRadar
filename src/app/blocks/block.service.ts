@@ -40,8 +40,8 @@ export class BlockService {
       .map(res => res.blockChainHeight);
 	}
 
-	private insightResponseToBlock(response: any): Block {
-		var data = response.json();
+	private insightResponseToBlock(data: any): Block {
+		//var data = response.json();
 		return new Block(data.hash, data.confirmations, data.size, data.height, data.version, data.merkleroot, data.tx, data.time*1000, 1, 1, "bits", 1, "chainwork", "prevhash", "nexthash");
 	}
 
