@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { environment } from '../../environments/environment';
@@ -10,7 +10,7 @@ export class AddressService {
 
 	private addressesByAddress: Map<string, Observable<Address>>;
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   	this.addressesByAddress = new Map();
   }
 
@@ -46,7 +46,7 @@ export class AddressService {
 	}
 
 	private insightResponseToAddress(response: any): Address {
-		var data = response.json();
+		var data = response;
 		return new Address(
 			data.addrStr, 
 			data.balance, 

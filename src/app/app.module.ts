@@ -32,7 +32,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { HttpModule } from '@angular/http';
 import { MatButtonModule, MatIconModule, MatTabsModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -54,7 +53,7 @@ import { TransactionService } from './transactions/transaction.service';
     NavbarModule,
     FlexLayoutModule,
     BrowserModule,
-    HttpModule,HttpClientModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     MatButtonModule,MatIconModule,MatToolbarModule,MatTabsModule,OverlayModule
