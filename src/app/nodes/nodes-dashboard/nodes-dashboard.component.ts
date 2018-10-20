@@ -2,6 +2,7 @@ import { formatPercent } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
+import { Meta, Title } from '@angular/platform-browser';
 import * as d3 from 'd3/d3.min.js';
 import * as Datamap from 'datamaps/dist/datamaps.world.js';
 import * as countries from 'i18n-iso-countries';
@@ -39,8 +40,9 @@ export class NodesDashboardComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   dashnodes: DashNode[] = [];
   nodes = new MatTableDataSource<DashNode>([]);
-  constructor(private http: HttpClient) { 
-
+  constructor(private http: HttpClient,
+    private titleService: Title,
+        private metaService: Meta) { 
   }
 
   applyMnFilter(event) {
@@ -110,6 +112,13 @@ export class NodesDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.titleService.setTitle("Dash Nodes | DashRadar");
+    this.metaService.removeTag('name="description"');
+    this.metaService.addTag({
+        name: "description", 
+        content: "Dash full nodes and masternodes. Map - Versions - Countries - Organizations - All nodes"
+    });
+
     this.applyFilter("");
     this.nodes.paginator = this.paginator;
     this.nodes.sort = this.sort;
@@ -196,6 +205,10 @@ export class NodesDashboardComponent implements OnInit {
         this.renderMap();
     });
 
+  }
+
+  ngOnDestroy() {
+    this.metaService.removeTag('name="description"');
   }
 
 }
