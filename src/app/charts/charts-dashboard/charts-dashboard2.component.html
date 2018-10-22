@@ -1,7 +1,7 @@
 <mat-card *ngFor="let category of categories" [style.background-color]="category.bgcolor === undefined ? 'intial' : category.bgcolor" style="padding-left: 0; padding-right: 0;">
     <h1 style="text-align:center">{{category.name}}</h1>
     <div class="category-items" fxLayoutAlign="center center" fxLayout="row wrap">
-        <a *ngFor="let chart of category.charts" [routerLink]="['/charts', chart]">
+        <a *ngFor="let chart of category.charts" [routerLink]="['/charts', chart]" class="category-item">
             <mat-card style="margin: 7px;">
                 <mat-card-header>
                     <mat-card-title>{{chartData.charts[chart].title}}</mat-card-title>

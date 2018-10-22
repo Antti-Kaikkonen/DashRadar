@@ -1,6 +1,6 @@
-$card-size: 382px;
+$card-size: 366px;
 
-$mat-card-padding: 24px;
+$mat-card-padding: 16px;
 
 $scrollbar-width: 20px;
 
@@ -36,6 +36,9 @@ mat-card-title {
   }
   @media screen and (min-width: $card-size*4+$scrollbar-width) {
     max-width: 100%;
+  }
+  .category-item {
+    max-width: $card-size;
   }
 }
 
