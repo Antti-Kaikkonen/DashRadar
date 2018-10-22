@@ -1,0 +1,56 @@
+$card-size: 232px;
+
+$mat-card-padding: 16px;
+
+$scrollbar-width: 20px;
+
+.mat-card {
+  text-decoration: none;
+  color: #111921;
+  width: 150px;
+  margin: 25px;
+  text-align:center;
+  //background-color: lightblue;
+  background-color: #008de4;
+  &:hover {
+    background-color: #012060;
+  }
+  mat-icon {
+    font-size: 120px;
+    height: 120px;
+    width: 120px;
+    line-height: 120px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mat-card-footer {
+    font-size: 1.2em;
+    text-align:center
+  }
+}
+
+:host {
+	flex: 1 1 auto;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-height: 0;
+}
+
+.dashboard-items {
+  margin: 0 auto;
+  @media screen and (max-width: $card-size*2 + $scrollbar-width - 1) {
+    max-width: $card-size+$scrollbar-width;
+  }  
+  @media screen and (min-width: $card-size*2+$scrollbar-width) and (max-width: $card-size * 4 + $scrollbar-width - 1) {
+    max-width: $card-size*2+$scrollbar-width;
+  }
+  @media screen and (min-width: $card-size*4+$scrollbar-width) {
+    max-width: 100%;
+  }
+  .category-item {
+    max-width: $card-size;
+  }
+}
