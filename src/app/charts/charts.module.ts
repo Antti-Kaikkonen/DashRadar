@@ -20,6 +20,7 @@ import {
   MatToolbarModule,
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { ChartsModule as ChartJSModule } from 'ng2-charts/ng2-charts';
 
 import { NavbarModule } from '../navbar/navbar.module';
@@ -44,7 +45,8 @@ import { CypherComponent } from './cypher/cypher.component';
     ChartJSModule,
     FlexLayoutModule,
     SharedModule,
-    NavbarModule
+    NavbarModule,
+    CodemirrorModule
   ],
   declarations: [CypherComponent, 
     ChartsDashboardComponent, ChartsDashboardComponent2, ChartsComponent, ChartComponent

@@ -1,4 +1,7 @@
-<textarea id="codemirror-area" rows="4" cols="10"></textarea>
+<ngx-codemirror style="height: auto;"
+  [(ngModel)]="query" 
+  [options]="codemirroroptions"
+></ngx-codemirror>
 <button mat-raised-button (click)="executeQuery()" color="primary" [disabled]="query.length === 0 || cypherLoading">
 	Execute
 	<mat-spinner color="accent" [diameter]="30" strokeWidth="5" style="display:inline-block;" [style.visibility]="cypherLoading ? 'visible' : 'hidden'"></mat-spinner>

@@ -5,7 +5,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import * as CodeMirror from 'codemirror';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
@@ -21,6 +20,15 @@ import { CypherResponse } from '../cypher-response';
 
 
 export class CypherComponent implements OnInit {
+
+  codemirroroptions: CodeMirror.EditorConfiguration = {
+    lineNumbers: true,
+    viewportMargin: Infinity,
+    theme: 'cypher',
+    mode:  'application/x-cypher-query'
+	};
+
+  content: string;
 
   imageUrlPrefix = environment.chartJsImageURL;
 
@@ -38,8 +46,6 @@ export class CypherComponent implements OnInit {
   result: CypherResponse;
 
   cypherError: {message?: string, fullname?: string, exception?: string, errors?: [any]};
-
-  codeMirror: CodeMirror.Editor;
 
   title: string = "";
   title_enabled: boolean = false;
@@ -236,27 +242,13 @@ export class CypherComponent implements OnInit {
     this.dataSource = new ExampleDataSource(this.exampleDatabase);
   }
 
-  ngAfterViewInit() {
-    let textarea = <HTMLTextAreaElement> document.getElementById("codemirror-area");
-    this.codeMirror = CodeMirror.fromTextArea(textarea, {
-      value: "MATCH (t:Transaction) RETURN t LIMIT 5;\n",
-      lineNumbers: true,
-      viewportMargin: Infinity,
-      mode:  "application/x-cypher-query",
-      theme: "cypher",
-
-    });
-    this.codeMirror.getWrapperElement().setAttribute("style", "height:auto;");
-    this.codeMirror.setValue(this.query);
-  }  
-
   executeQuery() {
     this.result = undefined;
     this.chartData = undefined;
     this.cypherError = undefined;
     this.exampleDatabase.clear();
   	//console.log("executing query");
-    let query = this.codeMirror.getValue();
+    let query = this.query;
     this.cypherLoading = true;
   	this.cypherService.executeQuery(query, {})
     .finally(() => {
@@ -339,10 +331,7 @@ export class CypherComponent implements OnInit {
   categoricalBarChartData: any;
 
   ngDoCheck() {
-    if (this.codeMirror !== undefined) {
-      this.query = this.codeMirror.getValue();
-      this.cypherQueryURL = encodeURIComponent(this.query);
-    }
+    this.cypherQueryURL = encodeURIComponent(this.query);
   }
 
 
