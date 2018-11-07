@@ -1,15 +1,15 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { TransactionsService } from './transactions.service';
+import { TransactionService } from './transaction.service';
 
-describe('TransactionsService', () => {
+describe('TransactionService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TransactionsService]
+      providers: [TransactionService]
     });
   });
 
-  it('should ...', inject([TransactionsService], (service: TransactionsService) => {
+  it('should ...', inject([TransactionService], (service: TransactionService) => {
     expect(service).toBeTruthy();
   }));
 });

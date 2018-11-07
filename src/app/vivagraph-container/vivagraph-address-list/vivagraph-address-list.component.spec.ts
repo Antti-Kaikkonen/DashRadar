@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VivagraphListComponent } from './vivagraph-list.component';
+import { VivagraphAddressListComponent } from './vivagraph-address-list.component';
 
-describe('VivagraphListComponent', () => {
-  let component: VivagraphListComponent;
-  let fixture: ComponentFixture<VivagraphListComponent>;
+describe('VivagraphAddressListComponent', () => {
+  let component: VivagraphAddressListComponent;
+  let fixture: ComponentFixture<VivagraphAddressListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VivagraphListComponent ]
+      declarations: [ VivagraphAddressListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VivagraphListComponent);
+    fixture = TestBed.createComponent(VivagraphAddressListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
