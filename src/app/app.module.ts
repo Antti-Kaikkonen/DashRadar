@@ -1,4 +1,3 @@
-import 'hammerjs';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/interval';
