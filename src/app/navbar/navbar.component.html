@@ -1,20 +1,7 @@
 <mat-toolbar color="primary">
-    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <!--<div fxFlex="nogrow">
-        <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
-            <a mat-tab-link routerLink="/explorer" routerLinkActive #rl1="routerLinkActive"
-            [active]="rl1.isActive">EXPLORER
-            </a>
-            <a mat-tab-link routerLink="/graph" routerLinkActive #rl2="routerLinkActive"
-            [active]="rl2.isActive">GRAPH</a>
-            <a mat-tab-link routerLink="/charts" routerLinkActive #rl3="routerLinkActive"
-            [active]="rl3.isActive">CHARTS</a>
-            <a mat-tab-link routerLink="/nodes" routerLinkActive #rl4="routerLinkActive"
-            [active]="rl4.isActive">NODES</a>
-        </nav>
-    </div>-->
-    
-    <div fxFlex id="navbar-actions" fxLayout="row" fxLayoutAlign="center center">
+    <button mat-icon-button (click)="snav.toggle()" style="margin-right: 16px"><mat-icon>menu</mat-icon></button>
+    <div style="margin-right: 16px" fxHide.xs>{{title}}</div>
+    <div fxFlex id="navbar-actions" fxLayout="row" fxLayoutAlign="start center">
     </div>
 </mat-toolbar>
 <mat-sidenav-container>

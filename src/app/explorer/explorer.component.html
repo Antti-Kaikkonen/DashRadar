@@ -1,6 +1,6 @@
 
-  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" *cdkPortal style="width: 100%;" fxFlexLayout="row wrap" fxLayoutAlign="center center">
-    <mat-form-field floatLabel="auto" color="accent" hintLabel="ADDRESS | TXID | HASH | HEIGHT" style="font-size: 15px; width: 100%; max-width: 640px;" class="form-field-align-bottom">
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" *cdkPortal style="width: 100%;" fxFlexLayout="row wrap" fxLayoutAlign="start center">
+    <mat-form-field floatLabel="auto" color="accent" hintLabel="ADDRESS | TXID | HASH | HEIGHT" style="font-size: 15px; width: 100%; max-width: 550px;" class="form-field-align-bottom">
       <input matInput placeholder="Search blockchain" name="asdInput" errorState="true" formControlName="searchInput"/>
       <mat-icon matSuffix *ngIf="!loadingSearchResults">search</mat-icon>
       <mat-spinner matSuffix color="accent" *ngIf="loadingSearchResults" diameter="24" style="margin-bottom: 3px"></mat-spinner> 
