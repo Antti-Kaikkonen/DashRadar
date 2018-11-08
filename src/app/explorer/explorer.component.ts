@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { CdkPortal, DomPortalOutlet } from '@angular/cdk/portal';
+import { ApplicationRef, Component, ComponentFactoryResolver, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -17,6 +18,10 @@ import { Transaction } from '../transactions/transaction/transaction';
 })
 export class ExplorerComponent implements OnInit {
 
+  @ViewChild(CdkPortal) portal;
+
+  private host: DomPortalOutlet;
+
   searchStr: string = "";
 
   loadingSearchResults = false;
@@ -32,10 +37,26 @@ export class ExplorerComponent implements OnInit {
   constructor(private router: Router,
     private blockService: BlockService,
     private transactionService: TransactionService,
-    private addressService: AddressService) { }
+    private addressService: AddressService,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private applicationRef: ApplicationRef,
+    private injector: Injector) { }
 
   ngOnInit() {
-    
+  }
+
+  ngAfterViewInit() {
+    this.host = new DomPortalOutlet(
+      document.querySelector('#navbar-actions'),
+      this.componentFactoryResolver,
+      this.applicationRef,
+      this.injector
+    );
+    this.host.attach(this.portal);
+  }
+
+  ngOnDestroy() {
+    this.host.detach();
   }
 
   onSubmit() {

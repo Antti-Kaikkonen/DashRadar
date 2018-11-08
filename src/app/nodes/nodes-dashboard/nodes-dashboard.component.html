@@ -1,5 +1,4 @@
-<app-navbar></app-navbar>
-<mat-card>
+<mat-card class="sidenav-content">
   <mat-tab-group dynamicHeight (selectedTabChange)="tabChanged($event)" mat-stretch-tabs>
     <mat-tab label="Map">
       <mat-spinner *ngIf="versions.length === 0" style="margin: 0 auto"></mat-spinner>

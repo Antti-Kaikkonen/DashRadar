@@ -1,5 +1,6 @@
 <mat-toolbar color="primary">
-    <div fxFlex="nogrow">
+    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <!--<div fxFlex="nogrow">
         <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
             <a mat-tab-link routerLink="/explorer" routerLinkActive #rl1="routerLinkActive"
             [active]="rl1.isActive">EXPLORER
@@ -11,9 +12,21 @@
             <a mat-tab-link routerLink="/nodes" routerLinkActive #rl4="routerLinkActive"
             [active]="rl4.isActive">NODES</a>
         </nav>
-    </div>
-    <div fxFlex="nogrow">
-        <ng-content>
-        </ng-content>
+    </div>-->
+    
+    <div fxFlex id="navbar-actions" fxLayout="row" fxLayoutAlign="center center">
     </div>
 </mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="64" [opened]="!mobileQuery.matches">
+        <mat-nav-list dense>
+            <a mat-list-item routerLink="/explorer" routerLinkActive="active"><mat-icon matListIcon>storage</mat-icon> Explorer</a>
+            <a mat-list-item routerLink="/graph" routerLinkActive="active"><mat-icon matListIcon>device_hub</mat-icon> Graph</a>  
+            <a mat-list-item routerLink="/charts" routerLinkActive="active"><mat-icon matListIcon>show_chart</mat-icon> Charts</a>  
+            <a mat-list-item routerLink="/nodes" routerLinkActive="active"><mat-icon matListIcon>desktop_windows</mat-icon> Nodes</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <ng-content select=".sidenav-content"></ng-content>
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,5 +1,11 @@
 :host {
-  flex: 0 1 auto;
+  width: 100%;
+	display: flex;
+	flex-direction: column;
+  flex: 1 1 auto;
+  //min-height: 100%;
+
+  //flex: 0 1 auto;
 
   a {
     height: 64px;
@@ -7,8 +13,29 @@
 }  
 
 mat-toolbar {
-  flex-wrap: wrap;
-  //height: initial;
-  height: auto;
-  padding: 0;
+  height: 64px;
+}
+
+mat-sidenav {
+  background-color: rgb(245, 245, 245);
+}
+
+mat-sidenav-container {
+  width: 100%;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+  //height: 100%;
+}
+
+mat-sidenav-content {
+  //width: 100%;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+  //height: 100%;
+}
+
+.mat-list-item.active{
+  background-color: rgba(0, 0, 0, 0.1)
 }

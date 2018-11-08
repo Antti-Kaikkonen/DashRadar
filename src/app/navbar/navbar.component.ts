@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-navbar',
@@ -10,11 +10,24 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(iconReg: MatIconRegistry, sanitizer: DomSanitizer) { 
-    iconReg.addSvgIcon('dash_alt', sanitizer.bypassSecurityTrustResourceUrl('assets/SVG/DASH-alt.svg'));
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
+
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
+  ngOnDestroy(): void {
+    this.mobileQuery.removeListener(this._mobileQueryListener);
+  }
+
+  ngAfterViewInit() {
   }
 
   ngOnInit() {
+
   }
 
 }

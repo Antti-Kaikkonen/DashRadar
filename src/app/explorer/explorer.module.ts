@@ -1,5 +1,6 @@
 import 'chartjs-plugin-downsample';
 
+import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -78,7 +79,8 @@ import { ExplorerComponent } from './explorer.component';
     ChartJSModule,
     SharedModule,
     NavbarModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PortalModule
   ],
   declarations: [
   	BlocksTableComponent,
