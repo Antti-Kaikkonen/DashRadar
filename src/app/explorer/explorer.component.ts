@@ -1,5 +1,6 @@
 import { CdkPortal, DomPortalOutlet } from '@angular/cdk/portal';
-import { ApplicationRef, Component, ComponentFactoryResolver, Injector, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ApplicationRef, Component, ComponentFactoryResolver, Inject, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -34,20 +35,23 @@ export class ExplorerComponent implements OnInit {
     searchInput: new FormControl('')
   });
 
+
   constructor(private router: Router,
     private blockService: BlockService,
     private transactionService: TransactionService,
     private addressService: AddressService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private applicationRef: ApplicationRef,
-    private injector: Injector) { }
+    private injector: Injector,
+    @Inject(DOCUMENT) private document: Document) {
+     }
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
     this.host = new DomPortalOutlet(
-      document.querySelector('#navbar-actions'),
+      this.document.querySelector('#navbar-actions'),
       this.componentFactoryResolver,
       this.applicationRef,
       this.injector
