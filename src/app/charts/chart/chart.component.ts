@@ -19,7 +19,7 @@ export class ChartComponent implements OnInit {
   query: string;
   title: string;
 
-  chartLoading: boolean = false;
+  chartLoading: boolean = true;
   error: string;
 
   chartSeries: ChartSeries[];
@@ -65,6 +65,7 @@ export class ChartComponent implements OnInit {
       }, error => {
         this.error = "Error loading chart ("+error+")";
         this.chartLoading = false;
+    
       });
     })
   }

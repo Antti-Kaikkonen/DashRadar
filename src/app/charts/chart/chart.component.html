@@ -30,10 +30,10 @@
     </div>
   </mat-toolbar>
 </div>
-<div *ngIf="chartSeries !== undefined" style="height:938px;">
-  <mat-spinner *ngIf="chartLoading"></mat-spinner>
-  <div *ngIf="error">{{error}}</div>
-  <app-time-series-chart [data]="chartSeries" [sma]="sma" [from]="start_date.value" [to]="end_date.value" [title]="title">
+<mat-spinner *ngIf="chartLoading"></mat-spinner>
+<div *ngIf="error">{{error}}</div>
+<div *ngIf="chartSeries !== undefined">
+  <app-time-series-chart [data]="chartSeries" [sma]="sma" [from]="start_date.value" [to]="end_date.value" [title]="title" *ngIf="!chartLoading">
     <mat-form-field floatLabel="never" style="display: inline-block;" class="no-padding-input medium-input" fxHide.xs>
       <mat-select [(value)]="sma">
         <mat-option [value]="1">

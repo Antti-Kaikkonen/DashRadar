@@ -3,7 +3,7 @@
     <ng-content></ng-content>
     <button mat-icon-button (click)="toggleFullScreen()" color="primary"><mat-icon>{{isfullscreen ? "fullscreen_exit" : "fullscreen"}}</mat-icon></button>
   </div>
-  <canvas baseChart #wololoChart
+  <canvas *ngIf="isBrowser" baseChart #wololoChart
         class="touch-scrollable"
         [datasets]="_data"
         [options]="lineChartOptions"

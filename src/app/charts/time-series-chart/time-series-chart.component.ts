@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 import * as screenfull from 'screenfull';
@@ -125,17 +126,24 @@ export class TimeSeriesChartComponent implements OnInit {
     }
   };
 
-  constructor(private hostElement: ElementRef) { }
+  isBrowser: boolean;
+
+  constructor(private hostElement: ElementRef,
+    @Inject(PLATFORM_ID) platformId: string) { 
+      this.isBrowser = isPlatformBrowser(platformId);
+    }
 
   toggleFullScreen() {
     screenfull.toggle(this.hostElement.nativeElement);
   }
 
   ngOnInit() {
-    screenfull.onchange((event)=>{
-      this.dynamicHeight = "100%";
-      this.isfullscreen = screenfull.isFullscreen;
-    });
+    if (this.isBrowser) {
+      screenfull.onchange((event)=>{
+        this.dynamicHeight = "100%";
+        this.isfullscreen = screenfull.isFullscreen;
+      });
+    }
   }
 
   cc(e) {
