@@ -28,13 +28,10 @@ import {
 } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { ChartsModule as ChartJSModule } from 'ng2-charts/ng2-charts';
-import { DragulaModule } from 'ng2-dragula/ng2-dragula';
 
 import { AddressBalanceChartComponent } from '../addresses/address/address-balance-chart/address-balance-chart.component';
 import { AddressComponent } from '../addresses/address/address.component';
-import { BlockPropertiesDialogComponent } from '../blocks/block-properties-dialog/block-properties-dialog.component';
 import { BlockComponent } from '../blocks/block/block.component';
-import { BlocksTableComponent } from '../blocks/blocks-table/blocks-table.component';
 import { BlocksTable2Component } from '../blocks/blocks-table2/blocks-table2.component';
 import { CypherService } from '../charts/cypher.service';
 import { NavbarModule } from '../navbar/navbar.module';
@@ -64,7 +61,6 @@ import { ExplorerComponent } from './explorer.component';
   imports: [
     CommonModule,
     ExplorerRoutingModule,
-    DragulaModule,
     MatButtonModule, 
     MatSlideToggleModule, 
     MatDialogModule, 
@@ -83,14 +79,12 @@ import { ExplorerComponent } from './explorer.component';
     PortalModule
   ],
   declarations: [
-  	BlocksTableComponent,
     BlocksTable2Component,
   	BlockComponent,
     TransactionComponent,
     TransactionInputOutputTableComponent,
     AddressComponent,
     WalletComponent,
-    BlockPropertiesDialogComponent,
     TransactionsTableComponent,
     TransactionSummaryComponent,
     AddressBalanceChartComponent,

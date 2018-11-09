@@ -54,7 +54,7 @@ import { TransactionService } from './transactions/transaction.service';
     MatCardModule,
     NavbarModule,
     FlexLayoutModule,
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,

@@ -1,17 +1,16 @@
-import { formatPercent } from '@angular/common';
+import { formatPercent, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
 import { Meta, Title } from '@angular/platform-browser';
 import * as d3 from 'd3/d3.min.js';
-import * as Datamap from 'datamaps/dist/datamaps.world.js';
 import * as countries from 'i18n-iso-countries';
 import * as Papa from 'papaparse';
 
-declare var require: any
 const english_countries = require('i18n-iso-countries/langs/en.json');
 
 countries.registerLocale(english_countries);
+let Datamap: any;
 
 @Component({
   selector: 'app-nodes-dashboard',
@@ -32,7 +31,7 @@ export class NodesDashboardComponent implements OnInit {
   countries = [];
   versions = [];
   country2count = {};
-  datamap: Datamap;
+  datamap;
   mnoptions = ["All nodes", "Masternodes", "Non masternodes"];
   ismn = this.mnoptions[0];
 
@@ -40,9 +39,17 @@ export class NodesDashboardComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   dashnodes: DashNode[] = [];
   nodes = new MatTableDataSource<DashNode>([]);
+    
+  isBrowser: boolean;
+
   constructor(private http: HttpClient,
-    private titleService: Title,
-        private metaService: Meta) { 
+        private titleService: Title,
+        private metaService: Meta,
+        @Inject(PLATFORM_ID) platformId: string) { 
+        this.isBrowser = isPlatformBrowser(platformId);
+        if (this.isBrowser) {
+            Datamap = require('datamaps/dist/datamaps.world.js');
+        }
   }
 
   applyMnFilter(event) {

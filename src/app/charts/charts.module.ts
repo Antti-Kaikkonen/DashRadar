@@ -1,5 +1,4 @@
-import 'chartjs-plugin-zoom';
-
+//import 'chartjs-plugin-zoom';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -33,6 +32,7 @@ import { ChartsRoutingModule } from './charts-routing.module';
 import { ChartsComponent } from './charts.component';
 import { CypherService } from './cypher.service';
 import { CypherComponent } from './cypher/cypher.component';
+
 
 @NgModule({
   imports: [

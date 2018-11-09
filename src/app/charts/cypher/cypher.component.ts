@@ -1,7 +1,7 @@
-import 'cypher-codemirror';
-
+//import 'cypher-codemirror';
 import { DataSource } from '@angular/cdk/collections';
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -202,11 +202,18 @@ export class CypherComponent implements OnInit {
   customW: number = 250;
   customH: number = 200;
 
+  isBrowser: boolean;
+
   constructor(private route: ActivatedRoute, 
     public cypherService: CypherService,
     private metaService: Meta,
-    private titleService: Title) { 
-
+    private titleService: Title,
+    @Inject(PLATFORM_ID) platformId: string) { 
+      this.isBrowser = isPlatformBrowser(platformId);
+      console.log("isBrowser", this.isBrowser);
+      if (this.isBrowser) {
+        require('cypher-codemirror');
+      }
   }
 
   ngOnDestroy() {
