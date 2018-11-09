@@ -1,3 +1,4 @@
+{{counter}}
 <div fxLayout="row nowrap" fxLayout.xs="column nowrap" fxLayoutGap="0px" fxLayoutAlign="center">
 
 <mat-card fxFlex.lt-sm="grow" fxFlex="0 0 50%" fxFlex.gt-lg="0 0 800px">
@@ -9,7 +10,7 @@
 <mat-card fxFlex.lt-sm="grow" fxFlex="0 0 50%" fxFlex.gt-lg="0 0 800px">
     <mat-card-title fxHide.sm>Unconfirmed transactions</mat-card-title>
     <mat-card-title fxHide fxShow.sm>Unconfirmed tx</mat-card-title>
-    <mat-table [dataSource]="transactions" ngStyle.gt-xs="max-height: 547px; overflow-y:auto;">
+    <mat-table *ngIf="transactions.length > 0" [dataSource]="transactions" ngStyle.gt-xs="max-height: 547px; overflow-y:auto;">
 
       <ng-container matColumnDef="image">
         <mat-header-cell mat-header-cell *matHeaderCellDef [style.max-width.px]="60" [style.min-width.px]="10">  </mat-header-cell>
@@ -35,7 +36,6 @@
     
     </mat-table>
 </mat-card>
-
 </div>
 <br fxHide.xs/>
 <div fxLayout="row" fxLayoutAlign="center">

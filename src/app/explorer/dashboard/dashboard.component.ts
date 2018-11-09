@@ -1,7 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
-import { ApplicationRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 
 import { CypherService } from '../../charts/cypher.service';
 
@@ -55,6 +54,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private cypherService: CypherService,
     private appRef: ApplicationRef,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) platformId: string) { 
       this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -75,6 +75,7 @@ export class DashboardComponent implements OnInit {
   }
 
   load24hStats() {
+    console.log("loading 24h stats");
     let txQuery: string = "OPTIONAL MATCH (tx:Transaction)-[:INCLUDED_IN]->(b:Block) "+
     "WHERE b.time >= datetime().epochSeconds-86400 "+
     "WITH count(tx) as confirmedTxCount "+
@@ -139,22 +140,25 @@ export class DashboardComponent implements OnInit {
           return {txid: row[0], time: row[1], pstype: row[2], image:image, tooltip:tooltip};
         });
         this.updateTransactions(newTxs);
+        this.changeDetectorRef.detectChanges();
       });
     }
   }
+
 
   ngOnInit() {
     if (this.isBrowser) {
       this.isStableSub = this.appRef.isStable.subscribe(stable => {
         if (stable) {
           this.isStableSub.unsubscribe();
-          this.interval = Observable.interval(2000).pipe(startWith(0)).subscribe((sequence) => {
+          Observable.timer(0, 2000).subscribe(sequence => {
             this.loadUnconfirmedTransactions();
             if (sequence%30 == 0) {
               this.load24hStats();
             }
           });
         }
+        //if (stable) this.appRef.tick();
       });
     } else {
       this.loadUnconfirmedTransactions();

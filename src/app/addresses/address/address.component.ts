@@ -57,6 +57,7 @@ export class AddressComponent implements OnInit {
     if (this.transactionsSub !== undefined) this.transactionsSub.unsubscribe();
     if (this.addressSub !== undefined) this.addressSub.unsubscribe();
     if (this.walletSub !== undefined) this.walletSub.unsubscribe();
+    if (this.isStableSub !== undefined) this.isStableSub.unsubscribe();
     this.metaService.removeTag('name="description"');
   }  
 
