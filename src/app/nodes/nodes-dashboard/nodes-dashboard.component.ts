@@ -2,7 +2,7 @@ import { formatPercent, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
-import { Meta, Title } from '@angular/platform-browser';
+import { DOCUMENT, Meta, Title } from '@angular/platform-browser';
 import * as d3 from 'd3/d3.min.js';
 import * as countries from 'i18n-iso-countries';
 import * as Papa from 'papaparse';
@@ -45,7 +45,8 @@ export class NodesDashboardComponent implements OnInit {
   constructor(private http: HttpClient,
         private titleService: Title,
         private metaService: Meta,
-        @Inject(PLATFORM_ID) platformId: string) { 
+        @Inject(PLATFORM_ID) platformId: string,
+        @Inject(DOCUMENT) private document: Document) { 
         this.isBrowser = isPlatformBrowser(platformId);
         if (this.isBrowser) {
             Datamap = require('datamaps/dist/datamaps.world.js');
@@ -78,8 +79,9 @@ export class NodesDashboardComponent implements OnInit {
   }
 
   renderMap() {
+    if (!this.isBrowser) return;
     if (this.datamap !== undefined) return;
-    let container = document.getElementById('mapContainer');
+    let container = this.document.getElementById('mapContainer');
     if (container === null || container === undefined) return;
     this.datamap = new Datamap({
         element: container,
