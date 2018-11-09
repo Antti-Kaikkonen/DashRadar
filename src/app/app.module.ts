@@ -34,6 +34,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule, MatCardModule, MatIconModule, MatTabsModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TransferHttpCacheModule } from '@nguniversal/common';
 
 import { AddressService } from './addresses/address.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -58,7 +59,8 @@ import { TransactionService } from './transactions/transaction.service';
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    MatButtonModule,MatIconModule,MatToolbarModule,MatTabsModule,OverlayModule
+    MatButtonModule,MatIconModule,MatToolbarModule,MatTabsModule,OverlayModule,
+    TransferHttpCacheModule
   ],
   exports: [
   ],

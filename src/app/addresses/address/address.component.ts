@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ApplicationRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -36,6 +36,7 @@ export class AddressComponent implements OnInit {
   transactionsSub: Subscription;
   walletSub: Subscription;
   addressSub: Subscription;
+  isStableSub: Subscription;
 
   isBrowser: boolean;
 
@@ -46,6 +47,7 @@ export class AddressComponent implements OnInit {
     private walletService: WalletService,
     private metaService: Meta,
     private titleService: Title,
+    private appRef: ApplicationRef,
     @Inject(PLATFORM_ID) platformId: string) {
       this.isBrowser = isPlatformBrowser(platformId);
     }
@@ -108,9 +110,14 @@ export class AddressComponent implements OnInit {
 
   ngOnInit() {
     if (this.isBrowser) {
-      this.interval = Observable.interval(10000).subscribe(() => {
-        this.checkForUpdates();
-      });
+      this.isStableSub = this.appRef.isStable.subscribe(stable => {
+        if (stable) {
+          this.isStableSub.unsubscribe();
+          this.interval = Observable.interval(10000).subscribe(() => {
+            this.checkForUpdates();
+          });
+        }
+      });    
     }
 
     this.route.queryParams

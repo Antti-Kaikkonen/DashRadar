@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { ApplicationRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
@@ -28,6 +28,7 @@ export class BlocksTable2Component implements OnInit {
 
   interval: Subscription;
   blocksub: Subscription;
+  isStableSub: Subscription;
 
   query: string = "CYPHER planner=rule MATCH (b:BestBlock) WITH b.height as tipHeight MATCH (b:Block)<-[:INCLUDED_IN]-(tx:Transaction) WHERE b.height > tipHeight-($page+1)*$pageSize AND b.height <= tipHeight-$page*$pageSize RETURN b.hash, b.height, b.time, count(tx) as txcount ORDER BY b.height DESC;"
 
@@ -39,6 +40,7 @@ export class BlocksTable2Component implements OnInit {
     private router: Router,
     private titleService: Title,
     private cypherService: CypherService,
+    private appRef: ApplicationRef,
     @Inject(PLATFORM_ID) platformId: string) { 
       this.isBrowser = isPlatformBrowser(platformId);
       this.titleService.setTitle("Dash Block Explorer | DashRadar");
@@ -67,13 +69,19 @@ export class BlocksTable2Component implements OnInit {
   ngOnDestroy() {
     if (this.interval !== undefined) this.interval.unsubscribe();
     if (this.blocksub !== undefined) this.blocksub.unsubscribe();
+    if (this.isStableSub !== undefined) this.isStableSub.unsubscribe();
   }  
 
   ngOnInit() {
     if (this.isBrowser) {
-      this.interval = Observable.interval(2000).subscribe(() => {
-        this.updateBlocks();
-      });
+      this.isStableSub = this.appRef.isStable.subscribe(stable => {
+        if (stable) {
+          this.isStableSub.unsubscribe();
+          this.interval = Observable.interval(2000).subscribe(() => {
+            this.updateBlocks();
+          });
+        }
+      });    
     }
 
     if (!this.route.snapshot.queryParams.page) {
