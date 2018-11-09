@@ -1,6 +1,16 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  SimpleChanges,
+} from '@angular/core';
 import * as Immutable from 'immutable';
-import * as Viva from 'vivagraphjs/dist/vivagraph.min.js';
 
 import { Address } from '../addresses/address/address';
 import { VivagraphSettings } from '../settings/vivagraph-settings';
@@ -8,6 +18,7 @@ import { Transaction } from '../transactions/transaction/transaction';
 import { VIn } from '../transactions/transaction/vin';
 import { VOut } from '../transactions/transaction/vout';
 
+let Viva;
 
 @Component({
   selector: 'app-vivagraph-svg',
@@ -40,21 +51,31 @@ export class VivagraphSvgComponent implements OnInit {
 
   private addressToTransaction: Immutable.Map<string, Immutable.Set<Transaction>>;
 
-  private graph = Viva.Graph.graph();
+  private graph;
 
   private layout: any;
 
-  private graphics = Viva.Graph.View.svgGraphics();
+  private graphics;
 
   private svgDefs: any;
 
   private renderer: any;
 
-  constructor(public myElement: ElementRef) { 
+  isBrowser: boolean;
+
+  constructor(public myElement: ElementRef,
+    @Inject(PLATFORM_ID) platformId: string) { 
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      Viva = require('vivagraphjs/dist/vivagraph.min.js');
+      this.graph = Viva.Graph.graph();
+      this.graphics = Viva.Graph.View.svgGraphics(); 
+    }
   	this.addressToTransaction = Immutable.Map<string, Immutable.Set<Transaction>>();  
   }
 
   ngOnInit() {
+    if (!this.isBrowser) return;
     let markerEnd = this.createMarker('TriangleEnd');
     markerEnd.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z');
     this.graphics.getSvgRoot().attr("shape-rendering", "optimizeSpeed");
@@ -79,6 +100,7 @@ export class VivagraphSvgComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    if (!this.isBrowser) return;
     this.renderer = Viva.Graph.View.renderer(
       this.graph,
       {
@@ -90,10 +112,11 @@ export class VivagraphSvgComponent implements OnInit {
         prerender : 1000
       }
     );
-    this.renderer.run();  
+    this.renderer.run();   
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (!this.isBrowser) return;
     this.graph.beginUpdate();
     if (changes.transactions) {
       let newTx: Immutable.Map<string, Transaction> = changes.transactions.currentValue;

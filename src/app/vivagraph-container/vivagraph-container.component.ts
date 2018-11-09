@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { MatSnackBar } from '@angular/material';
 import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
@@ -56,6 +57,8 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
 
   dialogEvent: {transaction?: Transaction, address?: Address, mouseEvent: MouseEvent};
 
+  isBrowser: boolean;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -67,8 +70,10 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private hostElement: ElementRef,
     private metaService: Meta,
-    private titleService: Title
+    private titleService: Title,
+    @Inject(PLATFORM_ID) platformId: string
   ) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   toggleFullScreen() {
@@ -92,9 +97,11 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       content: "Visualize the dash blockchain live or start expanding from an address or a transaction to explore the transaction graph."
     });
 
-    screenfull.onchange((event)=>{
-      this.isfullscreen = screenfull.isFullscreen;
-    });
+    if (this.isBrowser) {
+      screenfull.onchange((event)=>{
+        this.isfullscreen = screenfull.isFullscreen;
+      });
+    }
 
     this.route.queryParams.subscribe((params: Params) => {
       let txStr: string = params['tx'] || params['txs'] || params['transaction'] || params['transactions'];
@@ -121,16 +128,6 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
         })
       }
     });
-    /*this.transactionService.getTransactionByHash("...")
-    .subscribe((transaction: Transaction) => {
-      this.transactions = this.transactions.set(transaction.txid, transaction);
-      transaction.vin.forEach((vin:VIn) => this.transactionService.getTransactionByHash(vin.txid).subscribe((mixingTx: Transaction) => {
-        this.transactions = this.transactions.set(mixingTx.txid, mixingTx);
-        this.expandInputs(transaction, 0, 4, 1, 1).subscribe();
-      }));
-      this.expandTransactionInputs(transaction);
-      //this.expandInputs(transaction, 0, 3, 1, 1).subscribe();
-    });*/
   }
 
   onSettingsChanged(vivaGraphSettings: VivagraphSettings) {
