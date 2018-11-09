@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { ApplicationRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
@@ -41,6 +41,7 @@ export class BlocksTable2Component implements OnInit {
     private titleService: Title,
     private cypherService: CypherService,
     private appRef: ApplicationRef,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) platformId: string) { 
       this.isBrowser = isPlatformBrowser(platformId);
       this.titleService.setTitle("Dash Block Explorer | DashRadar");
@@ -62,6 +63,7 @@ export class BlocksTable2Component implements OnInit {
         if (this.blocks.length > 0) {
           this.length = this.blocks[0].height+currentPage*10;
         }
+        this.changeDetectorRef.detectChanges();
       });
     }  
   }

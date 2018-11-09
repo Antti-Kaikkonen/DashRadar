@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { ApplicationRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -48,6 +48,7 @@ export class AddressComponent implements OnInit {
     private metaService: Meta,
     private titleService: Title,
     private appRef: ApplicationRef,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) platformId: string) {
       this.isBrowser = isPlatformBrowser(platformId);
     }
@@ -105,6 +106,7 @@ export class AddressComponent implements OnInit {
     .subscribe((address: Address) => {
       this.addressChanged(address);
       this.checkGuestimatedWalletUpdates();
+      this.changeDetectorRef.detectChanges();
     });
   }
 
