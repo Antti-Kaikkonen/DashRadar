@@ -151,7 +151,7 @@ export class DashboardComponent implements OnInit {
       this.isStableSub = this.appRef.isStable.subscribe(stable => {
         if (stable) {
           this.isStableSub.unsubscribe();
-          Observable.timer(0, 2000).subscribe(sequence => {
+          this.interval = Observable.timer(0, 2000).subscribe(sequence => {
             this.loadUnconfirmedTransactions();
             if (sequence%30 == 0) {
               this.load24hStats();
