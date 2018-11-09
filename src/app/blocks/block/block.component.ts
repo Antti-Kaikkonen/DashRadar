@@ -4,7 +4,6 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 
 import { TransactionService } from '../../transactions/transaction.service';
 import { Transaction } from '../../transactions/transaction/transaction';
@@ -27,7 +26,6 @@ export class BlockComponent implements OnInit {
   transactions: Array<Transaction>;
 	errorMessage: string;
 	error: boolean = false;
-  currentTime: number;
   hash: string;
 
   superBlock: boolean = false;
@@ -86,12 +84,6 @@ export class BlockComponent implements OnInit {
       },
 	    (error: string) =>  {this.errorMessage = error; this.error = true;}
     );
-
-    let currentTime = new Date();
-    Observable.timer(1000-currentTime.getMilliseconds(), 1000)
-      .subscribe(tick => {
-      this.currentTime = new Date().getTime();
-    });
 
   }
 

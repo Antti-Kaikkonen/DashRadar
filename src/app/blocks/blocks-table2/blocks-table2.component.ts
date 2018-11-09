@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
@@ -32,10 +33,14 @@ export class BlocksTable2Component implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  isBrowser: boolean;
+
   constructor(private route: ActivatedRoute,
     private router: Router,
     private titleService: Title,
-    private cypherService: CypherService) { 
+    private cypherService: CypherService,
+    @Inject(PLATFORM_ID) platformId: string) { 
+      this.isBrowser = isPlatformBrowser(platformId);
       this.titleService.setTitle("Dash Block Explorer | DashRadar");
   }
 
@@ -65,10 +70,11 @@ export class BlocksTable2Component implements OnInit {
   }  
 
   ngOnInit() {
-
-    this.interval = Observable.interval(2000).subscribe(() => {
-      this.updateBlocks();
-    });
+    if (this.isBrowser) {
+      this.interval = Observable.interval(2000).subscribe(() => {
+        this.updateBlocks();
+      });
+    }
 
     if (!this.route.snapshot.queryParams.page) {
       this.updateBlocks();

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -36,16 +37,21 @@ export class AddressComponent implements OnInit {
   walletSub: Subscription;
   addressSub: Subscription;
 
+  isBrowser: boolean;
+
   constructor(private route: ActivatedRoute,
     private router: Router,
   	private addressService: AddressService,
     private transactionService: TransactionService,
     private walletService: WalletService,
     private metaService: Meta,
-    private titleService: Title) { }
+    private titleService: Title,
+    @Inject(PLATFORM_ID) platformId: string) {
+      this.isBrowser = isPlatformBrowser(platformId);
+    }
 
   ngOnDestroy() {
-    this.interval.unsubscribe();
+    if (this.interval !== undefined) this.interval.unsubscribe();
     if (this.transactionsSub !== undefined) this.transactionsSub.unsubscribe();
     if (this.addressSub !== undefined) this.addressSub.unsubscribe();
     if (this.walletSub !== undefined) this.walletSub.unsubscribe();
@@ -101,10 +107,11 @@ export class AddressComponent implements OnInit {
 
 
   ngOnInit() {
-
-    this.interval = Observable.interval(10000).subscribe(() => {
-      this.checkForUpdates();
-    });
+    if (this.isBrowser) {
+      this.interval = Observable.interval(10000).subscribe(() => {
+        this.checkForUpdates();
+      });
+    }
 
     this.route.queryParams
     //.filter(e => e.page !== undefined)

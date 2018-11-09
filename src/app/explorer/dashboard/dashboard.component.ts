@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
@@ -49,7 +50,12 @@ export class DashboardComponent implements OnInit {
   interval: Subscription;
   mempoolSub: Subscription;
 
-  constructor(private cypherService: CypherService) { }
+  isBrowser: boolean;
+
+  constructor(private cypherService: CypherService,
+    @Inject(PLATFORM_ID) platformId: string) { 
+      this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnDestroy() {
     if (this.interval !== undefined) this.interval.unsubscribe();
@@ -135,13 +141,17 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.interval = Observable.interval(2000).pipe(startWith(0)).subscribe((sequence) => {
+    if (this.isBrowser) {
+      this.interval = Observable.interval(2000).pipe(startWith(0)).subscribe((sequence) => {
+        this.loadUnconfirmedTransactions();
+        if (sequence%30 == 0) {
+          this.load24hStats();
+        }
+      });
+    } else {
       this.loadUnconfirmedTransactions();
-      if (sequence%30 == 0) {
-        this.load24hStats();
-      }
-    });
+      this.load24hStats();
+    }  
   }
 
 }
