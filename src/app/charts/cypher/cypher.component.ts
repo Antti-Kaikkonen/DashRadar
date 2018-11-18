@@ -401,7 +401,8 @@ export class CypherComponent implements OnInit {
   }
 
   cleanQuery(query: string): string {
-    return query.replace(/\s+/g, ' ').replace('\n', ' ').trim();
+    return query.trim();
+    //return query.replace(/\s+/g, ' ').replace('\n', ' ').trim(); //caused line comments (//) to break the query
   }
 
   updateChartImageURLs() {
