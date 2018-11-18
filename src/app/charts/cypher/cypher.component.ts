@@ -1,12 +1,10 @@
 //import 'cypher-codemirror';
-import { DataSource } from '@angular/cdk/collections';
 import { isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { CypherService } from '../../charts/cypher.service';
@@ -32,9 +30,6 @@ export class CypherComponent implements OnInit {
 
   imageUrlPrefix = environment.chartJsImageURL;
 
-  dataSource: ExampleDataSource;
-  exampleDatabase = new ExampleDatabase();
-
   selectedTabIndex: number;
 
   query: string = "";
@@ -42,6 +37,8 @@ export class CypherComponent implements OnInit {
   cypherQueryURL: string;
 
   cypherLoading: boolean = false;
+
+  querySub: Subscription;
 
   result: CypherResponse;
 
@@ -210,13 +207,13 @@ export class CypherComponent implements OnInit {
     private titleService: Title,
     @Inject(PLATFORM_ID) platformId: string) { 
       this.isBrowser = isPlatformBrowser(platformId);
-      console.log("isBrowser", this.isBrowser);
       if (this.isBrowser) {
         require('cypher-codemirror');
       }
   }
 
   ngOnDestroy() {
+    if (this.querySub !== undefined) this.querySub.unsubscribe();
     this.metaService.removeTag('name="description"');
   }
 
@@ -246,18 +243,17 @@ export class CypherComponent implements OnInit {
         }
     });
 
-    this.dataSource = new ExampleDataSource(this.exampleDatabase);
   }
 
   executeQuery() {
     this.result = undefined;
     this.chartData = undefined;
     this.cypherError = undefined;
-    this.exampleDatabase.clear();
   	//console.log("executing query");
     let query = this.query;
     this.cypherLoading = true;
-  	this.cypherService.executeQuery(query, {})
+    if (this.querySub !== undefined) this.querySub.unsubscribe();
+  	this.querySub = this.cypherService.executeQuery(query, {})
     .finally(() => {
       this.cypherLoading = false;
     })
@@ -301,7 +297,6 @@ export class CypherComponent implements OnInit {
 
 
       this.result = response;
-      response.data.forEach(row => this.exampleDatabase.addRow(row));
       let allNumbers = response.data.every(row => typeof row[0] === "number");
       let convertToDate = allNumbers && (response.columns[0].toLowerCase() === "date" || response.columns[0].toLowerCase() === "time");
       this.chartData = this.cypherResponseToChartJSChart(response, convertToDate, allNumbers);
@@ -349,7 +344,7 @@ export class CypherComponent implements OnInit {
       } else {
         data = rows;
       }
-      return rows.map(row => {
+      return data.map(row => {
         return {x: convertToDate ? new Date(row[0]*1000) : row[0], y: row[1]};
       });
   }
@@ -473,52 +468,3 @@ export class CypherComponent implements OnInit {
   }
 
 }
-
-
-export class ExampleDatabase {
-  /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  get data(): any[] { return this.dataChange.value; }
-
-  constructor() {
-  }
-
-  /** Adds a new user to the database. */
-  addRow(row: any) {
-    const copiedData = this.data.slice();
-    copiedData.push(row);
-    this.dataChange.next(copiedData);
-  }
-
-
-  clear() {
-    this.dataChange.next([]);
-  }
-
-}
-
-
-export class ExampleDataSource extends DataSource<any> {
-  _filterChange = new BehaviorSubject('');
-  get filter(): string { return this._filterChange.value; }
-  set filter(filter: string) { this._filterChange.next(filter); }
-
-  constructor(private _exampleDatabase: ExampleDatabase) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<any[]> {
-    const displayDataChanges = [
-      this._exampleDatabase.dataChange
-    ];
-
-    return Observable.merge(...displayDataChanges).map(() => {
-      let filteredData = this._exampleDatabase.data.slice();
-
-      return filteredData;
-    });
-  }
-
-  disconnect() {}
-}  

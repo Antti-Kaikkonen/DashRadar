@@ -13,7 +13,7 @@
   	{{cypherError.message}}
   </mat-tab>
   <mat-tab label="Table" *ngIf="result !== undefined">
-  	<mat-table #table [dataSource]="dataSource">
+  	<mat-table #table [dataSource]="result.data">
   		<ng-container *ngFor="let column of result.columns; let i = index" [matColumnDef]="column">
 		  <mat-header-cell *matHeaderCellDef>{{ column }}</mat-header-cell>
 		  <mat-cell *matCellDef="let row">{{ row[i] }}</mat-cell>
