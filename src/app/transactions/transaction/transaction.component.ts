@@ -129,7 +129,7 @@ export class TransactionComponent implements OnInit {
     this.metaService.removeTag('name="description"');
     this.metaService.addTag({
       name: "description", 
-      content: this.datePipe.transform(this.transaction.time, "mediumDate")+", "+this.transaction.vin.length+" inputs, "+this.transaction.vout.length+" outputs, fee: "+this.fee +" dash, txid: "+this.transaction.txid
+      content: this.datePipe.transform(this.transaction.time*1000, "mediumDate")+", "+this.transaction.vin.length+" inputs, "+this.transaction.vout.length+" outputs, fee: "+this.fee +" dash, txid: "+this.transaction.txid
     });
   }
 
