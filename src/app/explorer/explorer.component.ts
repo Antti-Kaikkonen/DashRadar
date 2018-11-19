@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { ApplicationRef, Component, ComponentFactoryResolver, Inject, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { onErrorResumeNext } from 'rxjs';
+import { onErrorResumeNext, Subscription } from 'rxjs';
 
 import { AddressService } from '../addresses/address.service';
 import { Address } from '../addresses/address/address';
@@ -30,6 +30,8 @@ export class ExplorerComponent implements OnInit {
   found = false;
 
   submitted = false;
+
+  searchSub: Subscription;
 
   searchForm = new FormGroup ({
     searchInput: new FormControl('')
@@ -60,6 +62,7 @@ export class ExplorerComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    if (this.searchSub !== undefined) this.searchSub.unsubscribe();
     this.host.detach();
   }
 
@@ -82,7 +85,7 @@ export class ExplorerComponent implements OnInit {
       let hashObservable = this.blockService.getBlockByHash(this.searchStr);
       observable = observable.onErrorResumeNext(hashObservable);
     }
-    observable.finally(() => {
+    this.searchSub = observable.finally(() => {
       this.loadingSearchResults = false;
       if (!this.found) {
         this.searchForm.get("searchInput").setErrors({"error":"wasd"});
