@@ -66,19 +66,20 @@ export class ExplorerComponent implements OnInit {
   onSubmit() {
     this.searchStr = this.searchForm.get("searchInput").value;
     if (this.searchStr.length === 0) return;
+    this.searchStr = this.searchStr.trim();
     this.submitted = true;
     this.loadingSearchResults = true;
-    let addressObservable = this.addressService.getAddress(this.searchStr.trim());
-    let txObservable = this.transactionService.getTransactionByHash(this.searchStr.trim());
+    let addressObservable = this.addressService.getAddress(this.searchStr);
+    let txObservable = this.transactionService.getTransactionByHash(this.searchStr);
 
     let observable = onErrorResumeNext(addressObservable, txObservable);
     //let observable = Observable.merge(addressObservable, txObservable, hashObservable);
 
     if (!isNaN(Number(this.searchStr.trim()))) {
-      let heightObservable = this.blockService.getBlockByHeight(Number(this.searchStr.trim()));
+      let heightObservable = this.blockService.getBlockByHeight(Number(this.searchStr));
       observable = observable.onErrorResumeNext(heightObservable);
     } else {
-      let hashObservable = this.blockService.getBlockByHash(this.searchStr.trim());
+      let hashObservable = this.blockService.getBlockByHash(this.searchStr);
       observable = observable.onErrorResumeNext(hashObservable);
     }
     observable.finally(() => {

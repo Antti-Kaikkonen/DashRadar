@@ -158,7 +158,7 @@ export class AddressComponent implements OnInit {
         this.addressChanged(address);
         this.checkGuestimatedWalletUpdates();
       },
-	    (error: string) =>  {this.errorMessage = error; this.error = true;}
+	    (error: string) =>  {this.errorMessage = error; console.log(this.errorMessage); this.error = true;}
     );
   }
 
