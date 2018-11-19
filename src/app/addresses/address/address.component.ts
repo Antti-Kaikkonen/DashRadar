@@ -2,7 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { TransactionService } from '../../transactions/transaction.service';
@@ -116,7 +116,7 @@ export class AddressComponent implements OnInit {
       this.isStableSub = this.appRef.isStable.subscribe(stable => {
         if (stable) {
           this.isStableSub.unsubscribe();
-          this.interval = Observable.interval(10000).subscribe(() => {
+          this.interval = interval(10000).subscribe(() => {
             this.checkForUpdates();
           });
         }

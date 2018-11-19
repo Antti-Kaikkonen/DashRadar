@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { ApplicationRef, Component, ComponentFactoryResolver, Inject, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { onErrorResumeNext } from 'rxjs';
 
 import { AddressService } from '../addresses/address.service';
 import { Address } from '../addresses/address/address';
@@ -71,7 +71,7 @@ export class ExplorerComponent implements OnInit {
     let addressObservable = this.addressService.getAddress(this.searchStr.trim());
     let txObservable = this.transactionService.getTransactionByHash(this.searchStr.trim());
 
-    let observable = Observable.onErrorResumeNext(addressObservable, txObservable);
+    let observable = onErrorResumeNext(addressObservable, txObservable);
     //let observable = Observable.merge(addressObservable, txObservable, hashObservable);
 
     if (!isNaN(Number(this.searchStr.trim()))) {

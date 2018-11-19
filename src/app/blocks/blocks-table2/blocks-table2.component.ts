@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { CypherService } from '../../charts/cypher.service';
@@ -79,7 +79,7 @@ export class BlocksTable2Component implements OnInit {
       this.isStableSub = this.appRef.isStable.subscribe(stable => {
         if (stable) {
           this.isStableSub.unsubscribe();
-          this.interval = Observable.interval(2000).subscribe(() => {
+          this.interval = interval(2000).subscribe(() => {
             this.updateBlocks();
           });
         }
