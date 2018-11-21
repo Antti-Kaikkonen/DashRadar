@@ -42,7 +42,7 @@ export class CypherComponent implements OnInit {
 
   result: CypherResponse;
 
-  cypherError: {message?: string, fullname?: string, exception?: string, errors?: [any]};
+  cypherError: {message?: string, code?: string};
 
   title: string = "";
   title_enabled: boolean = false;
@@ -327,7 +327,7 @@ export class CypherComponent implements OnInit {
       this.updateChartImageURLs();
       this.updateChart();
     },
-    (error: any) => this.cypherError = JSON.parse(error._body));
+    (error: any) => {this.cypherError = error.error; console.log(this.cypherError)});
   }
 
   categoricalBarChartData: any;

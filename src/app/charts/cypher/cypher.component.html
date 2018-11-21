@@ -10,6 +10,7 @@
 </button><a href="/charts/editor?query={{cypherQueryURL}}">link to this query</a>
 <mat-tab-group [(selectedIndex)]="selectedTabIndex">
   <mat-tab label="Error" *ngIf="cypherError !== undefined">
+		{{cypherError.code}}<br/>
   	{{cypherError.message}}
   </mat-tab>
   <mat-tab label="Table" *ngIf="result !== undefined">
