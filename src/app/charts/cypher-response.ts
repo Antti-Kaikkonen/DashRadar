@@ -3,9 +3,9 @@ import { ChartSeries } from './chartjs-types';
 
 export class CypherResponse {
 
+
   constructor(public columns?: string[],
     public data?: object[]) {
-
   }
 
 

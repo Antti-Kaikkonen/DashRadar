@@ -16,7 +16,8 @@ export class CypherService {
 
 
 	executeQuery(query: string, params: object): Observable<CypherResponse> {
-		return this.http.get<CypherResponse>(this.cypherURL+"?query="+encodeURIComponent(query)+"&params="+encodeURIComponent(JSON.stringify(params)));
+		return this.http.get<CypherResponse>(this.cypherURL+"?query="+encodeURIComponent(query)+"&params="+encodeURIComponent(JSON.stringify(params)))
+		.map(res => new CypherResponse(res.columns, res.data));
 		//return this.http.post(this.cypherURL, {query: query, params: params})
 		//.map((response: CypherResponse) => {
 			//let json = response.json();
