@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as Immutable from 'immutable';
-import { Observable } from 'rxjs/Observable';
+import { from, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import * as screenfull from 'screenfull';
@@ -21,6 +21,7 @@ import { Transaction } from '../transactions/transaction/transaction';
 import { VIn } from '../transactions/transaction/vin';
 import { VOut } from '../transactions/transaction/vout';
 
+//import { Observable } from 'rxjs/Observable';
 @Component({
   selector: 'app-vivagraph-container',
   templateUrl: './vivagraph-container.component.html',
@@ -107,7 +108,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       let txStr: string = params['tx'] || params['txs'] || params['transaction'] || params['transactions'];
       if (txStr !== undefined) {
         let txids: Array<string> = txStr.split(":")
-        Observable.from(txids)
+        from(txids)
         .filter(txid => txid.length === 64)
         .mergeMap((txid: string) => this.transactionService.getTransactionByHash(txid, true))
         .toArray()
@@ -119,7 +120,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       let addrStr: string = params['addr'] || params['address'] || params['addrs'] || params['addresses'];
       if (addrStr !== undefined) {
         let addresses: Array<string> = addrStr.split(":")
-        Observable.from(addresses).delay(5000)
+        from(addresses).delay(5000)
         .filter(address => address.length === 34)
         .mergeMap((address: string) => this.addressService.getAddress(address))
         .toArray()
@@ -195,7 +196,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       alert("This address has "+address.txApperances+" transactions. Max limit is "+this.vivagraphSettings.maxNodeEdges);
       return;
     }
-    Observable.from(address.transactions).mergeMap(
+    from(address.transactions).mergeMap(
       (txId: string) => this.transactionService.getTransactionByHash(txId, true)
     )
     .toArray()
@@ -230,7 +231,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       alert("Transactions has "+transaction.vin.length+" inputs. Max limit is "+this.vivagraphSettings.maxNodeEdges+".");
       return;
     }
-    Observable.from(transaction.vin)
+    from(transaction.vin)
     .filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null)//filter out coinbase inputs
     .distinct((vin: VIn) => vin.addr)//There can be many inputs from a single address
     .mergeMap( 
@@ -255,7 +256,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       alert("Transactions has "+transaction.vout.length+" outputs. Max limit is "+this.vivagraphSettings.maxNodeEdges+".");
       return;
     }
-    Observable.from(transaction.vout)
+    from(transaction.vout)
     .filter((vout: VOut) => vout.scriptPubKey.addresses !== undefined)
     .distinct((vout: VOut) => vout.scriptPubKey.addresses)//There can be many outputs to a signle address?
     .mergeMap( 
@@ -505,13 +506,13 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
 
   //Returns true if create denominations transaction was found at the edges
   private expandInputs(transaction: Transaction, rounds: number, maxRounds: number, dividend: number, divisor: number): Observable<boolean> {
-    if (rounds > maxRounds) return Observable.of(false);
+    if (rounds > maxRounds) return of(false);
     if (transaction.isCreateDenominationsTransaction()) {
       //this.expandTransactionInputs(transaction);
-      if (rounds === maxRounds) return Observable.of(true);
+      if (rounds === maxRounds) return of(true);
     }
-    if (rounds > 0 && !transaction.isMixingTransaction()) return Observable.of(false);
-    return Observable.from(transaction.vin)
+    if (rounds > 0 && !transaction.isMixingTransaction()) return of(false);
+    return from(transaction.vin)
     .filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null)//filter out coinbase inputs
     .distinct((vin: VIn) => vin.addr)
     .mergeMap(
@@ -543,7 +544,7 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
         }
       }
     )
-    .concatMap((v: {vin: VIn, result: boolean}) => Observable.of(v.result));
+    .concatMap((v: {vin: VIn, result: boolean}) => of(v.result));
   }
 
   private indexTransactions(transactions: Array<Transaction>): Immutable.Map<string, Transaction> {
