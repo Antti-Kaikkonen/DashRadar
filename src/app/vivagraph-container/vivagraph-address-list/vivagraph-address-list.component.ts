@@ -2,8 +2,8 @@ import { DataSource } from '@angular/cdk/table';
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSort, Sort } from '@angular/material';
 import * as Immutable from 'immutable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, merge } from 'rxjs/operators';
 
 import { Address } from '../../addresses/address/address';
 
@@ -84,11 +84,14 @@ export class AddressDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Address[]> {
-    return this._database.merge(this._sort.sortChange).map((value: Sort | Address[], index) => {
-      let sortedData = this.sortData(this._database.getValue().slice());
-
-      return sortedData;
-    });
+    return this._database
+    .pipe(
+      merge(this._sort.sortChange),
+      map((value: Sort | Address[], index) => {
+        let sortedData = this.sortData(this._database.getValue().slice());
+        return sortedData;
+      })
+    );
   }
 
   disconnect() {

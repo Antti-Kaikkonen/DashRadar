@@ -1,9 +1,7 @@
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map, mergeMap, publishReplay, refCount } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Block } from './block/block';
@@ -22,8 +20,11 @@ export class BlockService {
 	getBlockByHash(hash: string):  Observable<Block> {
 		if (!this.blocksByHash.has(hash)) {
 			let blockObservable: Observable<Block> = this.http.get(this.blockByHashtURL(hash))
-        .map(res => this.insightResponseToBlock(res))
-        .publishReplay(1).refCount()//to cache the result in this observable
+			.pipe(
+				map(res => this.insightResponseToBlock(res)),
+				publishReplay(1),
+				refCount()
+			)
 			this.blocksByHash.set(hash, blockObservable);
 		}
 		return this.blocksByHash.get(hash);
@@ -31,13 +32,16 @@ export class BlockService {
 
 	getBlockByHeight(height: number): Observable<Block> {
 		return this.http.get<any>(this.blockByHeightURL(height))
-		  //.map((response : Response) => response.json())
-		  .mergeMap(jsonData => this.getBlockByHash(jsonData.blockHash));
+		.pipe(
+			mergeMap(jsonData => this.getBlockByHash(jsonData.blockHash))
+		);
 	}
 
 	getHeight(): Observable<number> {
-  	return this.http.get<any>(this.heightURL)
-      .map(res => res.blockChainHeight);
+		return this.http.get<any>(this.heightURL)
+		.pipe(
+			map(res => res.blockChainHeight)
+		);
 	}
 
 	private insightResponseToBlock(data: any): Block {

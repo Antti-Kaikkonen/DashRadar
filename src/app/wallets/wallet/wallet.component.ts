@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 import { CypherResponse } from '../../charts/cypher-response';
 import { WalletService } from '../wallet.service';
@@ -36,11 +36,13 @@ export class WalletComponent implements OnInit {
 
   ngOnInit() {
     let observable: Observable<CypherResponse> = this.route.params
-    .filter(params => params.addr)
-    .switchMap((params: Params) => {
-      this.sourceAddress = params.addr;
-      return this.walletService.getWalletAddresses(this.sourceAddress)
-    });
+    .pipe(
+      filter(params => params.addr),
+      switchMap((params: Params) => {
+        this.sourceAddress = params.addr;
+        return this.walletService.getWalletAddresses(this.sourceAddress)
+      })
+    );
     this.loading = true;
     this.error = false;
     this.subscription = observable.subscribe((response: CypherResponse) => {

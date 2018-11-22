@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { ChartDataService } from '../chart-data.service';
 import { ChartSeries } from '../chartjs-types';
@@ -51,7 +52,9 @@ export class ChartComponent implements OnInit {
 
   ngOnInit() {
     this.route.params
-    .filter(params => params.chartName)
+    .pipe(
+      filter(params => params.chartName)
+    )
     .subscribe((params: Params) => {
       let data = this.chartData.charts[params.chartName];
 

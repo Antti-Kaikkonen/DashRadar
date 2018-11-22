@@ -5,9 +5,8 @@ import { MatSnackBar } from '@angular/material';
 import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as Immutable from 'immutable';
-import { from, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
+import { from, Observable, of, Subject } from 'rxjs';
+import { concatMap, delay, distinct, filter, map, mergeMap, take, takeLast, tap, toArray } from 'rxjs/operators';
 import * as screenfull from 'screenfull';
 import * as io from 'socket.io-client';
 
@@ -21,7 +20,6 @@ import { Transaction } from '../transactions/transaction/transaction';
 import { VIn } from '../transactions/transaction/vin';
 import { VOut } from '../transactions/transaction/vout';
 
-//import { Observable } from 'rxjs/Observable';
 @Component({
   selector: 'app-vivagraph-container',
   templateUrl: './vivagraph-container.component.html',
@@ -109,9 +107,11 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       if (txStr !== undefined) {
         let txids: Array<string> = txStr.split(":")
         from(txids)
-        .filter(txid => txid.length === 64)
-        .mergeMap((txid: string) => this.transactionService.getTransactionByHash(txid, true))
-        .toArray()
+        .pipe(
+          filter(txid => txid.length === 64),
+          mergeMap((txid: string) => this.transactionService.getTransactionByHash(txid, true)),
+          toArray()
+        )
         .subscribe((transactions: Array<Transaction>) => {
           this.transactions = this.indexTransactions(transactions);
         });
@@ -120,10 +120,13 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       let addrStr: string = params['addr'] || params['address'] || params['addrs'] || params['addresses'];
       if (addrStr !== undefined) {
         let addresses: Array<string> = addrStr.split(":")
-        from(addresses).delay(5000)
-        .filter(address => address.length === 34)
-        .mergeMap((address: string) => this.addressService.getAddress(address))
-        .toArray()
+        from(addresses)
+        .pipe(
+          delay(5000),
+          filter(address => address.length === 34),
+          mergeMap((address: string) => this.addressService.getAddress(address)),
+          toArray()
+        )
         .subscribe((addresses: Array<Address>) => {
           this.addresses = this.indexAddresses(addresses);
         })
@@ -196,10 +199,13 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       alert("This address has "+address.txApperances+" transactions. Max limit is "+this.vivagraphSettings.maxNodeEdges);
       return;
     }
-    from(address.transactions).mergeMap(
-      (txId: string) => this.transactionService.getTransactionByHash(txId, true)
+    from(address.transactions)
+    .pipe(
+      mergeMap(
+        (txId: string) => this.transactionService.getTransactionByHash(txId, true)
+      ),
+      toArray()
     )
-    .toArray()
     .subscribe((transactions: Array<Transaction>) => 
       this.transactions = this.transactions.merge(this.indexTransactions(transactions)));
   }
@@ -232,12 +238,15 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       return;
     }
     from(transaction.vin)
-    .filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null)//filter out coinbase inputs
-    .distinct((vin: VIn) => vin.addr)//There can be many inputs from a single address
-    .mergeMap( 
-      (input: VIn) => 
-      this.addressService.getAddress(input.addr)
-    ).toArray()
+    .pipe(
+      filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null),
+      distinct((vin: VIn) => vin.addr),
+      mergeMap( 
+        (input: VIn) => 
+        this.addressService.getAddress(input.addr)
+      ),
+      toArray()
+    )
     .subscribe((addresses: Array<Address>) => {
       //First remove then add
       let newAddresses: Array<Address> = addresses.filter((address: Address) => !this.addresses.has(address.addrStr));
@@ -257,12 +266,15 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       return;
     }
     from(transaction.vout)
-    .filter((vout: VOut) => vout.scriptPubKey.addresses !== undefined)
-    .distinct((vout: VOut) => vout.scriptPubKey.addresses)//There can be many outputs to a signle address?
-    .mergeMap( 
-      (output: VOut) => 
-      this.addressService.getAddress(output.scriptPubKey.addresses[0])
-    ).toArray()
+    .pipe(
+      filter((vout: VOut) => vout.scriptPubKey.addresses !== undefined),
+      distinct((vout: VOut) => vout.scriptPubKey.addresses),
+      mergeMap( 
+        (output: VOut) => 
+        this.addressService.getAddress(output.scriptPubKey.addresses[0])
+      ),
+      toArray()
+    )
     .subscribe((addresses: Array<Address>) => {
       let newAddresses: Array<Address> = addresses.filter((address: Address) => !this.addresses.has(address.addrStr));
       let updatedAddresses: Array<Address> = addresses.filter((newAddress: Address) => {
@@ -466,8 +478,11 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
       this.toDataURL(src, cb); 
     }
 
-    eventStream.take(images.length).takeLast(1).subscribe(e => {
-
+    eventStream
+    .pipe(
+      take(images.length),
+      takeLast(1)
+    ).subscribe(e => {
       cloneSvg.setAttribute("width", ""+bbox.width);
       cloneSvg.setAttribute("height", ""+bbox.height);
       cloneSvg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -513,38 +528,41 @@ export class VivagraphContainerComponent implements OnInit, OnDestroy {
     }
     if (rounds > 0 && !transaction.isMixingTransaction()) return of(false);
     return from(transaction.vin)
-    .filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null)//filter out coinbase inputs
-    .distinct((vin: VIn) => vin.addr)
-    .mergeMap(
-      (vin: VIn) => this.transactionService.getTransactionByHash(vin.txid, true)
-      .pipe(
-        map((tx: Transaction) => {
-          let result: {input: VIn, transaction: Transaction} = {input: vin, transaction: tx};
-          return result;
-        })
-      ),
-      6
-    )
-    .mergeMap(
-      (v: {input: VIn, transaction: Transaction}) => 
-      this.expandInputs(v.transaction, rounds+1, maxRounds, 1, 1)
-      .pipe(map((valueFromPromise: boolean) => {
-        let result: {vin: VIn, transaction: Transaction, result: boolean} = {vin: v.input, transaction: v.transaction, result: valueFromPromise};
-        return result;
-      })),
-      2
-    )
-    .do((v: {vin: VIn, transaction: Transaction, result: boolean}) => {
-        if (v.result === true) {
-          this.transactions = this.transactions.set(v.transaction.txid, v.transaction);
-          this.addressService.getAddress(v.vin.addr, true)
-          .subscribe((address: Address) => {
-            this.addresses = this.addresses.set(address.addrStr, address)
+    .pipe(
+      filter((vin: VIn) => vin.addr !== undefined && vin.addr !== null),
+      distinct((vin: VIn) => vin.addr),
+      mergeMap(
+        (vin: VIn) => this.transactionService.getTransactionByHash(vin.txid, true)
+        .pipe(
+          map((tx: Transaction) => {
+            let result: {input: VIn, transaction: Transaction} = {input: vin, transaction: tx};
+            return result;
           })
+        ),
+        6
+      ),
+      mergeMap(
+        (v: {input: VIn, transaction: Transaction}) => 
+        this.expandInputs(v.transaction, rounds+1, maxRounds, 1, 1)
+        .pipe(map((valueFromPromise: boolean) => {
+          let result: {vin: VIn, transaction: Transaction, result: boolean} = {vin: v.input, transaction: v.transaction, result: valueFromPromise};
+          return result;
+        })),
+        2
+      ),
+      tap(
+        (v: {vin: VIn, transaction: Transaction, result: boolean}) => {
+          if (v.result === true) {
+            this.transactions = this.transactions.set(v.transaction.txid, v.transaction);
+            this.addressService.getAddress(v.vin.addr, true)
+            .subscribe((address: Address) => {
+              this.addresses = this.addresses.set(address.addrStr, address)
+            })
+          }
         }
-      }
-    )
-    .concatMap((v: {vin: VIn, result: boolean}) => of(v.result));
+      ),
+      concatMap((v: {vin: VIn, result: boolean}) => of(v.result))
+    );
   }
 
   private indexTransactions(transactions: Array<Transaction>): Immutable.Map<string, Transaction> {

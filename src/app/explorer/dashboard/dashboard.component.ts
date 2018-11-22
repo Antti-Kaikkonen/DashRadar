@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 
 import { CypherService } from '../../charts/cypher.service';
 
@@ -151,7 +151,7 @@ export class DashboardComponent implements OnInit {
       this.isStableSub = this.appRef.isStable.subscribe(stable => {
         if (stable) {
           this.isStableSub.unsubscribe();
-          this.interval = Observable.timer(0, 2000).subscribe(sequence => {
+          this.interval = timer(0, 2000).subscribe(sequence => {
             this.loadUnconfirmedTransactions();
             if (sequence%30 == 0) {
               this.load24hStats();

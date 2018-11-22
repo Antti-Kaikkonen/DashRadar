@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { Meta, Title } from '@angular/platform-browser';
 import * as moment from 'moment';
+import { concat } from 'rxjs/operators';
 
 import { CypherService } from '../../charts/cypher.service';
 import { ChartPoint, ChartSeries } from '../chartjs-types';
@@ -107,7 +108,11 @@ export class ChartsDashboardComponent implements OnInit {
     let privatesend_data_observable = this.cypherService.executeQuery(decodeURIComponent(this.privatesend_data_query), {});
 
     let first = true;
-    all_data_observable.concat(privatesend_data_observable).subscribe((response: CypherResponse) => {
+    all_data_observable
+    .pipe(
+      concat(privatesend_data_observable)
+    )
+    .subscribe((response: CypherResponse) => {
       if (first) {
         this.charts.push({data: this.extractTransactionsPerDayData(response), sma: 1, title: "Transactions per day"});
         this.charts.push({data: this.extractFeesPerDayData(response), sma: 1, title: "Fees per day (Dash)"});

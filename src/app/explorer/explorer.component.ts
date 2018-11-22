@@ -4,6 +4,7 @@ import { ApplicationRef, Component, ComponentFactoryResolver, Inject, Injector, 
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { onErrorResumeNext, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { AddressService } from '../addresses/address.service';
 import { Address } from '../addresses/address/address';
@@ -80,17 +81,26 @@ export class ExplorerComponent implements OnInit {
 
     if (!isNaN(Number(this.searchStr.trim()))) {
       let heightObservable = this.blockService.getBlockByHeight(Number(this.searchStr));
-      observable = observable.onErrorResumeNext(heightObservable);
+      observable = onErrorResumeNext(
+        observable,
+        heightObservable
+      );
     } else {
       let hashObservable = this.blockService.getBlockByHash(this.searchStr);
-      observable = observable.onErrorResumeNext(hashObservable);
+      observable = onErrorResumeNext(
+        observable, 
+        hashObservable
+      );
     }
-    this.searchSub = observable.finally(() => {
-      this.loadingSearchResults = false;
-      if (!this.found) {
-        this.searchForm.get("searchInput").setErrors({"error":"wasd"});
-      }
-    })
+    this.searchSub = observable
+    .pipe(
+      finalize(() => {
+        this.loadingSearchResults = false;
+        if (!this.found) {
+          this.searchForm.get("searchInput").setErrors({"error":"wasd"});
+        }
+      })
+    )  
     .subscribe((e: Address | Transaction | Block) => {
       this.found = true;
       if (e instanceof Address) {

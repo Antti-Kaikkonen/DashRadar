@@ -5,6 +5,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { CypherService } from '../../charts/cypher.service';
@@ -253,10 +254,12 @@ export class CypherComponent implements OnInit {
     let query = this.query;
     this.cypherLoading = true;
     if (this.querySub !== undefined) this.querySub.unsubscribe();
-  	this.querySub = this.cypherService.executeQuery(query, {})
-    .finally(() => {
-      this.cypherLoading = false;
-    })
+    this.querySub = this.cypherService.executeQuery(query, {})
+    .pipe(
+      finalize(() => {
+        this.cypherLoading = false;
+      })
+    )
     .subscribe((response: CypherResponse) => {
 
       this.x_axis_title = response.columns[0];
@@ -279,8 +282,10 @@ export class CypherComponent implements OnInit {
       this.settingsForm.get("y_title_enabled").valueChanges.subscribe((value) => value ? this.settingsForm.get("y_title").enable() : this.settingsForm.get("y_title").disable());
 
       this.settingsForm.valueChanges
-      .debounceTime(500) // wait .5 sec after the last event before emitting last event
-      .distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)) 
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      )
       .subscribe((value) => {
         this.legend_enabled = value.legend_enabled;
         this.title = value.title;

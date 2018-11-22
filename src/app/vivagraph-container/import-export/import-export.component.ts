@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Host, Inject, Input, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import * as Immutable from 'immutable';
-import { Observable } from 'rxjs/Observable';
+import { from, Observable } from 'rxjs';
+import { concat, filter, mergeMap } from 'rxjs/operators';
 
 import { AddressService } from '../../addresses/address.service';
 import { Address } from '../../addresses/address/address';
@@ -80,23 +81,22 @@ export class ImportExportComponent implements OnInit {
   importFromJSON() {
   	let data: {addresses: string[], transactions: string[]} = JSON.parse(this.jsonImportData);
 
-  	let txs: Observable<Transaction> = Observable.from(data.transactions)
-    .filter((txId: string) => txId.length === 64)
-    //.zip(Observable.timer(0, 10), (item, i) => item)
-    .mergeMap(
-      (txId: string) => 
-      this.transactionService.getTransactionByHash(txId), 4
-    );
+  	let txs: Observable<Transaction> = from(data.transactions).pipe(
+      filter((txId: string) => txId.length === 64),
+      mergeMap(
+        (txId: string) => 
+        this.transactionService.getTransactionByHash(txId), 4
+      )
+    )
 
-    let addrs: Observable<Address> = Observable.from(data.addresses)
-    .filter((address: string) => address.length === 34)
-    //.zip(Observable.timer(0, 10), (item, i) => item)
-    .mergeMap( 
-      (address: string) => 
-      this.addressService.getAddress(address), 4
-    );
-    
-    let both = txs.concat(addrs);
+    let addrs: Observable<Address> = from(data.addresses).pipe(
+      filter((address: string) => address.length === 34),
+      mergeMap( 
+        (address: string) => 
+        this.addressService.getAddress(address), 4
+      )
+    )
+    let both = txs.pipe(concat(addrs));
 
     both.subscribe((t: Transaction|Address) => {
     	

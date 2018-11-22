@@ -1,9 +1,8 @@
-import 'rxjs/add/operator/switchMap';
-
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { filter, switchMap } from 'rxjs/operators';
 
 import { TransactionService } from '../../transactions/transaction.service';
 import { Transaction } from '../../transactions/transaction/transaction';
@@ -53,7 +52,9 @@ export class BlockComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams
-    .filter(e => e.page !== undefined)
+    .pipe(
+      filter(e => e.page !== undefined)
+    )
     .subscribe(e => {
       if (isNaN(e.page)) {
         this.currentPage = 0;
@@ -65,12 +66,14 @@ export class BlockComponent implements OnInit {
       }
     });
 
-  	this.route.params
-    .switchMap((params: Params) => {
-      this.superBlock = false;
-      this.hash=params.hash;
-      return this.blockService.getBlockByHash(params['hash'])
-    }).subscribe(
+    this.route.params
+    .pipe(
+      switchMap((params: Params) => {
+        this.superBlock = false;
+        this.hash=params.hash;
+        return this.blockService.getBlockByHash(params['hash'])
+      })
+    ).subscribe(
       (block: Block) => {
         this.titleService.setTitle("Dash Block #"+block.height+" | DashRadar");
         this.metaService.removeTag('name="description"');

@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
+import { filter, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { TransactionService } from '../../transactions/transaction.service';
@@ -50,14 +51,16 @@ export class TransactionComponent implements OnInit {
   }
 
 	ngOnInit() {
-		this.route.params
-		.filter((params: Params) => params['txid'] !== undefined)//Only load tx if in route
-    .switchMap((params: Params) => {
-      this.txid = params.txid;
-      this.transaction = undefined;
-      this.imageName = "png2/64x64/dual_color/tx.png";
-      return this.transactionService.getTransactionByHash(params['txid'])
-    })
+    this.route.params
+    .pipe(
+      filter((params: Params) => params['txid'] !== undefined),
+      switchMap((params: Params) => {
+        this.txid = params.txid;
+        this.transaction = undefined;
+        this.imageName = "png2/64x64/dual_color/tx.png";
+        return this.transactionService.getTransactionByHash(params['txid'])
+      })
+    )
   	.subscribe(
   		(transaction: Transaction) => {
         this.transaction = transaction;

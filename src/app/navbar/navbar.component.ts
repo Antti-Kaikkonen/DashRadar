@@ -32,7 +32,9 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.events.pipe(filter(event => event['snapshot'] && event['snapshot'].data && event['snapshot'].data.title)).subscribe(e => this.title = e['snapshot'].data.title);
+    this.router.events.pipe(
+      filter(event => event['snapshot'] && event['snapshot'].data && event['snapshot'].data.title)
+    ).subscribe(e => this.title = e['snapshot'].data.title);
     //this.router.events.subscribe(e => console.log("e", e));
     //this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(e => console.log("event", e));
   }

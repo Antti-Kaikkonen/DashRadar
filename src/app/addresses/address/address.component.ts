@@ -2,8 +2,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { interval } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { interval, Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 import { TransactionService } from '../../transactions/transaction.service';
 import { WalletService } from '../../wallets/wallet.service';
@@ -138,16 +138,17 @@ export class AddressComponent implements OnInit {
       }
     }); 
 
-    this.route.params
-    .filter(params => params.addr)
-    .switchMap((params: Params) => {
-      this.transactions = [];
-      this.addrStr = params.addr;
-      this.address = undefined;
-      this.guesstimatedWallet = undefined;
-      if (this.addressSub !== undefined) this.addressSub.unsubscribe();
-      return this.addressService.getAddress(params.addr)
-    }).subscribe(
+    this.route.params.pipe(
+      filter(params => params.addr),
+      switchMap((params: Params) => {
+        this.transactions = [];
+        this.addrStr = params.addr;
+        this.address = undefined;
+        this.guesstimatedWallet = undefined;
+        if (this.addressSub !== undefined) this.addressSub.unsubscribe();
+        return this.addressService.getAddress(params.addr)
+      })
+    ).subscribe(
       (address: Address) => {
         this.titleService.setTitle("Dash Address "+address.addrStr+" | DashRadar");
         this.metaService.removeTag('name="description"');

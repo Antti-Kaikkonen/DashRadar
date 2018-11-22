@@ -4,8 +4,8 @@ import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { interval } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { interval, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { CypherService } from '../../charts/cypher.service';
 
@@ -91,7 +91,9 @@ export class BlocksTable2Component implements OnInit {
     }
 
     this.route.queryParams
-    .filter(queryParams => queryParams.page !== undefined)
+    .pipe(
+      filter(queryParams => queryParams.page !== undefined)
+    )
     .subscribe(queryParams => {
       if (isNaN(queryParams.page)) {
         this.currentPage = 0;

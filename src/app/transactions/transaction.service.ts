@@ -1,9 +1,7 @@
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map, publishReplay, refCount } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Transaction } from './transaction/transaction';
@@ -16,26 +14,33 @@ export class TransactionService {
   private transactionsByHash: Map<string, Observable<Transaction>>;//Transaction cache
 
   constructor(private http: HttpClient) {
-  	 	this.transactionsByHash = new Map();
+    this.transactionsByHash = new Map();
   }
 
   getTransactionsByAddress(address: string, page: number): Observable<Transaction[]> {
     let transactionsObservable: Observable<Transaction[]> = this.http.get<any>(this.transactionUrlByAddress(address, page))
-    .map((response: any) => response.txs.map(transaction => Transaction.FromInsightJSON(transaction)));
+    .pipe(
+      map((response: any) => response.txs.map(transaction => Transaction.FromInsightJSON(transaction)))
+    )
     return transactionsObservable;
   }
 
   getTransactionsByBlockHash(blockhash: string, page: number) : Observable<Transaction[]> {
     let transactionsObservable: Observable<Transaction[]> = this.http.get<any>(this.transactionUrlByBlockHash(blockhash, page))
-    .map((response: any) => response.txs.map(transaction => Transaction.FromInsightJSON(transaction)));
+    .pipe(
+      map((response: any) => response.txs.map(transaction => Transaction.FromInsightJSON(transaction)))
+    );
     return transactionsObservable;
   }
 
   getTransactionByHash(hash: string, useCache: boolean = false): Observable<Transaction> {
   	if (useCache !== true || !this.transactionsByHash.has(hash)) {
-			let transactionObservable: Observable<Transaction> = this.http.get<any>(this.transactionUrlByTxId(hash))
-      .map(res => this.insightResponseToTransaction(res))
-      .publishReplay(1).refCount()//to cache the result in this observable
+      let transactionObservable: Observable<Transaction> = this.http.get<any>(this.transactionUrlByTxId(hash))
+      .pipe(
+        map(res => this.insightResponseToTransaction(res)),
+        publishReplay(1),
+        refCount()
+      )
 			this.transactionsByHash.set(hash, transactionObservable);
 		}
 		return this.transactionsByHash.get(hash);
@@ -63,7 +68,9 @@ export class TransactionService {
   getOutputFromInput(input: VIn): Observable<VOut> {
     if (input.txid === undefined) return Observable.throw("no txid specified");
     return this.getTransactionByHash(input.txid)
-    .map((transaction: Transaction) => transaction.vout[input.vout]);
+    .pipe(
+      map((transaction: Transaction) => transaction.vout[input.vout])
+    );
   }
 
 
