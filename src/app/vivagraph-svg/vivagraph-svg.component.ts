@@ -1,22 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, SimpleChanges } from '@angular/core';
 import * as Immutable from 'immutable';
-
 import { Address } from '../addresses/address/address';
 import { VivagraphSettings } from '../settings/vivagraph-settings';
 import { Transaction } from '../transactions/transaction/transaction';
 import { VIn } from '../transactions/transaction/vin';
 import { VOut } from '../transactions/transaction/vout';
+
 
 let Viva;
 
@@ -265,6 +255,8 @@ export class VivagraphSvgComponent implements OnInit {
         }
       } else if (node.data.mixingTransaction) {
         if (node.data.transaction.vin[0].value==0.0100001) {
+          return selected ? prefix_selected + "private_send_0-001_b.png" : prefixDualColor + "private_send_0-001.png";
+        } else if (node.data.transaction.vin[0].value==0.0100001) {
           return selected ? prefix_selected + "private_send_0-01_b.png" : prefixDualColor + "private_send_0-01.png";
         } else if (node.data.transaction.vin[0].value==0.100001) {
           return selected ? prefix_selected + "private_send_0-1_b.png" : prefixDualColor + "private_send_0-1.png";

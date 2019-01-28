@@ -1,8 +1,8 @@
 import { isPlatformBrowser } from '@angular/common';
 import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
-
 import { CypherService } from '../../charts/cypher.service';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -30,7 +30,8 @@ export class DashboardComponent implements OnInit {
     6:"png2/64x64/dual_color/private_send_0-1_black.png",
     7:"png2/64x64/dual_color/private_send_0-01_black.png",
     8:"SVG/make_collateral_inputs.svg",
-    9:"SVG/collateral_payment.svg"
+    9:"SVG/collateral_payment.svg",
+    10:"png2/64x64/dual_color/private_send_0-001_black.png",
   };
 
   private pstype2tooltip = {
@@ -43,7 +44,8 @@ export class DashboardComponent implements OnInit {
     6: TransactionType.MIXING,
     7: TransactionType.MIXING,
     8: TransactionType.MAKE_COLLATERAL_INPUTS,
-    9: TransactionType.COLLATERAL_PAYMENT
+    9: TransactionType.COLLATERAL_PAYMENT,
+    10: TransactionType.MIXING
   }
 
   interval: Subscription;

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
-
 import { CypherService } from '../../../charts/cypher.service';
 import { Transaction } from './../transaction';
+
 
 @Component({
   selector: 'app-transaction-summary',
@@ -124,7 +124,9 @@ export class TransactionSummaryComponent implements OnInit {
       this.imageName = "png2/64x64/single_color/coinbase_black.png";
     } else if (this.transaction.isMixingTransaction()) {
       this.tooltip = "MIXING TRANSACTION";
-      if (this.transaction.vin[0].value==0.0100001) {
+      if (this.transaction.vin[0].value==0.00100001) {
+        this.imageName = "png2/64x64/dual_color/private_send_0-001_black.png";
+      } else if (this.transaction.vin[0].value==0.0100001) {
         this.imageName = "png2/64x64/dual_color/private_send_0-01_black.png";
       } else if (this.transaction.vin[0].value==0.100001) {
         this.imageName = "png2/64x64/dual_color/private_send_0-1_black.png";

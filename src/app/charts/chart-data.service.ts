@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-
 import { environment } from '../../environments/environment';
 import { ChartSeries } from './chartjs-types';
 import { CypherResponse } from './cypher-response';
+
 
 @Injectable({
   providedIn: 'root'
@@ -92,9 +92,10 @@ export class ChartDataService {
     'mixing-transactions-per-day':{
       query: 
       "MATCH (d:Day)-[:LAST_BLOCK]->(:Block)-[:PRIVATESEND_TOTALS]->(pst:PrivateSendTotals)\n"+
-      "RETURN d.day*86400 as time, pst.privatesend_mixing_0_01_count+pst.privatesend_mixing_0_1_count+pst.privatesend_mixing_1_0_count+pst.privatesend_mixing_10_0_count as `Number of mixing transactions`\n"+
+      "RETURN d.day*86400 as time, pst.privatesend_mixing_0_001_count+pst.privatesend_mixing_0_01_count+pst.privatesend_mixing_0_1_count+pst.privatesend_mixing_1_0_count+pst.privatesend_mixing_10_0_count as `Number of mixing transactions`\n"+
       "ORDER BY time;",
-      previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20pst.privatesend_mixing_0_01_count%2Bpst.privatesend_mixing_0_1_count%2Bpst.privatesend_mixing_1_0_count%2Bpst.privatesend_mixing_10_0_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
+      previewUrl: this.charjsImageURL+"/line.png?query=MATCH (d%3ADay)-[%3ALAST_BLOCK]->(%3ABlock)-[%3APRIVATESEND_TOTALS]->(pst%3APrivateSendTotals)%20%0AWHERE d.day*86400 >%3D (datetime.truncate('day'%2C datetime())-duration({ years%3A 1})).epochSeconds%20%0AWITH d.day*86400 as time%2C pst.privatesend_mixing_0_001_count%2Bpst.privatesend_mixing_0_01_count%2Bpst.privatesend_mixing_0_1_count%2Bpst.privatesend_mixing_1_0_count%2Bpst.privatesend_mixing_10_0_count as txcount%20%0AORDER BY time WITH collect(time) as times%2C collect(txcount) as txcounts%20%0AUNWIND range(1%2C length(txcounts)-1) as i%20%0ARETURN times[i-1] as time%2C (txcounts[i]-txcounts[i-1]) as tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
+      //previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20pst.privatesend_mixing_0_01_count%2Bpst.privatesend_mixing_0_1_count%2Bpst.privatesend_mixing_1_0_count%2Bpst.privatesend_mixing_10_0_count%20as%20txcount%20ORDER%20BY%20time%20WITH%20collect(time)%20as%20times%2C%20collect(txcount)%20as%20txcounts%20UNWIND%20range(1%2C%20length(txcounts)-1)%20as%20i%20RETURN%20times%5Bi-1%5D%20as%20time%2C%20(txcounts%5Bi%5D-txcounts%5Bi-1%5D)%20as%20tx_count%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Mixing transactions per day",
       cypherReader: (cypherResponse:CypherResponse)=>{return cypherResponse.extractColumns(["Number of mixing transactions"])},
       description: ""
@@ -104,6 +105,7 @@ export class ChartDataService {
       "MATCH (d:Day)-[:LAST_BLOCK]->(:Block)-[:PRIVATESEND_TOTALS]->(pst:PrivateSendTotals)\n"+
       "WITH\n"+
       "  d.day*86400 as time,\n"+
+      "  (pst.privatesend_mixing_0_001_output_count-pst.privatesend_mixing_0_001_spent_output_count)*0.001+\n"+
       "  (pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01+\n"+
       "  (pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1+\n"+
       "  (pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0+\n"+
@@ -112,7 +114,8 @@ export class ChartDataService {
       "as unspent_dash\n"+
       "RETURN time, unspent_dash as `Unspent mixed Dash`\n"+
       "ORDER BY time;",
-      previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20(pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01%2B%20(pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1%2B%20(pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0%2B%20(pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0%2B%20(pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0%20as%20unspent_dash%20RETURN%20time%2C%20unspent_dash%20ORDER%20BY%20time%3B&x_axis=false&y_axis=false&width=320&height=180",
+      previewUrl: this.charjsImageURL+"/line.png?query=MATCH (d%3ADay)-[%3ALAST_BLOCK]->(%3ABlock)-[%3APRIVATESEND_TOTALS]->(pst%3APrivateSendTotals) WHERE d.day*86400 >%3D (datetime.truncate('day'%2C datetime())-duration({ years%3A 1})).epochSeconds WITH d.day*86400 as time%2C (pst.privatesend_mixing_0_001_output_count-pst.privatesend_mixing_0_001_spent_output_count)*0.001%2B(pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01%2B(pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1%2B(pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0%2B(pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0%2B(pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0%0Aas unspent_dash RETURN time%2C unspent_dash ORDER BY time%3B&x_axis=false&y_axis=false&width=320&height=180",
+      //previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(pst%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day*86400%20as%20time%2C%20(pst.privatesend_mixing_0_01_output_count-pst.privatesend_mixing_0_01_spent_output_count)*0.01%2B%20(pst.privatesend_mixing_0_1_output_count-pst.privatesend_mixing_0_1_spent_output_count)*0.1%2B%20(pst.privatesend_mixing_1_0_output_count-pst.privatesend_mixing_1_0_spent_output_count)*1.0%2B%20(pst.privatesend_mixing_10_0_output_count-pst.privatesend_mixing_10_0_spent_output_count)*10.0%2B%20(pst.privatesend_mixing_100_0_output_count-pst.privatesend_mixing_100_0_spent_output_count)*100.0%20as%20unspent_dash%20RETURN%20time%2C%20unspent_dash%20ORDER%20BY%20time%3B&x_axis=false&y_axis=false&width=320&height=180",
       title: "Total unspent mixed Dash",
       cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["Unspent mixed Dash"]),
       description: ""
@@ -133,6 +136,7 @@ export class ChartDataService {
       "0+collect(n.privatesend_mixing_1_0_count) as mixing_2,\n"+
       "0+collect(n.privatesend_mixing_0_1_count) as mixing_3,\n"+
       "0+collect(n.privatesend_mixing_0_01_count) as mixing_4,\n"+
+      "0+collect(n.privatesend_mixing_0_001_count) as mixing_5,\n"+
       "collect(date) as dates\n"+
       "UNWIND range(1, length(dates)) as i\n"+
       "RETURN\n"+
@@ -140,11 +144,13 @@ export class ChartDataService {
       "mixing_1[i]-mixing_1[i-1] as `10.0`,\n"+
       "mixing_2[i]-mixing_2[i-1] as `1.0`,\n"+
       "mixing_3[i]-mixing_3[i-1] as `0.1`,\n"+
-      "mixing_4[i]-mixing_4[i-1] as `0.01`\n"+
+      "mixing_4[i]-mixing_4[i-1] as `0.01`,\n"+
+      "mixing_5[i]-mixing_5[i-1] as `0.001`\n"+
       "ORDER BY time;",
-      previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(n%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day%20as%20date%2C%20n%20ORDER%20BY%20date%20WITH%20collect(n.privatesend_mixing_10_0_count)%20as%20mixing_1%2C%20collect(n.privatesend_mixing_1_0_count)%20as%20mixing_2%2C%20collect(n.privatesend_mixing_0_1_count)%20as%20mixing_3%2C%20collect(n.privatesend_mixing_0_01_count)%20as%20mixing_4%2C%20collect(date)%20as%20dates%20UNWIND%20%5B%2210.0%22%2C%20%221.0%22%2C%20%220.1%22%2C%20%220.01%22%5D%20AS%20type%20UNWIND%20range(1%2C%20length(dates)-1)%20as%20i%20RETURN%20dates%5Bi-1%5D*24*60*60%20as%20time%2C%20CASE%20WHEN%20type%3D%2210.0%22%20THEN%20(mixing_1%5Bi%5D-mixing_1%5Bi-1%5D)%20WHEN%20type%3D%221.0%22%20THEN%20(mixing_2%5Bi%5D-mixing_2%5Bi-1%5D)%20WHEN%20type%3D%220.1%22%20THEN%20(mixing_3%5Bi%5D-mixing_3%5Bi-1%5D)%20WHEN%20type%3D%220.01%22%20THEN%20(mixing_4%5Bi%5D-mixing_4%5Bi-1%5D)%20END%20as%20Transactions%2C%20type%20ORDER%20BY%20time%3B&legend=true&x_axis=false&y_axis=false&width=320&height=180",
+      previewUrl: this.charjsImageURL+"/line.png?query=MATCH (d%3ADay)-[%3ALAST_BLOCK]->(%3ABlock)-[%3APRIVATESEND_TOTALS]->(n%3APrivateSendTotals)%20%0AWHERE d.day*86400 >%3D (datetime.truncate('day'%2C datetime())-duration({ years%3A 1})).epochSeconds%20%0AWITH d.day as date%2C n%20%0AORDER BY date%20%0AWITH%20%0Acollect(n.privatesend_mixing_10_0_count) as mixing_1%2C%20%0Acollect(n.privatesend_mixing_1_0_count) as mixing_2%2C%20%0Acollect(n.privatesend_mixing_0_1_count) as mixing_3%2C%20%0Acollect(n.privatesend_mixing_0_01_count) as mixing_4%2C%20%0Acollect(n.privatesend_mixing_0_001_count) as mixing_5%2C%20%0Acollect(date) as dates%20%0AUNWIND ['10.0'%2C '1.0'%2C '0.1'%2C '0.01'%2C '0.001'] AS type%20%0AUNWIND range(1%2C length(dates)-1) as i%20%0ARETURN dates[i-1]*24*60*60 as time%2C%20%0ACASE%20%0AWHEN type%3D'10.0' THEN (mixing_1[i]-mixing_1[i-1])%20%0AWHEN type%3D'1.0' THEN (mixing_2[i]-mixing_2[i-1])%20%0AWHEN type%3D'0.1' THEN (mixing_3[i]-mixing_3[i-1])%20%0AWHEN type%3D'0.01' THEN (mixing_4[i]-mixing_4[i-1])%20%0AWHEN type%3D'0.001' THEN (mixing_5[i]-mixing_5[i-1])%20%0AEND as Transactions%2C type ORDER BY time%3B&legend=true&x_axis=false&y_axis=false&width=320&height=180",
+      //previewUrl: this.charjsImageURL+"/line.png?query=MATCH%20(d%3ADay)-%5B%3ALAST_BLOCK%5D-%3E(%3ABlock)-%5B%3APRIVATESEND_TOTALS%5D-%3E(n%3APrivateSendTotals)%20WHERE%20d.day*86400%20%3E%3D%20(datetime.truncate(%27day%27%2C%20datetime())-duration(%7B%20years%3A%201%7D)).epochSeconds%20WITH%20d.day%20as%20date%2C%20n%20ORDER%20BY%20date%20WITH%20collect(n.privatesend_mixing_10_0_count)%20as%20mixing_1%2C%20collect(n.privatesend_mixing_1_0_count)%20as%20mixing_2%2C%20collect(n.privatesend_mixing_0_1_count)%20as%20mixing_3%2C%20collect(n.privatesend_mixing_0_01_count)%20as%20mixing_4%2C%20collect(date)%20as%20dates%20UNWIND%20%5B%2210.0%22%2C%20%221.0%22%2C%20%220.1%22%2C%20%220.01%22%5D%20AS%20type%20UNWIND%20range(1%2C%20length(dates)-1)%20as%20i%20RETURN%20dates%5Bi-1%5D*24*60*60%20as%20time%2C%20CASE%20WHEN%20type%3D%2210.0%22%20THEN%20(mixing_1%5Bi%5D-mixing_1%5Bi-1%5D)%20WHEN%20type%3D%221.0%22%20THEN%20(mixing_2%5Bi%5D-mixing_2%5Bi-1%5D)%20WHEN%20type%3D%220.1%22%20THEN%20(mixing_3%5Bi%5D-mixing_3%5Bi-1%5D)%20WHEN%20type%3D%220.01%22%20THEN%20(mixing_4%5Bi%5D-mixing_4%5Bi-1%5D)%20END%20as%20Transactions%2C%20type%20ORDER%20BY%20time%3B&legend=true&x_axis=false&y_axis=false&width=320&height=180",
       title: "Mixing transaction per day by denomination",
-      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["10.0", "1.0", "0.1", "0.01", ]),
+      cypherReader: (cypherResponse:CypherResponse)=>cypherResponse.extractColumnsToRunningTotal(["10.0", "1.0", "0.1", "0.01", "0.001" ]),
       description: ""
     },
     'number-of-unspent-transaction-outputs':{
@@ -214,6 +220,7 @@ export class ChartDataService {
       "0+collect(n.privatesend_mixing_1_0_count) as mixing_2_count,\n"+
       "0+collect(n.privatesend_mixing_0_1_count) as mixing_3_count,\n"+
       "0+collect(n.privatesend_mixing_0_01_count) as mixing_4_count,\n"+
+      "0+collect(n.privatesend_mixing_0_001_count) as mixing_5_count,\n"+
       "collect(date) as dates\n"+
       "UNWIND range(1, length(dates)) as i\n"+
       "RETURN\n"+
@@ -222,6 +229,7 @@ export class ChartDataService {
       "CASE (mixing_2_count[i]-mixing_2_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_2_size[i]-mixing_2_size[i-1])/(mixing_2_count[i]-mixing_2_count[i-1]) END as `1.0`,\n"+
       "CASE (mixing_3_count[i]-mixing_3_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_3_size[i]-mixing_3_size[i-1])/(mixing_3_count[i]-mixing_3_count[i-1]) END as `0.1`,\n"+
       "CASE (mixing_4_count[i]-mixing_4_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_4_size[i]-mixing_4_size[i-1])/(mixing_4_count[i]-mixing_4_count[i-1]) END as `0.01`\n"+
+      "CASE (mixing_5_count[i]-mixing_5_count[i-1]) WHEN 0 THEN NULL ELSE 1.0*(mixing_5_size[i]-mixing_5_size[i-1])/(mixing_5_count[i]-mixing_5_count[i-1]) END as `0.001`\n"+
       "ORDER BY time;",
       previewUrl: "",
       title: "Average mixing transaction size by denomination (bytes)",

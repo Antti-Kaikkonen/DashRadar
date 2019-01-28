@@ -3,10 +3,10 @@ import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
-
 import { environment } from '../../../environments/environment';
 import { TransactionService } from '../../transactions/transaction.service';
 import { Transaction } from './transaction';
+
 
 @Component({
   selector: 'app-transaction',
@@ -103,7 +103,9 @@ export class TransactionComponent implements OnInit {
       this.transaction_type = "COINBASE";
     } else if (this.transaction.isMixingTransaction()) {
       this.transaction_type = "MIXING";
-      if (this.transaction.vin[0].value==0.0100001) {
+      if (this.transaction.vin[0].value==0.00100001) {
+        this.imageName = "png2/64x64/dual_color/private_send_0-001_black.png";
+      } else if (this.transaction.vin[0].value==0.0100001) {
         this.imageName = "png2/64x64/dual_color/private_send_0-01_black.png";
       } else if (this.transaction.vin[0].value==0.100001) {
         this.imageName = "png2/64x64/dual_color/private_send_0-1_black.png";
