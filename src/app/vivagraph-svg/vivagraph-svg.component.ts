@@ -254,7 +254,7 @@ export class VivagraphSvgComponent implements OnInit {
           return selected ? prefix_selected + "instantx_b.png" : prefixSingleColor + "instantx.png"; 
         }
       } else if (node.data.mixingTransaction) {
-        if (node.data.transaction.vin[0].value==0.0100001) {
+        if (node.data.transaction.vin[0].value==0.00100001) {
           return selected ? prefix_selected + "private_send_0-001_b.png" : prefixDualColor + "private_send_0-001.png";
         } else if (node.data.transaction.vin[0].value==0.0100001) {
           return selected ? prefix_selected + "private_send_0-01_b.png" : prefixDualColor + "private_send_0-01.png";
