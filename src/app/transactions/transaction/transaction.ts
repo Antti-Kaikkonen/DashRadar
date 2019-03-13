@@ -44,7 +44,7 @@ export class Transaction {
 		if (nonDenominations.length === this.vout.length) return false;//Must contain at least one denomination
     if (nonDenominations.length < 2) return true;
     if (nonDenominations.length === 2) {
-      return nonDenominations.some((vout: VOut) => vout.value == 0.04 || vout.value == 0.004);
+      return nonDenominations.some((vout: VOut) => Transaction.isMakeCollateralInputsOutput(Transaction.roundToSatoshis(vout.valueSat)));
     }
     return false;
 	}
@@ -55,17 +55,17 @@ export class Transaction {
 		let vout: VOut = this.vout[0];
 		if (Transaction.isCollateralPaymentOutput(vout.valueSat)) {
 			let fee: number = vin.valueSat-vout.valueSat;
-			if (fee === 100000 || fee === 1000000) return true;
-			console.log("not collateral inputs tx", fee);
+			if (fee === 10000 || fee === 100000 || fee === 1000000) return true;
 		}
 		return false;
 	}
 
 	public static isMakeCollateralInputsOutput(valueSat: number): boolean {
-		return valueSat === 400000 || valueSat === 4000000;
+		return valueSat === 40000 || valueSat === 400000 || valueSat === 4000000;
 	}
 
 	public static isCollateralPaymentOutput(valueSat: number): boolean {
+		if (valueSat % 10000 === 0 && valueSat < 40000 && valueSat > 0) return true;
 		if (valueSat % 100000 === 0 && valueSat < 400000 && valueSat > 0) return true;
 		if (valueSat % 1000000 === 0 && valueSat < 4000000 && valueSat > 0) return true;
 		return false;
