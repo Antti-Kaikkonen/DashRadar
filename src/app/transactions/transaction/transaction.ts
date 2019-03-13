@@ -72,7 +72,7 @@ export class Transaction {
 	}
 
 	public isMakeCollateralInputsTransaction(): boolean {
-		return this.vout.findIndex(vout => vout.valueSat === 400000 || vout.valueSat === 4000000) !== -1;
+		return this.vout.findIndex(vout => Transaction.isMakeCollateralInputsOutput(vout.valueSat)) !== -1;
 	}
 	
 
