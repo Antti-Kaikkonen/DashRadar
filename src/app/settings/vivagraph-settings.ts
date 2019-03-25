@@ -19,6 +19,8 @@ export class VivagraphSettings {
 
 	public maxNodeEdges: number;
 
+	public nodeLabelCharacters: number;
+
 	constructor() {
 		this.edgeLineWidth = 1;
 		this.iconSize = 30;
@@ -38,5 +40,7 @@ export class VivagraphSettings {
 		this.shapeRendering = "auto";
 
 		this.maxNodeEdges = 200;
+
+		this.nodeLabelCharacters = 0;
 	}
 }

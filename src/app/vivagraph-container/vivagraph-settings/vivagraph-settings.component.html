@@ -18,6 +18,10 @@
 	<input matInput type="number" placeholder="Max node edges" step="10" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.maxNodeEdges">
 </mat-form-field>
 <br/>
+<mat-form-field>
+	<input matInput type="number" placeholder="Node label characters to display" step="1" (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.nodeLabelCharacters">
+</mat-form-field>
+<br/>
 <mat-slide-toggle (ngModelChange)="onChange($event)" [(ngModel)]="vivagraphSettings.showValues">
 	Show values
 </mat-slide-toggle>

@@ -134,7 +134,6 @@ export class VivagraphSvgComponent implements OnInit {
     }
 
     if (changes.vivagraphSettings) {
-      //let minimumSpringLength = this.vivagraphSettings.showValues ? 43 : 0;
 
       if (!this.layout) {
         this.layout = Viva.Graph.Layout.forceDirected(this.graph, {
@@ -145,9 +144,7 @@ export class VivagraphSvgComponent implements OnInit {
           springTransform: this.customSpringTransform
         });
       }
-      //console.log("layout",this.layout);
       this.layout.graph.forEachLink(e => console.log("link", e));
-      //console.log("simulator",this.layout.simulator);
       if (this.layout.simulator.springs !== undefined) {
         this.layout.simulator.springs.forEach(spring => {
           let link = this.layout.graph.getLink(spring.from.id, spring.to.id);
@@ -159,7 +156,6 @@ export class VivagraphSvgComponent implements OnInit {
       }
       let current: VivagraphSettings = changes.vivagraphSettings.currentValue;
       let previous: VivagraphSettings = changes.vivagraphSettings.previousValue;
-      //console.log(this.graphics.getSvgRoot());
 
       if (previous !== undefined && previous.showValues === true && current.showValues === false) {//remove all from dom
         let textElementArray = this.graphics.getSvgRoot().getElementsByTagName('text');
@@ -177,7 +173,6 @@ export class VivagraphSvgComponent implements OnInit {
         }    
       }
 
-      //console.log(current.shapeRendering);
       this.graphics.getSvgRoot().attr("shape-rendering", current.shapeRendering);
 
       if (current.gravity) {
@@ -283,6 +278,19 @@ export class VivagraphSvgComponent implements OnInit {
   }
 
 
+  private customSpringTransform = (link, spring) => {
+    let from = this.graph.getNode(link.fromId);
+    let to = this.graph.getNode(link.toId);
+    let address = from.data.address || to.data.address;
+    let a = address.txApperances;
+    let transaction = from.data.transaction || to.data.transaction;
+    let b = transaction.vin.length+transaction.vout.length;
+    let total = Math.min(200, a+b);
+    let minLength = this.vivagraphSettings.showValues ? 50 : 0;//Ensure more space to display dash value
+    let r = Math.max(minLength, 15*(total)/(Math.PI*2));
+    spring.length = r;
+  };
+
   private createNode = (node: {
       data?: {
         transaction?: Transaction, address?: Address, 
@@ -301,15 +309,18 @@ export class VivagraphSvgComponent implements OnInit {
     }
 
 
-
+    let g = Viva.Graph.svg("g").attr('width', 100);
     let image = Viva.Graph.svg("image").attr('x', 0).attr('y', 0).attr('width', 32).attr('height', 32).attr('href', this.nodeToHref(node));
-
+    g.appendChild(image);
     
-    /*let rectangle = Viva.Graph.svg('rect')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('width', 32)
-          .attr('height', 32);*/
+    let text = Viva.Graph.svg('text').attr('font-family', 'arial').attr('font-size', '6').attr('fill', 'white').attr('x', 16).attr('y', -6).attr('text-anchor', 'middle');
+    if (node.data.address) {
+      text.innerHTML = node.data.address.addrStr;
+    } else if (node.data.transaction) {
+      text.innerHTML = node.data.transaction.txid;
+    }
+    text.innerHTML = text.innerHTML.substr(this.vivagraphSettings.nodeLabelCharacters < 0 ? this.vivagraphSettings.nodeLabelCharacters : 0, Math.abs(this.vivagraphSettings.nodeLabelCharacters));
+    g.appendChild(text);
 
     image.onmousedown = (mouseEvent) => {
       if (node.data !== undefined && node.data.transaction !== undefined) {
@@ -336,47 +347,8 @@ export class VivagraphSvgComponent implements OnInit {
         this.onAddressMouseLeave.emit(node.data.address);
       }
     }   
-    return image;
+    return g;
   }
-
-  private addValueToLink = (link) => {
-    let text = Viva.Graph.svg('text').attr('font-family', 'arial').attr('font-size', '6').attr('fill', 'white');
-    //text.attr('visibility', this.vivagraphSettings.showValues ?  'visible' : 'hidden');
-    //text.attr('display', this.vivagraphSettings.showValues ?  'inline' : 'none');
-
-    let textPath = Viva.Graph.svg('textPath').attr('text-anchor', 'middle')
-    .attr('startOffset', '50%')
-    .attr('href', window.location.href+'#link-'+link.fromId+link.toId);
-    let dashAmount = link.data.amount/100000000;
-    if (link.data.input && link.data.output) {
-      //textPath.attr('startOffset', '50%').attr('text-anchor', 'middle');
-      if (link.data.amount > 0) {
-        text.attr('fill', 'green');
-        textPath.innerHTML = "+"+dashAmount;
-      } else if (link.data.amount < 0) {
-        text.attr('fill', 'red');
-        textPath.innerHTML = dashAmount;
-      }
-    } else {
-      textPath.innerHTML = Math.abs(dashAmount);
-    }
-    text.append(textPath);
-    this.graphics.getSvgRoot().getElementsByTagName("g")[0].append(text);
-  }
-
-  private customSpringTransform = (link, spring) => {
-    let from = this.graph.getNode(link.fromId);
-    let to = this.graph.getNode(link.toId);
-    let address = from.data.address || to.data.address;
-    let a = address.txApperances;
-    let transaction = from.data.transaction || to.data.transaction;
-    let b = transaction.vin.length+transaction.vout.length;
-    let total = Math.min(200, a+b);
-    let minLength = this.vivagraphSettings.showValues ? 50 : 0;//Ensure more space to display dash value
-    let r = Math.max(minLength, 15*(total)/(Math.PI*2));
-    spring.length = r;
-  };
-
 
   private placeNode = (nodeUI, pos) => {
     let size: number;
@@ -399,17 +371,54 @@ export class VivagraphSvgComponent implements OnInit {
 
     }
 
-    nodeUI.attr('x', pos.x-size/2);
-    nodeUI.attr('y', pos.y-size/2);
+    let image = nodeUI.children[0];
+    image.attr('x', pos.x-size/2);
+    image.attr('y', pos.y-size/2);
 
-    nodeUI.attr('width', size);
-    nodeUI.attr('height', size);
-    nodeUI.attr('href', this.nodeToHref(nodeUI.node));
+    image.attr('width', size);
+    image.attr('height', size);
+    image.attr('href', this.nodeToHref(nodeUI.node));
+
+    if (nodeUI.children.length === 2) {
+      let text = nodeUI.children[1];
+
+      let textContent: string;
+      if (nodeUI.node.data.address) {
+        textContent = nodeUI.node.data.address.addrStr;
+      } else if (nodeUI.node.data.transaction) {
+        textContent = nodeUI.node.data.transaction.txid;
+      }
+      textContent = textContent.substr(this.vivagraphSettings.nodeLabelCharacters < 0 ? this.vivagraphSettings.nodeLabelCharacters : 0, Math.abs(this.vivagraphSettings.nodeLabelCharacters));
+      if (text.innerHTML !== textContent) {
+        text.innerHTML = textContent;
+      }
+
+      text.attr('x', pos.x);
+      text.attr('y', pos.y-size/2-6);
+    }
   }
 
+  private addValueToLink = (link) => {
+    let text = Viva.Graph.svg('text').attr('font-family', 'arial').attr('font-size', '6').attr('fill', 'white');
 
-
-
+    let textPath = Viva.Graph.svg('textPath').attr('text-anchor', 'middle')
+    .attr('startOffset', '50%')
+    .attr('href', window.location.href+'#link-'+link.fromId+link.toId);
+    let dashAmount = link.data.amount/100000000;
+    if (link.data.input && link.data.output) {
+      if (link.data.amount > 0) {
+        text.attr('fill', 'green');
+        textPath.innerHTML = "+"+dashAmount;
+      } else if (link.data.amount < 0) {
+        text.attr('fill', 'red');
+        textPath.innerHTML = dashAmount;
+      }
+    } else {
+      textPath.innerHTML = Math.abs(dashAmount);
+    }
+    text.append(textPath);
+    this.graphics.getSvgRoot().getElementsByTagName("g")[0].append(text);
+  }
 
   private createLink = (link) => {
 
