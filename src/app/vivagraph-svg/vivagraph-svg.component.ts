@@ -144,7 +144,6 @@ export class VivagraphSvgComponent implements OnInit {
           springTransform: this.customSpringTransform
         });
       }
-      this.layout.graph.forEachLink(e => console.log("link", e));
       if (this.layout.simulator.springs !== undefined) {
         this.layout.simulator.springs.forEach(spring => {
           let link = this.layout.graph.getLink(spring.from.id, spring.to.id);
@@ -161,7 +160,6 @@ export class VivagraphSvgComponent implements OnInit {
         let textElementArray = this.graphics.getSvgRoot().getElementsByTagName('text');
         for (let i = textElementArray.length-1; i >= 0; i--) {
           let element = textElementArray[i];
-          console.log(element);
           element.parentElement.removeChild(element);
         }
       } else if (previous !== undefined && previous.showValues === false && current.showValues === true) {//append all to dom
@@ -486,7 +484,6 @@ export class VivagraphSvgComponent implements OnInit {
     .reduce((a, b) => a+b, 0);
     
     let amount = amountIn-amountOut;
-    //console.log("adding link ", address,transaction)
     if (input) {
       this.graph.addLink(address.addrStr, transaction.txid, {output: output, input: input, amountIn: amountIn, amountOut: amountOut, amount: amount});
     } else {
