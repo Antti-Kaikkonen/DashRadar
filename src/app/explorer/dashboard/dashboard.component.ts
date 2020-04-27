@@ -16,7 +16,6 @@ export class DashboardComponent implements OnInit {
   columnsToDisplay = ["image", "txid", "time"];
 
   txCount24h: number;
-  instantSendTxCount24h: number;
   privateSendTxCount24h: number;
   hashRate24h: number;
 
@@ -85,13 +84,6 @@ export class DashboardComponent implements OnInit {
     "WHERE tx.receivedTime >= datetime().epochSeconds-86400 "+
     "RETURN confirmedTxCount+count(tx) as txcount;"
 
-    let instantSendQuery: string = "OPTIONAL MATCH (tx:Transaction)-[:INCLUDED_IN]->(b:Block) "+
-    "WHERE b.time >= datetime().epochSeconds-86400 AND tx.txlock=true "+
-    "WITH count(tx) as confirmedTxCount "+
-    "OPTIONAL MATCH (tx:Transaction)-[:INCLUDED_IN]->(:Mempool) "+
-    "WHERE tx.receivedTime >= datetime().epochSeconds-86400 AND tx.txlock=true "+
-    "RETURN confirmedTxCount+count(tx) as txcount;"
-
     let privateSendQuery: string = "OPTIONAL MATCH (tx:Transaction)-[:INCLUDED_IN]->(b:Block) "+
     "WHERE b.time >= datetime().epochSeconds-86400 AND tx.pstype=2 "+
     "WITH count(tx) as confirmedTxCount "+
@@ -105,10 +97,6 @@ export class DashboardComponent implements OnInit {
 
     this.cypherService.executeQuery(txQuery, {}).subscribe(e => {
       this.txCount24h = e.data[0][0];
-    });
-
-    this.cypherService.executeQuery(instantSendQuery, {}).subscribe(e => {
-      this.instantSendTxCount24h = e.data[0][0];
     });
 
     this.cypherService.executeQuery(privateSendQuery, {}).subscribe(e => {
@@ -129,16 +117,9 @@ export class DashboardComponent implements OnInit {
           let txlock: boolean = row[3];
           let image: string;
           let tooltip: TransactionType;
-          if (txlock && pstype === 2) {
-            image = "png2/64x64/private_instant_send.png";
-            tooltip = TransactionType.INSTANT_PRIVATESEND;
-          } else if (txlock && pstype === 0) {
-            image = "SVG/instantx_black.svg";
-            tooltip = TransactionType.INSTANTSEND;
-          } else {
-            image = this.pstype2img[pstype];
-            tooltip = this.pstype2tooltip[pstype];
-          }
+         
+          image = this.pstype2img[pstype];
+          tooltip = this.pstype2tooltip[pstype];
           return {txid: row[0], time: row[1], pstype: row[2], image:image, tooltip:tooltip};
         });
         this.updateTransactions(newTxs);
@@ -173,8 +154,6 @@ export class DashboardComponent implements OnInit {
 enum TransactionType {
   PRIVATESEND = "PRIVATESEND TRANSACTION",
   TRANSACTION = "TRANSACTION",
-  INSTANTSEND = "INSTANTSEND TRANSACTION",
-  INSTANT_PRIVATESEND = "INSTANT PRIVATESEND TRANSACTION",
   CREATE_DENOMINATIONS = "CREATE DENOMINATIONS TRANSACTION",
   COINBASE = "COINBASE TRANSACTION",
   MIXING = "MIXING TRANSACTION",

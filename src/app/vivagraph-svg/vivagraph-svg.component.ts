@@ -240,13 +240,8 @@ export class VivagraphSvgComponent implements OnInit {
       return selected ? prefix_selected+"dash_icon_b.png" : prefixSingleColor + "dash_icon.png";
     } else if (node.data.transaction) {
       let selected: boolean = this.selectedTransactions !== undefined && this.selectedTransactions.has(node.data.transaction.txid);
-      if (node.data.transaction.txlock) {
-        if (node.data.privateSendTransaction) {
-          return selected ? prefix_selected + "private_instant_send_b.png" : prefix + "private_instant_send.png";
-        } else {
-          return selected ? prefix_selected + "instantx_b.png" : prefixSingleColor + "instantx.png"; 
-        }
-      } else if (node.data.mixingTransaction) {
+      
+      if (node.data.mixingTransaction) {
         if (node.data.transaction.vin[0].value==0.00100001) {
           return selected ? prefix_selected + "private_send_0-001_b.png" : prefixDualColor + "private_send_0-001.png";
         } else if (node.data.transaction.vin[0].value==0.0100001) {
@@ -270,7 +265,7 @@ export class VivagraphSvgComponent implements OnInit {
         return selected ? prefix_selected + "make_collateral_inputs_b.png" : prefixSingleColor + "make_collateral_inputs.png";
       } else {
         return selected ? prefix_selected + "tx_b.png" : prefixDualColor+"tx.png";;
-      }   
+      }
     }
 
   }
