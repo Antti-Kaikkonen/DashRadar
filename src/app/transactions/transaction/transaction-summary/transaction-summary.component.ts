@@ -47,8 +47,6 @@ export class TransactionSummaryComponent implements OnInit {
       this.setImageName();
     }
 
-  
-
     if (this.currentAddress !== undefined) {
       this.loadTransactionBalance();
       this.currentAddressIsInput = !this.transaction.vin.every(e => e.addr !== this.currentAddress);
@@ -108,14 +106,12 @@ export class TransactionSummaryComponent implements OnInit {
   }
 
   private setImageName() {
-    if (this.transaction.isPrivateSendTransaction()) {
-      if (this.transaction.txlock) {
-        this.tooltip = "INSTANT PRIVATESEND TRANSACTION";
-        this.imageName = "png2/64x64/private_instant_send.png";
-      } else {
-        this.tooltip = "PRIVATESEND TRANSACTION";
-        this.imageName = "png2/64x64/private_send.png";
-      }
+    if (this.transaction.isQcTx()) {
+      this.tooltip = "QUORUM COMMITMENT TRANSACTION";
+      this.imageName = "png2/64x64/dual_color/tx.png";
+    } else if (this.transaction.isPrivateSendTransaction()) {
+      this.tooltip = "PRIVATESEND TRANSACTION";
+      this.imageName = "png2/64x64/private_send.png";
     } else if (this.transaction.isCreateDenominationsTransaction()) {
       this.tooltip = "CREATE DENOMINATIONS TRANSACTION";
       this.imageName = "png2/64x64/create_denominations.png";
@@ -142,13 +138,8 @@ export class TransactionSummaryComponent implements OnInit {
       this.tooltip = "PRIVATESEND MAKE COLLATERAL INPUTS";
       this.imageName = "SVG/make_collateral_inputs.svg";
     } else {
-      if (this.transaction.txlock) {
-        this.tooltip = "INSTANTSEND TRANSACTION";
-        this.imageName = "SVG/instantx_black.svg";
-      } else {
-        this.tooltip = "TRANSACTION";
-        this.imageName = "png2/64x64/dual_color/tx.png";
-      }
+      this.tooltip = "TRANSACTION";
+      this.imageName = "png2/64x64/dual_color/tx.png";
     }
   }  
 

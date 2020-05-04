@@ -3,6 +3,8 @@ import { VOut } from './vout';
 
 export class Transaction {
 
+	//public qcTx: {version: number, height: number, commitment: {version: 1, llmqType: 1, quorumHash: string, singnersCount: number, validMembersCount: number, quorumPublicKey: string}};
+
 	constructor(
     public txid: string,//a.k.a. Hash
     public size: number,
@@ -11,10 +13,11 @@ export class Transaction {
     public time: number,
     public vin: VIn[],
     public vout: VOut[],
-		public txlock: boolean,
-		public blockhash: string,
-		public blockheight: number,
-		public confirmations: number
+	public txlock: boolean,
+	public blockhash: string,
+	public blockheight: number,
+	public confirmations: number,
+	public qcTx: {version: number, height: number, commitment: {version: 1, llmqType: 1, quorumHash: string, singnersCount: number, validMembersCount: number, quorumPublicKey: string}},
 	) {  }
 
 	static FromInsightJSON(json: any): Transaction {
@@ -28,7 +31,8 @@ export class Transaction {
 			json.txlock,
 			json.blockhash,
 			Number(json.blockheight),
-			Number(json.confirmations)
+			Number(json.confirmations),
+			json.qcTx
 		);
 	}
 
@@ -112,6 +116,10 @@ export class Transaction {
 
 	private static roundToSatoshis(value: number) {
 		return Math.round(value*100000000)/100000000;
+	}
+
+	public isQcTx(): boolean {
+		return this.qcTx !== undefined;
 	}
 
 
