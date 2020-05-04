@@ -26,7 +26,7 @@ export class TransactionComponent implements OnInit {
   imageName: string = "png2/64x64/dual_color/tx.png";
   txid: string;
 
-  transaction_type: "" | "PRIVATESEND" | "INSTANT PRIVATESEND" | "CREATE DENOMINATIONS" | "COINBASE" | "MIXING" | "PRIVATESEND COLLATERAL PAYMENT" | "PRIVATESEND MAKE COLLATERAL INPUTS" = "";
+  transaction_type: "" | "QUORUM COMMITMENT" | "PRIVATESEND" | "INSTANT PRIVATESEND" | "CREATE DENOMINATIONS" | "COINBASE" | "MIXING" | "PRIVATESEND COLLATERAL PAYMENT" | "PRIVATESEND MAKE COLLATERAL INPUTS" = "";
 
   fee: number;
 
@@ -87,7 +87,10 @@ export class TransactionComponent implements OnInit {
   private transactionChanged() {
     this.fee = this.transaction.calculateFee();
     this.txid = this.transaction.txid;
-    if (this.transaction.isPrivateSendTransaction()) {
+    if (this.transaction.isQcTx()) {
+      this.transaction_type = "QUORUM COMMITMENT";
+      this.imageName = "png2/64x64/quorum_commitment_black.png";
+    } else if (this.transaction.isPrivateSendTransaction()) {
       if (this.transaction.txlock) {
         this.imageName = "png2/64x64/private_instant_send.png";
         this.transaction_type = "INSTANT PRIVATESEND";

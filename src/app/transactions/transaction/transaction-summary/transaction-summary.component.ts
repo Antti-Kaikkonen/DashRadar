@@ -108,7 +108,7 @@ export class TransactionSummaryComponent implements OnInit {
   private setImageName() {
     if (this.transaction.isQcTx()) {
       this.tooltip = "QUORUM COMMITMENT TRANSACTION";
-      this.imageName = "png2/64x64/dual_color/tx.png";
+      this.imageName = "png2/64x64/quorum_commitment_black.png";
     } else if (this.transaction.isPrivateSendTransaction()) {
       this.tooltip = "PRIVATESEND TRANSACTION";
       this.imageName = "png2/64x64/private_send.png";

@@ -56,6 +56,41 @@
 						</div>
 					</div>
 				</div>
+				<div ngif="transaction.qcTx !== undefined" fxLayout="column" fxLayoutGap="5px" style="font-size: 16px">
+					<h3>Commitment</h3>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Quorum hash</b>
+						</div>
+						<div fxFlex="nogrow">
+							{{transaction.qcTx.commitment.quorumHash}}
+						</div>
+					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Signers count</b>
+						</div>
+						<div fxFlex="nogrow">
+							{{transaction.qcTx.commitment.signersCount}}
+						</div>
+					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Valid members count</b>
+						</div>
+						<div fxFlex="nogrow">
+							{{transaction.qcTx.commitment.validMembersCount}}
+						</div>
+					</div>
+					<div fxLayout="row wrap" fxLayoutAlign="start center">
+						<div fxFlex="15em">
+							<b>Quorum public key</b>
+						</div>
+						<div fxFlex="nogrow">
+							{{transaction.qcTx.commitment.quorumPublicKey}}
+						</div>
+					</div>
+				</div>
 				<app-transaction-input-output-table  [transaction]="transaction" [txinindex]="txinindex" [txoutindex]="txoutindex"></app-transaction-input-output-table>
 			</ng-template>
 		</ng-template>
