@@ -33,7 +33,7 @@
     "@nguniversal/common": "^7.0.2",
     "@nguniversal/express-engine": "^7.0.2",
     "@nguniversal/module-map-ngfactory-loader": "v7.0.2",
-    "chart.js": "^2.7.2",
+    "chart.js": "^2.9.4",
     "chartjs-plugin-downsample": "^1.0.2",
     "chartjs-plugin-zoom": "^0.6.5",
     "codemirror": "^5.41.0",
