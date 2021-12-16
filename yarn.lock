@@ -153,7 +153,7 @@
     "universal-analytics" "^0.4.20"
     "uuid" "^3.3.2"
 
-"@angular/common@^2.3.0 || >=4.0.0", "@angular/common@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/common@^8.0.0", "@angular/common@^8.0.0 || ^9.0.0-0", "@angular/common@^8.2.14", "@angular/common@>=6.0.0", "@angular/common@>=8.0.0-rc.5", "@angular/common@8.2.14":
+"@angular/common@^2.3.0 || >=4.0.0", "@angular/common@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/common@^8.0.0", "@angular/common@^8.0.0 || ^9.0.0-0", "@angular/common@^8.0.0-rc.4", "@angular/common@^8.2.0", "@angular/common@^8.2.14", "@angular/common@>=8.0.0-rc.5", "@angular/common@8.2.14":
   "integrity" "sha512-Qmt+aX2quUW54kaNT7QH7WGXnFxr/cC2C6sf5SW5SdkZfDQSiz8IaItvieZfXVQUbBOQKFRJ7TlSkt0jI/yjvw=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-8.2.14.tgz"
   "version" "8.2.14"
@@ -183,7 +183,7 @@
   dependencies:
     "tslib" "^1.9.0"
 
-"@angular/core@^2.3.0 || >=4.0.0", "@angular/core@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/core@^8.0.0", "@angular/core@^8.0.0 || ^9.0.0-0", "@angular/core@^8.2.14", "@angular/core@>=2.3.1 <8.0.0 || >7.0.0-beta <8.0.0", "@angular/core@>=6.0.0", "@angular/core@>=7.0.0", "@angular/core@>=8.0.0-rc.5", "@angular/core@7.0.0", "@angular/core@8.2.14":
+"@angular/core@^2.3.0 || >=4.0.0", "@angular/core@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/core@^8.0.0", "@angular/core@^8.0.0 || ^9.0.0-0", "@angular/core@^8.0.0-rc.4", "@angular/core@^8.2.0", "@angular/core@^8.2.14", "@angular/core@>=2.3.1 <8.0.0 || >7.0.0-beta <8.0.0", "@angular/core@>=8.0.0-rc.5", "@angular/core@7.0.0", "@angular/core@8.2.14":
   "integrity" "sha512-zeePkigi+hPh3rN7yoNENG/YUBUsIvUXdxx+AZq+QPaFeKEA2FBSrKn36ojHFrdJUjKzl0lPMEiGC2b6a6bo6g=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-8.2.14.tgz"
   "version" "8.2.14"
@@ -216,14 +216,14 @@
   "resolved" "https://registry.npmjs.org/@angular/language-service/-/language-service-8.2.14.tgz"
   "version" "8.2.14"
 
-"@angular/material-moment-adapter@^7.0.0":
-  "integrity" "sha512-ODTjQrgJhxU90qT0C42UdgR+NVjMwMhJHKxmRMC83Z7r+OZgjLcrj5fXx+363AisnI8a/+5hBSgzXZgwUu2hGQ=="
-  "resolved" "https://registry.npmjs.org/@angular/material-moment-adapter/-/material-moment-adapter-7.0.0.tgz"
-  "version" "7.0.0"
+"@angular/material-moment-adapter@^8.2.3":
+  "integrity" "sha512-x0WE9MyQajqzGPYKm8eHcDmWWlwiobOX9rZ+V5uqY80fsvm2czk6TYnc1drFYcPAHIaIcx7je7NYOULPF1rTpw=="
+  "resolved" "https://registry.npmjs.org/@angular/material-moment-adapter/-/material-moment-adapter-8.2.3.tgz"
+  "version" "8.2.3"
   dependencies:
     "tslib" "^1.7.1"
 
-"@angular/material@^8.2.3", "@angular/material@7.0.0":
+"@angular/material@^8.2.3", "@angular/material@8.2.3":
   "integrity" "sha512-SOczkIaqes+r+9XF/UUiokidfFKBpHkOPIaFK857sFD0FBNPvPEpOr5oHKCG3feERRwAFqHS7Wo2ohVEWypb5A=="
   "resolved" "https://registry.npmjs.org/@angular/material/-/material-8.2.3.tgz"
   "version" "8.2.3"
@@ -244,7 +244,7 @@
   dependencies:
     "tslib" "^1.9.0"
 
-"@angular/platform-server@^8.2.14", "@angular/platform-server@>=6.0.0":
+"@angular/platform-server@^8.0.0-rc.4", "@angular/platform-server@^8.2.0", "@angular/platform-server@^8.2.14":
   "integrity" "sha512-gGAgxMmac5CyLcwgB+qCD1o75An0NmpREh/lxPgz6n6Zs9JqdqpZROLSIHqGBaU6MWo1qiOfS6L08HwYPx7ipQ=="
   "resolved" "https://registry.npmjs.org/@angular/platform-server/-/platform-server-8.2.14.tgz"
   "version" "8.2.14"
@@ -1000,20 +1000,20 @@
   "resolved" "https://registry.npmjs.org/@nguniversal/aspnetcore-engine/-/aspnetcore-engine-8.1.1.tgz"
   "version" "8.1.1"
 
-"@nguniversal/common@^7.0.2":
-  "integrity" "sha512-0iNP1Tb4cPM8jwXmcn9SEI7Hq4r1bteyesiLuDllp79vuBhBO0TJoOqN1yI0BXCrx95TAzyMhEVTgLgVqT7qBg=="
-  "resolved" "https://registry.npmjs.org/@nguniversal/common/-/common-7.0.2.tgz"
-  "version" "7.0.2"
+"@nguniversal/common@^8.1.1":
+  "integrity" "sha512-w5S03Blmde0kjYh5xxrUeJZGeCZ2w5jJK0jGNxKWnxCyIsOTY5N8+vqU+oK1Na1RQXCcE2XpMKmgYeybwp1IzA=="
+  "resolved" "https://registry.npmjs.org/@nguniversal/common/-/common-8.1.1.tgz"
+  "version" "8.1.1"
 
-"@nguniversal/express-engine@^7.0.2":
-  "integrity" "sha512-mmNgDpUrcuFcjBOfUlmAliS3St4tSekLdQZWu6PK/d+kw5zicDDlSO/UoUw5g+wz7YHkGQK+VDy3wHc0Bo36rA=="
-  "resolved" "https://registry.npmjs.org/@nguniversal/express-engine/-/express-engine-7.0.2.tgz"
-  "version" "7.0.2"
+"@nguniversal/express-engine@^8.2.6":
+  "integrity" "sha512-IKUKTpesgjYyB0Xg+fFhSbwbGBJhG0Wfn8MkQAi9RgSi8QsrSMkI3oUXc86Z7fpQL55D/ZIH7PekoC0Fmh/kxA=="
+  "resolved" "https://registry.npmjs.org/@nguniversal/express-engine/-/express-engine-8.2.6.tgz"
+  "version" "8.2.6"
 
-"@nguniversal/module-map-ngfactory-loader@v7.0.2":
-  "integrity" "sha512-zZst1DfmWZdozNmYRu6vUacFLKreLVhGfpp/LmBrW/jDESHWU4AtRBQYtH8KfhKFSE+B6ehyGYHPfDdSa5sk7g=="
-  "resolved" "https://registry.npmjs.org/@nguniversal/module-map-ngfactory-loader/-/module-map-ngfactory-loader-7.0.2.tgz"
-  "version" "7.0.2"
+"@nguniversal/module-map-ngfactory-loader@^8.0.0-rc.1":
+  "integrity" "sha512-dPac8uahg4XHSvrXP0/XkU/LaFhAHJ8N9h93ttXfrEXNMukarOmbyKzAuX9DVjcE6+lll1UCZtsEweRvQBZPbw=="
+  "resolved" "https://registry.npmjs.org/@nguniversal/module-map-ngfactory-loader/-/module-map-ngfactory-loader-8.0.0-rc.1.tgz"
+  "version" "8.0.0-rc.1"
 
 "@nodelib/fs.scandir@2.1.5":
   "integrity" "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
