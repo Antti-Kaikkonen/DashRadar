@@ -153,7 +153,7 @@
     "universal-analytics" "^0.4.20"
     "uuid" "^3.3.2"
 
-"@angular/common@^2.3.0 || >=4.0.0", "@angular/common@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/common@^8.0.0 || ^9.0.0-0", "@angular/common@^8.2.0", "@angular/common@^8.2.14", "@angular/common@>=6.0.0", "@angular/common@>=8.0.0-rc.5", "@angular/common@8.2.14":
+"@angular/common@^2.3.0 || >=4.0.0", "@angular/common@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/common@^8.0.0", "@angular/common@^8.0.0 || ^9.0.0-0", "@angular/common@^8.2.14", "@angular/common@>=6.0.0", "@angular/common@>=8.0.0-rc.5", "@angular/common@8.2.14":
   "integrity" "sha512-Qmt+aX2quUW54kaNT7QH7WGXnFxr/cC2C6sf5SW5SdkZfDQSiz8IaItvieZfXVQUbBOQKFRJ7TlSkt0jI/yjvw=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-8.2.14.tgz"
   "version" "8.2.14"
@@ -183,7 +183,7 @@
   dependencies:
     "tslib" "^1.9.0"
 
-"@angular/core@^2.3.0 || >=4.0.0", "@angular/core@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/core@^8.0.0 || ^9.0.0-0", "@angular/core@^8.2.0", "@angular/core@^8.2.14", "@angular/core@>=2.3.1 <8.0.0 || >7.0.0-beta <8.0.0", "@angular/core@>=6.0.0", "@angular/core@>=7.0.0", "@angular/core@>=8.0.0-rc.5", "@angular/core@7.0.0", "@angular/core@8.2.14":
+"@angular/core@^2.3.0 || >=4.0.0", "@angular/core@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/core@^8.0.0", "@angular/core@^8.0.0 || ^9.0.0-0", "@angular/core@^8.2.14", "@angular/core@>=2.3.1 <8.0.0 || >7.0.0-beta <8.0.0", "@angular/core@>=6.0.0", "@angular/core@>=7.0.0", "@angular/core@>=8.0.0-rc.5", "@angular/core@7.0.0", "@angular/core@8.2.14":
   "integrity" "sha512-zeePkigi+hPh3rN7yoNENG/YUBUsIvUXdxx+AZq+QPaFeKEA2FBSrKn36ojHFrdJUjKzl0lPMEiGC2b6a6bo6g=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-8.2.14.tgz"
   "version" "8.2.14"
@@ -995,10 +995,10 @@
     "tree-kill" "1.2.2"
     "webpack-sources" "1.4.3"
 
-"@nguniversal/aspnetcore-engine@^8.2.6":
-  "integrity" "sha512-FYrJkXd/s7eFe7a6HhKq22tRzp+3gOb2s13lBcN9ANGltHxCOjGsP6/JCP6ltjmjhxhEbdI4v4mRoFnuoz0Xcw=="
-  "resolved" "https://registry.npmjs.org/@nguniversal/aspnetcore-engine/-/aspnetcore-engine-8.2.6.tgz"
-  "version" "8.2.6"
+"@nguniversal/aspnetcore-engine@^8.1.1":
+  "integrity" "sha512-TiXaFKsa2l+Cy7U4UsShijsVWS8afatbKsv/ACETC5DAyxJh2pR9xPDKU0RCWL0iV1qni8EYkCNUn+b6MKSyYw=="
+  "resolved" "https://registry.npmjs.org/@nguniversal/aspnetcore-engine/-/aspnetcore-engine-8.1.1.tgz"
+  "version" "8.1.1"
 
 "@nguniversal/common@^7.0.2":
   "integrity" "sha512-0iNP1Tb4cPM8jwXmcn9SEI7Hq4r1bteyesiLuDllp79vuBhBO0TJoOqN1yI0BXCrx95TAzyMhEVTgLgVqT7qBg=="
