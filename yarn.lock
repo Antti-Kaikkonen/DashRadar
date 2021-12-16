@@ -183,7 +183,7 @@
   dependencies:
     "tslib" "^1.9.0"
 
-"@angular/core@^2.3.0 || >=4.0.0", "@angular/core@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/core@^8.0.0", "@angular/core@^8.0.0 || ^9.0.0-0", "@angular/core@^8.0.0-rc.4", "@angular/core@^8.2.0", "@angular/core@^8.2.14", "@angular/core@>=2.3.1 <8.0.0 || >7.0.0-beta <8.0.0", "@angular/core@>=8.0.0-rc.5", "@angular/core@7.0.0", "@angular/core@8.2.14":
+"@angular/core@^2.3.0 || >=4.0.0", "@angular/core@^5.2.0 || ^6.0.0 || ^7.0.0", "@angular/core@^8.0.0", "@angular/core@^8.0.0 || ^9.0.0-0", "@angular/core@^8.0.0-rc.4", "@angular/core@^8.2.0", "@angular/core@^8.2.14", "@angular/core@>=2.3.1 <8.0.0 || >7.0.0-beta <8.0.0", "@angular/core@>=8.0.0-rc.5", "@angular/core@8.2.14":
   "integrity" "sha512-zeePkigi+hPh3rN7yoNENG/YUBUsIvUXdxx+AZq+QPaFeKEA2FBSrKn36ojHFrdJUjKzl0lPMEiGC2b6a6bo6g=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-8.2.14.tgz"
   "version" "8.2.14"
@@ -201,13 +201,6 @@
   "integrity" "sha512-zhyKL3CFIqcyHJ/TQF/h1OZztK611a6rxuPHCrt/5Sn1SuBTJJQ1pPTkOYIDy6IrCrtyANc8qB6P17Mao71DNQ=="
   "resolved" "https://registry.npmjs.org/@angular/forms/-/forms-8.2.14.tgz"
   "version" "8.2.14"
-  dependencies:
-    "tslib" "^1.9.0"
-
-"@angular/http@^7.0.0":
-  "integrity" "sha512-gHMVKosbhXu+2sXccR1fnKpaJBtZioneW+jpG6CW3oo6f4L5FXnGGx/lqYLsgKFM8yHiOs6OXqvuHh8wYEjayA=="
-  "resolved" "https://registry.npmjs.org/@angular/http/-/http-7.0.0.tgz"
-  "version" "7.0.0"
   dependencies:
     "tslib" "^1.9.0"
 
@@ -237,7 +230,7 @@
   dependencies:
     "tslib" "^1.9.0"
 
-"@angular/platform-browser@^8.2.14", "@angular/platform-browser@>=8.0.0-rc.5", "@angular/platform-browser@7.0.0", "@angular/platform-browser@8.2.14":
+"@angular/platform-browser@^8.2.14", "@angular/platform-browser@>=8.0.0-rc.5", "@angular/platform-browser@8.2.14":
   "integrity" "sha512-MtJptptyKzsE37JZ2VB/tI4cvMrdAH+cT9pMBYZd66YSZfKjIj5s+AZo7z8ncoskQSB1o3HMfDjSK7QXGx1mLQ=="
   "resolved" "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-8.2.14.tgz"
   "version" "8.2.14"
