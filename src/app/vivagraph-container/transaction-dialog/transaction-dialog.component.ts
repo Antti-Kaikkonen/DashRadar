@@ -24,7 +24,7 @@ export class TransactionDialogComponent implements OnInit {
 
 	@Output() onTransactionInspected = new EventEmitter<Transaction>();
 
-	@ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
+	menuTrigger: MatMenuTrigger;
 
   constructor() {}
 

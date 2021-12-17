@@ -1,6 +1,6 @@
 import { CdkPortal, DomPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
-import { ApplicationRef, Component, ComponentFactoryResolver, Inject, Injector, OnInit, ViewChild } from '@angular/core';
+import { ApplicationRef, Component, ComponentFactoryResolver, Inject, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { onErrorResumeNext, Subscription } from 'rxjs';
@@ -19,8 +19,7 @@ import { Transaction } from '../transactions/transaction/transaction';
   styleUrls: ['./explorer.component.scss']
 })
 export class ExplorerComponent implements OnInit {
-
-  @ViewChild(CdkPortal) portal;
+  portal: CdkPortal;
 
   private host: DomPortalOutlet;
 
