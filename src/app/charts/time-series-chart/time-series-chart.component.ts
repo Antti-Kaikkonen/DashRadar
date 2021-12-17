@@ -29,7 +29,6 @@ export class TimeSeriesChartComponent implements OnInit {
 
   @Input() title: string;
 
-  @ViewChild(BaseChartDirective)
   myChart: BaseChartDirective;
 
   dynamicHeight: string = "100%";//"400px";
