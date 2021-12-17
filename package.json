@@ -53,6 +53,7 @@
     "rxjs": "^6.6.7",
     "screenfull": "^3.3.2",
     "socket.io-client": "^2.1.1",
+    "tslib": "^1.14.1",
     "vivagraphjs": "^0.10.1",
     "zone.js": "^0.9.1"
   },
