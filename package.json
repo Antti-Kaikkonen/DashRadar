@@ -17,7 +17,7 @@
   "dependencies": {
     "@angular/animations": "^10.2.5",
     "@angular/cdk": "^10.2.7",
-    "@angular/common": "^11.2.14",
+    "@angular/common": "^10.2.5",
     "@angular/compiler": "^10.2.5",
     "@angular/compiler-cli": "^10.2.5",
     "@angular/core": "^10.2.5",
@@ -33,7 +33,6 @@
     "@nguniversal/aspnetcore-engine": "^10.1.0",
     "@nguniversal/common": "^10.1.0",
     "@nguniversal/express-engine": "^10.1.0",
-    "@nguniversal/module-map-ngfactory-loader": "^9.0.0-next.9",
     "chart.js": "^2.9.4",
     "chartjs-plugin-downsample": "^1.1.0",
     "chartjs-plugin-zoom": "^0.6.6",
