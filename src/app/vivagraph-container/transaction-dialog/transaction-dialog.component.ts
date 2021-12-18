@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 import { Transaction } from '../../transactions/transaction/transaction';
 
@@ -24,7 +24,7 @@ export class TransactionDialogComponent implements OnInit {
 
 	@Output() onTransactionInspected = new EventEmitter<Transaction>();
 
-	@ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
+	menuTrigger: MatMenuTrigger;
 
   constructor() {}
 
