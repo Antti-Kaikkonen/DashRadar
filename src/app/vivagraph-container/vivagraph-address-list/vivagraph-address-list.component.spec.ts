@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync as  } from '@angular/core/testing';
 
 import { VivagraphAddressListComponent } from './vivagraph-address-list.component';
 
@@ -6,7 +6,7 @@ describe('VivagraphAddressListComponent', () => {
   let component: VivagraphAddressListComponent;
   let fixture: ComponentFixture<VivagraphAddressListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ VivagraphAddressListComponent ]
     })
