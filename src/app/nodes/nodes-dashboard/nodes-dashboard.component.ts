@@ -1,7 +1,10 @@
 import { DOCUMENT, formatPercent, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { Meta, Title } from '@angular/platform-browser';
 import * as d3 from 'd3/d3.min.js';
 import * as countries from 'i18n-iso-countries';

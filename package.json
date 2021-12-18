@@ -80,7 +80,7 @@
     "ts-loader": "^5.4.5",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "^3.9.10",
+    "typescript": "^3.6.4",
     "webpack-cli": "^4.9.1"
   }
 }

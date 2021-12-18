@@ -3,21 +3,23 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatDatepickerModule,
-  MatDividerModule,
-  MatIconModule,
-  MatInputModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-} from '@angular/material';
+
+
+import { MatButtonModule } from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTableModule} from '@angular/material/table';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatSelectModule} from '@angular/material/select';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatDividerModule} from '@angular/material/divider';
+
+
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { ChartsModule as ChartJSModule } from 'ng2-charts/ng2-charts';
