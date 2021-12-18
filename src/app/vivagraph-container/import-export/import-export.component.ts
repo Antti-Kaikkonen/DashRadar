@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Host, Inject, Input, OnInit, Output } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as Immutable from 'immutable';
 import { from, Observable } from 'rxjs';
 import { concat, filter, mergeMap } from 'rxjs/operators';

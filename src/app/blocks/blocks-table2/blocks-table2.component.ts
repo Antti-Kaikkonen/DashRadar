@@ -1,6 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
 import { ApplicationRef, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,7 +31,6 @@ export class BlocksTable2Component implements OnInit {
 
   query: string = "CYPHER planner=rule MATCH (b:BestBlock) WITH b.height as tipHeight MATCH (b:Block)<-[:INCLUDED_IN]-(tx:Transaction) WHERE b.height > tipHeight-($page+1)*$pageSize AND b.height <= tipHeight-$page*$pageSize RETURN b.hash, b.height, b.time, count(tx) as txcount ORDER BY b.height DESC;"
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   isBrowser: boolean;
 
