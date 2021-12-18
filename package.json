@@ -33,7 +33,6 @@
     "@nguniversal/aspnetcore-engine": "^11.2.1",
     "@nguniversal/common": "^11.1.0",
     "@nguniversal/express-engine": "^11.1.0",
-    "@nguniversal/module-map-ngfactory-loader": "^8.2.6",
     "chart.js": "^2.9.4",
     "chartjs-plugin-downsample": "^1.1.0",
     "chartjs-plugin-zoom": "^0.6.6",
