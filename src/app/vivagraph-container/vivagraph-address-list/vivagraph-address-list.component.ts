@@ -37,7 +37,7 @@ export class VivagraphAddressListComponent implements OnInit {
   private longestTotalSent: number = 7;
   private longestTotalReceived: number = 7;
 
-  @ViewChild(MatSort) sort: MatSort;
+  sort: MatSort;
 
   constructor() { }
 
