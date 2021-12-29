@@ -1,10 +1,9 @@
 import { DataSource } from '@angular/cdk/table';
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { MatSort, Sort } from '@angular/material';
 import * as Immutable from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, merge } from 'rxjs/operators';
-
+import { MatSort, Sort } from '@angular/material/sort';
 import { Transaction } from '../../transactions/transaction/transaction';
 
 @Component({
@@ -41,7 +40,7 @@ export class VivagraphTransactionListComponent implements OnInit {
   private longestTotalSent: number = 7;
   private longestTotalReceived: number = 7;
 
-  @ViewChild(MatSort) sort: MatSort;
+  sort: MatSort;
 
   constructor() { }
 

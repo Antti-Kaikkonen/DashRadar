@@ -1,8 +1,11 @@
-import { formatPercent, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, formatPercent, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
-import { DOCUMENT, Meta, Title } from '@angular/platform-browser';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { Meta, Title } from '@angular/platform-browser';
 import * as d3 from 'd3/d3.min.js';
 import * as countries from 'i18n-iso-countries';
 import * as Papa from 'papaparse';
@@ -35,8 +38,8 @@ export class NodesDashboardComponent implements OnInit {
   mnoptions = ["All nodes", "Masternodes", "Non masternodes"];
   ismn = this.mnoptions[0];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  paginator: MatPaginator;
+  sort: MatSort;
   dashnodes: DashNode[] = [];
   nodes = new MatTableDataSource<DashNode>([]);
     

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync as  } from '@angular/core/testing';
 
 import { TransactionInputOutputTableComponent } from './transaction-input-output-table.component';
 
@@ -6,7 +6,7 @@ describe('TransactionInputOutputTableComponent', () => {
   let component: TransactionInputOutputTableComponent;
   let fixture: ComponentFixture<TransactionInputOutputTableComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TransactionInputOutputTableComponent ]
     })

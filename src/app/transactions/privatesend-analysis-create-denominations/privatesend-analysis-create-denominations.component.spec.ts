@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync as  } from '@angular/core/testing';
 
 import { PrivatesendAnalysisCreateDenominationsComponent } from './privatesend-analysis-create-denominations.component';
 
@@ -6,7 +6,7 @@ describe('PrivatesendAnalysisComponent', () => {
   let component: PrivatesendAnalysisCreateDenominationsComponent;
   let fixture: ComponentFixture<PrivatesendAnalysisCreateDenominationsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PrivatesendAnalysisCreateDenominationsComponent ]
     })
