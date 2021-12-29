@@ -1,3 +1,6 @@
+## I'm not maintaining this repostory anymore
+Someone upgraded the UI to Angular 12 here: https://github.com/pashavboss/DashRadar/tree/Angular-12
+
 # DashRadar
 https://dashradar.com
 
